@@ -10,6 +10,7 @@ import {
 import { db } from '../config/firebase.config';
 import { UserData } from '../models/UserData';
 import { UserStatus } from '../enums/UserStatus';
+import { transformUserData } from '../utils/TransformDataHelpers';
 
 export const createUser = async (
   uid: string,
@@ -34,24 +35,25 @@ export const createUser = async (
     photoAvatarUrl: avatarUrl || '',
   };
 
+  await set(ref(db, `users/${username}`), userData);
   await update(ref(db), {
     [`users/${username}/username`]: username,
   });
-  await set(ref(db, `users/${username}`), userData);
 };
 
 export const getUserData = async (uid: string): Promise<UserData> => {
   const snapshot = await get(
     query(ref(db, 'users'), orderByChild('uid'), equalTo(uid))
   );
+
   if (!snapshot.exists()) throw new Error('User not found!');
 
-  return snapshot.val() as UserData;
+  return transformUserData(snapshot.val());
 };
 
-export const getuserByHandle = async (handle: string): Promise<UserData> => {
+export const getUserByHandle = async (handle: string): Promise<UserData> => {
   const snapshot = await get(ref(db, `users/${handle}`));
   if (!snapshot.exists()) throw new Error('User not found');
 
-  return snapshot.val() as UserData;
+  return transformUserData(snapshot.val());
 };
