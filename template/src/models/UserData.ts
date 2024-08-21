@@ -1,5 +1,5 @@
 import { UserStatus } from '../enums/UserStatus';
-import { UserTeamRole } from '../enums/UserTeamRole';
+import { UserRole } from '../enums/UserRole';
 import { FriendType } from '../enums/FriendType';
 
 export interface UserData {
@@ -11,11 +11,11 @@ export interface UserData {
   phoneNumber?: string;
   photoAvatarUrl?: string;
   status: UserStatus;
-  teams: Record<string, UserTeamRole>;
-  channels: Record<string, boolean>;
+  teams: Record<string, UserRole>;
+  channels: string[];
   friends: Record<string, FriendType>;
   userSince: number;
-  notes: Record<string, boolean>;
+  notes: string[];
   activeDyteMeetingId?: string;
   dyteParticipantId?: string;
 }
