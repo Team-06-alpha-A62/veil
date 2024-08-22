@@ -1,4 +1,4 @@
-import styles from './SidebarItem.module.scss';
+import './SidebarItem.scss';
 
 interface SidebarItemProps {
   icon: React.ReactNode;
@@ -12,22 +12,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   isExpanded,
 }) => {
   return (
-    <div className={styles['sidebar-item']}>
-      <div
-        className={`${styles['sidebar-icon']} ${
-          isExpanded ? styles['expanded'] : ''
-        }`}
-      >
+    <div className="sidebar-item">
+      <div className={`sidebar-icon ${isExpanded ? 'expanded' : ''}`}>
         {icon}
       </div>
       {isExpanded && (
-        <span
-          className={`${styles['label']} ${
-            isExpanded ? styles['expanded'] : ''
-          }`}
-        >
-          {label}
-        </span>
+        <span className={`label ${isExpanded ? 'expanded' : ''}`}>{label}</span>
       )}
     </div>
   );

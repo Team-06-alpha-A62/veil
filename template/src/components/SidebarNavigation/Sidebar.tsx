@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './Sidebar.module.scss';
+import './Sidebar.scss';
 import SidebarItem from '../SidebarItem/SidebarItem';
 import {
   FaTachometerAlt,
@@ -10,30 +10,25 @@ import {
   FaStickyNote,
   FaCalendarAlt,
 } from 'react-icons/fa';
+
 interface SidebarProps {}
 
 const SidebarNavigation: React.FC<SidebarProps> = () => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const toggleSidebar = () => {
-    setIsExpanded(value => !value);
+    setIsExpanded((value) => !value);
   };
 
   return (
-    <div
-      className={`${styles['sidebar']} ${isExpanded ? styles['expanded'] : ''}`}
-    >
+    <div className={`sidebar ${isExpanded ? 'expanded' : ''}`}>
       <div
-        className={`${styles['toggle-button-container']} ${
-          isExpanded ? styles['expanded'] : ''
-        }`}
+        className={`toggle-button-container ${isExpanded ? 'expanded' : ''}`}
         onClick={toggleSidebar}
       >
-        <span className={styles['toggle-button']}>
-          {isExpanded ? 'x' : 'o'}
-        </span>
+        <span className="toggle-button">{isExpanded ? 'x' : 'o'}</span>
       </div>
-      <div className={styles['nav-items']}>
+      <div className="nav-items">
         <SidebarItem
           icon={<FaTachometerAlt />}
           label="Dashboard"
