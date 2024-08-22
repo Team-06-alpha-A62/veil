@@ -10,7 +10,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 const AppContent = () => {
   return (
     <>
-      <SidebarNavigation />;
+      <SidebarNavigation />
       <Routes>
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="notifications" element={<Notifications />} />
