@@ -10,14 +10,17 @@ import {
   FaStickyNote,
   FaCalendarAlt,
 } from 'react-icons/fa';
+import { useAuth } from '../../providers/AuthProvider';
+import UserProfileCard from '../UserProfileCard/UserProfileCard';
 
 interface SidebarProps {}
 
 const SidebarNavigation: React.FC<SidebarProps> = () => {
+  const { currentUser } = useAuth();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const toggleSidebar = () => {
-    setIsExpanded((value) => !value);
+    setIsExpanded(value => !value);
   };
 
   return (
@@ -61,6 +64,12 @@ const SidebarNavigation: React.FC<SidebarProps> = () => {
           isExpanded={isExpanded}
         />
       </div>
+      <UserProfileCard
+        avatarUrl={currentUser.userData?.avatarUrl}
+        username={currentUser.userData?.username}
+        status={currentUser.userData?.status}
+        isExpanded={isExpanded}
+      />
     </div>
   );
 };
