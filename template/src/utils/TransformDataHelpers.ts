@@ -5,7 +5,7 @@ import { Message } from '../models/Message';
 import { Team } from '../models/Team';
 import { UserData } from '../models/UserData';
 
-export function transformUserData(data: Partial<UserData>): UserData {
+export const transformUserData = (data: Partial<UserData>): UserData => {
   return {
     id: data.id || '',
     username: data.username || 'Unknown Username',
@@ -23,9 +23,9 @@ export function transformUserData(data: Partial<UserData>): UserData {
     activeDyteMeetingId: data.activeDyteMeetingId || '',
     dyteParticipantId: data.dyteParticipantId || '',
   };
-}
+};
 
-export function transformChannelData(data: Partial<Channel>): Channel {
+export const transformChannelData = (data: Partial<Channel>): Channel => {
   return {
     id: data.id || '',
     name: data.name || 'Unnamed Channel',
@@ -38,9 +38,9 @@ export function transformChannelData(data: Partial<Channel>): Channel {
     lastMessageAt: data.lastMessageAt || undefined,
     activeMeetingId: data.activeMeetingId || '',
   };
-}
+};
 
-export function transformMessageData(data: Partial<Message>): Message {
+export const transformMessageData = (data: Partial<Message>): Message => {
   return {
     id: data.id || '',
     sender: data.sender || 'Unknown Sender',
@@ -51,9 +51,9 @@ export function transformMessageData(data: Partial<Message>): Message {
     reactions: data.reactions || {},
     editedAt: data.editedAt || 0,
   };
-}
+};
 
-export function transformTeamData(data: Partial<Team>): Team {
+export const transformTeamData = (data: Partial<Team>): Team => {
   return {
     id: data.id || '',
     name: data.name || 'Untitled Team',
@@ -63,4 +63,4 @@ export function transformTeamData(data: Partial<Team>): Team {
     meetings: Object.keys(data.meetings || {}),
     createdOn: data.createdOn || Date.now(),
   };
-}
+};
