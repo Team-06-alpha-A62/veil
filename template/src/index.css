@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --tw-gradient-start: theme('colors.primary');
+  --tw-gradient-mid: theme('colors.secondary');
+  --tw-gradient-end: theme('colors.accent');
+}
+
+/* Light Theme */
+[data-theme='light'] {
+  --tw-gradient-start: var(--p); /* Primary color */
+  --tw-gradient-mid: var(--s); /* Secondary color */
+  --tw-gradient-end: var(--a); /* Accent color */
+}
+
+/* Dark Theme */
+[data-theme='dark'] {
+  --tw-gradient-start: var(--p);
+  --tw-gradient-mid: var(--s);
+  --tw-gradient-end: var(--a);
+}
+
+/* Cupcake Theme */
+[data-theme='cupcake'] {
+  --tw-gradient-start: var(--p);
+  --tw-gradient-mid: var(--s);
+  --tw-gradient-end: var(--a);
+}
+
+/* Retro Theme */
+[data-theme='retro'] {
+  --tw-gradient-start: var(--p);
+  --tw-gradient-mid: var(--s);
+  --tw-gradient-end: var(--a);
+}
