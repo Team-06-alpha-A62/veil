@@ -11,6 +11,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../config/firebase.config';
 import { loginUser, logoutUser, registerUser } from '../services/auth.service';
 import { createUser, getUserData } from '../services/user.service';
+import { uploadAvatar } from '../services/storage.service';
 
 interface AuthState {
   user: User | null;
@@ -25,7 +26,9 @@ interface AuthContextType {
     firstName: string,
     lastName: string,
     email: string,
-    password: string
+    password: string,
+    phoneNumber: string | null,
+    avatarFile: File | null
   ) => Promise<void>;
   logout: () => Promise<void>;
   isLoading: boolean;
@@ -70,6 +73,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLoading(true);
       try {
         const data = await getUserData(user.uid);
+        //console.log(data);
         const userData = data || null;
         setCurrentUser({ user, userData });
       } catch (error) {
@@ -110,27 +114,38 @@ export function AuthProvider({ children }: AuthProviderProps) {
     firstName: string,
     lastName: string,
     email: string,
-    password: string
+    password: string,
+    phoneNumber: string | null,
+    avatarFile: File | null
   ): Promise<void> => {
     setIsLoading(true);
     try {
       const credentials = await registerUser(email, password);
+      const userId = credentials.user.uid;
+
+      let avatarUrl: string = '';
+      if (avatarFile) {
+        avatarUrl = await uploadAvatar(avatarFile);
+      }
 
       await createUser(
-        credentials.user.uid,
+        userId,
         username,
         firstName,
         lastName,
-        email
+        email,
+        phoneNumber,
+        avatarUrl
       );
+
       setCurrentUser({ user: credentials.user, userData: null });
     } catch (error) {
       if (error instanceof Error) {
-        alert(`Error trying to register user ${error.message}`);
-        setErrorState(`Error trying to register user ${error.message}`);
+        alert(`Error trying to register user: ${error.message}`);
+        setErrorState(`Error trying to register user: ${error.message}`);
       } else {
-        alert('unknown instance of error');
-        setErrorState('unknown instance of error');
+        alert('Unknown instance of error');
+        setErrorState('Unknown instance of error');
       }
     } finally {
       setIsLoading(false);

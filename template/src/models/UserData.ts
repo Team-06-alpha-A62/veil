@@ -9,7 +9,7 @@ export interface UserData {
   lastName: string;
   email: string;
   phoneNumber?: string;
-  photoAvatarUrl?: string;
+  avatarUrl?: string;
   status: UserStatus;
   teams: Record<string, UserRole>;
   channels: string[];

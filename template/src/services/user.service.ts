@@ -18,7 +18,8 @@ export const createUser = async (
   firstName: string,
   lastName: string,
   email: string,
-  avatarUrl?: string
+  phoneNumber: string | null,
+  avatarUrl: string | null
 ): Promise<void> => {
   const userData = {
     id: uid,
@@ -26,13 +27,14 @@ export const createUser = async (
     firstName,
     lastName,
     email,
+    phoneNumber: phoneNumber || '',
     status: UserStatus.ONLINE,
     teams: {},
     channels: {},
     friends: {},
     userSince: Date.now(),
     notes: {},
-    photoAvatarUrl: avatarUrl || '',
+    avatarUrl: avatarUrl || '',
   };
 
   await set(ref(db, `users/${username}`), userData);
@@ -41,14 +43,18 @@ export const createUser = async (
   });
 };
 
-export const getUserData = async (uid: string): Promise<UserData> => {
+export const getUserData = async (id: string): Promise<UserData> => {
   const snapshot = await get(
-    query(ref(db, 'users'), orderByChild('uid'), equalTo(uid))
+    query(ref(db, 'users'), orderByChild('id'), equalTo(id))
   );
-
+  console.log(snapshot.val());
   if (!snapshot.exists()) throw new Error('User not found!');
 
-  return transformUserData(snapshot.val());
+  const userData = Object.values(snapshot.val())[0] as UserData;
+
+  const changedData = transformUserData(userData);
+
+  return changedData;
 };
 
 export const getUserByHandle = async (handle: string): Promise<UserData> => {

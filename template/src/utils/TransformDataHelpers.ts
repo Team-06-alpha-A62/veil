@@ -13,7 +13,7 @@ export const transformUserData = (data: Partial<UserData>): UserData => {
     lastName: data.lastName || 'Last Name',
     email: data.email || 'No Email',
     phoneNumber: data.phoneNumber || '',
-    photoAvatarUrl: data.photoAvatarUrl || '',
+    avatarUrl: data.avatarUrl || '',
     status: data.status || UserStatus.OFFLINE,
     teams: data.teams || {},
     channels: Object.keys(data.channels || {}),
