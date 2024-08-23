@@ -31,6 +31,7 @@ const DragZone: React.FC<DragZoneProps> = ({
     setIsDragging(false);
 
     const file = e.dataTransfer.files[0];
+
     if (file) {
       handleFileChange(file);
     }

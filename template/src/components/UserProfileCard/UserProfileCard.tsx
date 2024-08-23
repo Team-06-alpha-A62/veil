@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { UserStatus } from '../../enums/UserStatus';
 
 interface UserProfileCardProps {
-  avatarUrl: string;
-  username: string;
-  status: UserStatus;
+  avatarUrl: string | undefined;
+  username: string | undefined;
+  status: UserStatus | undefined;
   isExpanded: boolean;
 }
 
@@ -41,8 +41,8 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
 
   return (
     <div className="flex items-center absolute bottom-3 left-3 space-x-3">
-      <div className="avatar">
-        <div className="w-14 rounded-full ">
+      <div className="avatar ">
+        <div className="w-14 rounded-full skeleton">
           <img src={avatarUrl} alt="User Avatar" />
         </div>
         {!shouldRenderContent && (

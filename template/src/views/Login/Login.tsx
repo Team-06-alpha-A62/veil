@@ -55,7 +55,6 @@ const Login: React.FC<LoginProps> = () => {
 
     try {
       await login(loginData.email, loginData.password);
-      navigate('/app/dashboard');
     } catch (error) {
       alert('Login error');
     }

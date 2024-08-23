@@ -126,6 +126,7 @@ const Register: React.FC<RegisterProps> = () => {
     };
 
   const handleFileChange = (file: File) => {
+    //validate the file
     const previewUrl = URL.createObjectURL(file);
     setRegistrationData(prevData => ({
       ...prevData,
