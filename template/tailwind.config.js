@@ -5,7 +5,7 @@ export default {
 
   daisyui: {
     themes: ['light', 'dark', 'cupcake', 'retro'],
-    darkTheme: 'cupcake',
+    darkTheme: 'dark',
     base: true,
     styled: true,
     utils: true,
