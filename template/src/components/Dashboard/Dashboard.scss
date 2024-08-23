@@ -1,14 +1,12 @@
-.grid {
+.muuri-grid {
   position: relative;
   width: 100%;
 }
 
 .item {
   position: absolute;
-  width: 100px;
-  height: 100px;
   line-height: 100px;
-  margin: 5px;
+  margin: 10px;
   z-index: 1;
 }
 
