@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../providers/AuthProvider';
 import './Register.scss';
 import DragZone from '../../components/DragZone/DragZone';
@@ -33,6 +33,7 @@ const registrationInitialData: RegisterState = {
 };
 
 const Register: React.FC<RegisterProps> = () => {
+  const { currentUser } = useAuth();
   const [step, setStep] = useState<number>(1);
   const [registrationData, setRegistrationData] = useState<RegisterState>(
     registrationInitialData
@@ -61,6 +62,16 @@ const Register: React.FC<RegisterProps> = () => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
   };
+
+  useEffect(() => {
+    if (currentUser.userData) {
+      if (location.state && location.state.from) {
+        navigate(location.state.from);
+      } else {
+        navigate('/app/dashboard');
+      }
+    }
+  }, [currentUser]);
 
   const handlePrevClick = () => {
     if (step === 1) return;
@@ -146,11 +157,6 @@ const Register: React.FC<RegisterProps> = () => {
         phoneNumber,
         avatarFile
       );
-      if (location.state && location.state.from) {
-        navigate(location.state.from);
-      } else {
-        navigate('/app/dashboard');
-      }
     } catch (error) {
       alert('Registration error');
     }

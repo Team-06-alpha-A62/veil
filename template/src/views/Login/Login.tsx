@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../providers/AuthProvider';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 
 interface LoginProps {}
 
@@ -17,11 +17,23 @@ const initialLoginData = {
 type ValidationErrorsType = Record<string, string>;
 
 const Login: React.FC<LoginProps> = () => {
+  const { isLoading, currentUser } = useAuth();
   const [loginData, setLoginData] = useState<LoginState>(initialLoginData);
   const [validationErrors, setValidationErrors] =
     useState<ValidationErrorsType>({});
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (currentUser.userData) {
+      if (location.state && location.state.from) {
+        navigate(location.state.from);
+      } else {
+        navigate('/app/dashboard');
+      }
+    }
+  }, [currentUser]);
 
   const handleInputChange =
     (key: keyof LoginState) => (e: React.ChangeEvent<HTMLInputElement>) => {
