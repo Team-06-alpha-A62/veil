@@ -75,7 +75,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const data = await getUserData(user.uid);
         const userData = data || null;
         setCurrentUser({ user, userData });
-        navigate('/app/dashboard');
       } catch (error) {
         if (error instanceof Error) {
           alert(`Error fetching the user data ${error.message}`);
