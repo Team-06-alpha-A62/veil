@@ -7,11 +7,13 @@ import Notifications from '../../components/Notifications/Notifications';
 import SidebarNavigation from '../../components/SidebarNavigation/Sidebar';
 import Teams from '../../components/Teams/Teams';
 import { Route, Routes } from 'react-router-dom';
+import './AppContent.scss';
+
 const AppContent = () => {
   return (
-    <div className="flex gap-10">
+    <div className="flex gap-10 h-screen">
       <SidebarNavigation />
-      <main className="basis-4/5 p-8 my-8 rounded-3xl bg-base-200 h-auto">
+      <main className="basis-4/5 p-8 my-8 rounded-3xl overflow-y-auto">
         <Routes>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="notifications" element={<Notifications />} />
