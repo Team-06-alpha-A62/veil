@@ -18,3 +18,15 @@ export const getMonth = (month = dayjs().month()) => {
 
   return daysMatrix;
 };
+
+export const generateTimeOptions = (): number[] => {
+  const times: number[] = [];
+  const startOfDay = dayjs().startOf('day');
+
+  for (let i = 0; i < 48; i++) {
+    const time = startOfDay.add(i * 30, 'minute').valueOf(); // Get timestamp in milliseconds
+    times.push(time);
+  }
+
+  return times;
+};

@@ -29,7 +29,6 @@ export default {
           'base-content': '#E4D8F8', // Text color on dark backgrounds
 
           success: '#009485', // Success color
-          'success-focus': '#00796B', // Darker variant of the success color
 
           info: '#1C92F2', // Info color (for badges, etc.)
           warning: '#FF9900', // Warning color

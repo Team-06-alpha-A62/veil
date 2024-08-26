@@ -11,7 +11,8 @@ const Meetings = () => {
   const [currentMonth, setCurrentMonth] = useState<DayMatrix>(getMonth());
   const [monthIndex, setMonthIndex] = useState<number>(dayjs().month());
   const [selectedDay, setSelectedDay] = useState<dayjs.Dayjs>(dayjs());
-  console.table(currentMonth);
+
+  console.log(selectedDay.valueOf());
 
   useEffect(() => {
     setCurrentMonth(getMonth(monthIndex));
@@ -30,6 +31,7 @@ const Meetings = () => {
           month={currentMonth}
           setSelectedDay={setSelectedDay}
           selectedDay={selectedDay}
+          currentMonthIndex={monthIndex}
         />
       </div>
     </div>

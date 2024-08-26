@@ -1,6 +1,5 @@
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import dayjs from 'dayjs';
-import CreateMeetingButton from '../CreateMeetingButton/CreateMeetingButton.tsx';
 import CalendarModal from '../CreateMeetingModal/CreateMeetingModal.tsx';
 
 interface CalendarHeaderProps {

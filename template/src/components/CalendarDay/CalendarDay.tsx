@@ -5,12 +5,14 @@ interface CalendarDayProps {
   day: dayjs.Dayjs | null;
   setSelectedDay: React.Dispatch<React.SetStateAction<dayjs.Dayjs>>;
   selectedDay: dayjs.Dayjs;
+  currentMonthIndex: number;
 }
 
 const CalendarDay: React.FC<CalendarDayProps> = ({
   day,
   setSelectedDay,
   selectedDay,
+  currentMonthIndex,
 }) => {
   const handleDayToggle = () => {
     if (day && day.isBefore(dayjs(), 'day')) {
@@ -24,6 +26,9 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
     }
   };
 
+  const isDayInCurrentMonth = (day: dayjs.Dayjs | null) =>
+    day?.month() === currentMonthIndex;
+
   const getCurrentDayClass = () =>
     day?.format('DD-MM-YY') === dayjs().format('DD-MM-YY')
       ? 'bg-primary text-primary-content rounded-full w-7 text-center'
@@ -32,6 +37,8 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
   return (
     <div
       className={`${
+        !isDayInCurrentMonth(day) ? 'bg-base-300 opacity-50' : ''
+      } ${
         selectedDay === day && 'bg-base-300 bg-opacity-50'
       } border border-gray-700 border-opacity-50 flex flex-col cursor-pointer hover:bg-base-300 bg-opacity-50 active:bg-opacity-0`}
       onClick={handleDayToggle}

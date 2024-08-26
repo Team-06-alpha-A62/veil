@@ -6,11 +6,13 @@ interface CalendarMonthProps {
   month: (dayjs.Dayjs | null)[][]; // 2D array allowing null values
   setSelectedDay: React.Dispatch<React.SetStateAction<dayjs.Dayjs>>;
   selectedDay: dayjs.Dayjs;
+  currentMonthIndex: number;
 }
 const CalendarMonth: React.FC<CalendarMonthProps> = ({
   month,
   setSelectedDay,
   selectedDay,
+  currentMonthIndex,
 }) => {
   return (
     <div className="flex-1 grid grid-cols-7 grid-rows-5">
@@ -22,6 +24,7 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
               key={dayIndex}
               setSelectedDay={setSelectedDay}
               selectedDay={selectedDay}
+              currentMonthIndex={currentMonthIndex}
             />
           ))}
         </React.Fragment>
