@@ -1,17 +1,25 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { FaPlus } from 'react-icons/fa6';
+import Modal from '../Modal/Modal.tsx';
 
 interface WidgetProps {
   width: number;
   height: number;
   isInEditMode: boolean;
+  widgetComponent?: ReactNode;
 }
 
-const Widget: React.FC<WidgetProps> = ({ width, height, isInEditMode }) => {
+const Widget: React.FC<WidgetProps> = ({
+  width,
+  height,
+  isInEditMode,
+  widgetComponent = '',
+}) => {
   return (
     <div
       className={`${
-        isInEditMode && 'cursor-pointer bg-base-200 hover:bg-base-300 shadow-l'
+        isInEditMode &&
+        'cursor-pointer bg-base-300 hover:bg-base-300 bg-opacity-50 shadow-l'
       } flex rounded-3xl items-center justify-center`}
       style={{
         width: `${18.75 * width + (width - 1) * 1.25}rem`,
@@ -19,11 +27,11 @@ const Widget: React.FC<WidgetProps> = ({ width, height, isInEditMode }) => {
       }}
     >
       {isInEditMode ? (
-        <div className="rounded-full bg-base-300 p-4">
+        <div className="rounded-full bg-base-200 p-4">
           <FaPlus />
         </div>
       ) : (
-        <div>{/* Widget goes here */}</div>
+        <div>{widgetComponent}</div>
       )}
     </div>
   );

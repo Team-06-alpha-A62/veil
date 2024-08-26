@@ -28,8 +28,10 @@ export default {
           'base-300': '#26253D', // Lighter still, for cards and components
           'base-content': '#E4D8F8', // Text color on dark backgrounds
 
-          info: '#1C92F2', // Info color (for badges, etc.)
           success: '#009485', // Success color
+          'success-focus': '#00796B', // Darker variant of the success color
+
+          info: '#1C92F2', // Info color (for badges, etc.)
           warning: '#FF9900', // Warning color
           error: '#FF5724', // Error color
 

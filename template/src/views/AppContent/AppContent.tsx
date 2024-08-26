@@ -14,7 +14,7 @@ const AppContent = () => {
     <ProtectedRoute>
       <div className="flex gap-10  h-screen">
         <SidebarNavigation />
-        <main className="basis-4/5 p-8 my-8 rounded-3xl h-auto bg-base-300 bg-opacity-50">
+        <main className="basis-4/5 p-8 my-8 rounded-3xl h-auto bg-opacity-50">
           <Routes>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="notifications" element={<Notifications />} />

@@ -3,6 +3,8 @@ import Muuri from 'muuri';
 import './Dashboard.scss'; // Custom SCSS
 import { FaPen } from 'react-icons/fa';
 import Widget from '../Widget/Widget.tsx';
+import Modal from '../Modal/Modal.tsx';
+import CalendarWidget from '../CalendarWidget/CalendarWidget.tsx';
 
 const Dashboard: React.FC = () => {
   const [isInEditMode, setIsInEditMode] = useState(false);
