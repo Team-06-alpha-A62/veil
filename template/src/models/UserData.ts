@@ -13,7 +13,8 @@ export interface UserData {
   status: UserStatus;
   teams: Record<string, UserRole>;
   channels: string[];
-  friends: Record<string, FriendType>;
+  friends: string[];
+  pendingFriends: string[];
   userSince: number;
   notes: string[];
   activeDyteMeetingId?: string;

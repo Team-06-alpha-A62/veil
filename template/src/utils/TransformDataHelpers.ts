@@ -1,11 +1,26 @@
 import { ChannelType } from '../enums/ChannelType';
+import { FriendType } from '../enums/FriendType';
 import { UserStatus } from '../enums/UserStatus';
 import { Channel } from '../models/Channel';
+import { Friend } from '../models/Friend';
 import { Message } from '../models/Message';
 import { Team } from '../models/Team';
 import { UserData } from '../models/UserData';
 
 export const transformUserData = (data: Partial<UserData>): UserData => {
+  const friends: string[] = [];
+  const pendingFriends: string[] = [];
+
+  if (data.friends) {
+    for (const [friendUsername, status] of Object.entries(data.friends)) {
+      if (status === FriendType.FRIEND) {
+        friends.push(friendUsername);
+      } else if (status === FriendType.PENDING) {
+        pendingFriends.push(friendUsername);
+      }
+    }
+  }
+
   return {
     id: data.id || '',
     username: data.username || 'Unknown Username',
@@ -17,7 +32,8 @@ export const transformUserData = (data: Partial<UserData>): UserData => {
     status: data.status || UserStatus.OFFLINE,
     teams: data.teams || {},
     channels: Object.keys(data.channels || {}),
-    friends: data.friends || {},
+    friends,
+    pendingFriends,
     userSince: data.userSince || Date.now(),
     notes: Object.keys(data.notes || {}),
     activeDyteMeetingId: data.activeDyteMeetingId || '',
@@ -62,5 +78,18 @@ export const transformTeamData = (data: Partial<Team>): Team => {
     channels: Object.keys(data.channels || {}),
     meetings: Object.keys(data.meetings || {}),
     createdOn: data.createdOn || Date.now(),
+  };
+};
+
+export const transformUserToFriend = (
+  userData: UserData,
+  friendshipStatus: FriendType
+): Friend => {
+  return {
+    id: userData.id,
+    username: userData.username,
+    avatarUrl: userData.avatarUrl || '',
+    friendshipStatus,
+    status: userData.status || UserStatus.OFFLINE,
   };
 };

@@ -21,7 +21,7 @@ const UserStatusIndicator: React.FC<UserStatusIndicatorProps> = ({
   };
 
   const userStatusColor = status ? statusColor[status] : 'bg-gray-500';
-  //   absolute bottom-0 right-0 w-3 h-3 rounded-full ${userStatusColor}
+
   return (
     <span
       className={`rounded-full ${
