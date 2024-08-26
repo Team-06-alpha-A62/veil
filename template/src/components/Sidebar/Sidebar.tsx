@@ -12,24 +12,20 @@ import FriendCard from '../FriendCard/FriendCard';
 import { Friend } from '../../models/Friend';
 import { FriendType } from '../../enums/FriendType';
 
-interface SidebarProps {}
-
-const Sidebar: React.FC<SidebarProps> = () => {
+const Sidebar: React.FC = () => {
   const { currentUser } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<string>('Online');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [friendsData, setFriendsData] = useState<Friend[]>([]);
   const [pendingFriendsData, setPendingFriendsData] = useState<Friend[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [listeners, setListeners] = useState<{
-    [username: string]: () => void;
-  }>({});
+  const [listeners, setListeners] = useState<Array<() => void>>([]);
 
   useEffect(() => {
     const fetchFriendsData = async () => {
       try {
         setIsLoading(true);
-        const allFriends = await getUserFriends(currentUser.userData.username);
+        const allFriends = await getUserFriends(currentUser.userData!.username);
         const friends = allFriends.filter(
           friend => friend.friendshipStatus === FriendType.FRIEND
         );
@@ -40,8 +36,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
         setFriendsData(friends);
         setPendingFriendsData(pendingFriends);
 
-        const newListeners: { [username: string]: () => void } = {};
-        friends.forEach(friend => {
+        const newListeners: Array<() => void> = friends.map(friend => {
           const cleanupListener = userStatusListener(
             friend.username,
             newStatus => {
@@ -54,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
               );
             }
           );
-          newListeners[friend.username] = cleanupListener;
+          return cleanupListener;
         });
 
         setListeners(newListeners);
@@ -68,13 +63,14 @@ const Sidebar: React.FC<SidebarProps> = () => {
     fetchFriendsData();
 
     return () => {
-      Object.values(listeners).forEach(cleanup => cleanup());
+      listeners.forEach(cleanup => cleanup());
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
   const handleAccept = async (username: string) => {
     try {
-      await acceptFriendRequest(currentUser.userData.username, username);
+      await acceptFriendRequest(currentUser.userData!.username, username);
 
       const acceptedFriend = pendingFriendsData.find(
         friend => friend.username === username
@@ -93,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
 
   const handleDecline = async (username: string) => {
     try {
-      await declineFriendRequest(currentUser.userData.username, username);
+      await declineFriendRequest(currentUser.userData!.username, username);
 
       setPendingFriendsData(prevPending =>
         prevPending.filter(friend => friend.username !== username)
