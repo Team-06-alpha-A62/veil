@@ -1,6 +1,5 @@
 import { UserStatus } from '../enums/UserStatus';
 import { UserRole } from '../enums/UserRole';
-import { FriendType } from '../enums/FriendType';
 
 export interface UserData {
   id: string;

@@ -12,7 +12,6 @@ import { auth } from '../config/firebase.config';
 import { loginUser, logoutUser, registerUser } from '../services/auth.service';
 import { createUser, getUserData } from '../services/user.service';
 import { uploadAvatar } from '../services/storage.service';
-import { useNavigate } from 'react-router-dom';
 
 interface AuthState {
   user: User | null;
@@ -56,7 +55,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<AuthState>(initialState);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorState, setErrorState] = useState<string | null>(null);
-  const navigate = useNavigate();
   const [user, loading] = useAuthState(auth);
 
   useEffect(() => {

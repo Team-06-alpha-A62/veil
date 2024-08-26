@@ -1,7 +1,6 @@
 import {
   equalTo,
   get,
-  off,
   onValue,
   orderByChild,
   query,
@@ -91,7 +90,7 @@ export const updateUserStatus = async (
       [`users/${username}/status/`]: newStatus,
     };
     await update(ref(db), updateObject);
-  } catch (error) {
+  } catch {
     throw new Error('Failed to update user status.');
   }
 };
@@ -102,13 +101,11 @@ export const userStatusListener = (
 ): (() => void) => {
   const statusRef = ref(db, `users/${username}/status`);
 
-  const listener = onValue(statusRef, snapshot => {
+  return onValue(statusRef, snapshot => {
     if (snapshot.exists()) {
       onStatusChange(snapshot.val());
     }
   });
-
-  return () => off(statusRef, listener);
 };
 
 export const acceptFriendRequest = async (
@@ -121,8 +118,8 @@ export const acceptFriendRequest = async (
       [`users/${pendingFriendUsername}/friends/${currentUsername}`]: 'friend',
     };
     await update(ref(db), updates);
-  } catch (error) {
-    throw new Error('Failed to accept friend request.');
+  } catch {
+    throw new Error(`Failed to accept friend request`);
   }
 };
 
@@ -136,7 +133,7 @@ export const declineFriendRequest = async (
       [`users/${pendingFriendUsername}/friends/${currentUsername}`]: null,
     };
     await update(ref(db), updates);
-  } catch (error) {
+  } catch {
     throw new Error('Failed to decline friend request.');
   }
 };
