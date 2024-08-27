@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { UserStatus } from '../../enums/UserStatus';
-import { FaChevronRight, FaCircle, FaUser, FaPencilAlt } from 'react-icons/fa';
+import { FaChevronRight, FaPencilAlt } from 'react-icons/fa';
 import UserStatusIndicator from '../UserStatusIndicator/UserStatusIndicator';
+
+import { IoLogOutOutline } from 'react-icons/io5';
 
 interface UserProfilePopupProps {
   username: string | undefined;
@@ -79,7 +81,7 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
             {statusOptions.map(option => (
               <div
                 key={option.value}
-                className="flex items-start p-2 hover:bg-base-200 rounded cursor-pointer items-center transition-colors"
+                className="flex items-start p-2 hover:bg-base-200 rounded cursor-pointer transition-colors"
                 onClick={() => {
                   onStatusChange(option.value);
                   setIsStatusPopupVisible(false);
@@ -105,10 +107,9 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
 
       <button className="w-full flex items-center justify-between p-3 bg-base-200 rounded-lg hover:bg-base-100 transition-colors">
         <div className="flex items-center space-x-3">
-          <FaUser className="text-gray-400" />
-          <span>Switch Accounts</span>
+          <IoLogOutOutline style={{ fontSize: '20px' }} />
+          <span>Logout</span>
         </div>
-        <FaChevronRight className="text-gray-400" />
       </button>
     </div>
   );

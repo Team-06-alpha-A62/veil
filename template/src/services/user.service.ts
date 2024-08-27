@@ -1,6 +1,7 @@
 import {
   equalTo,
   get,
+  off,
   onValue,
   orderByChild,
   query,
@@ -108,6 +109,29 @@ export const userStatusListener = (
   });
 };
 
+export const listenToFriendsChange = (
+  username: string,
+  onFriendsChange: (friends: Friend[], pendingFriends: Friend[]) => void
+): (() => void) => {
+  const friendsRef = ref(db, `users/${username}/friends`);
+
+  return onValue(friendsRef, async () => {
+    try {
+      const allFriends = await getUserFriends(username);
+      const friends = allFriends.filter(
+        friend => friend.friendshipStatus === FriendType.FRIEND
+      );
+      const pendingFriends = allFriends.filter(
+        friend => friend.friendshipStatus === FriendType.PENDING
+      );
+
+      onFriendsChange(friends, pendingFriends);
+    } catch (error) {
+      console.error('Failed to fetch friends data:', error);
+    }
+  });
+};
+
 export const acceptFriendRequest = async (
   currentUsername: string,
   pendingFriendUsername: string
@@ -120,6 +144,20 @@ export const acceptFriendRequest = async (
     await update(ref(db), updates);
   } catch {
     throw new Error(`Failed to accept friend request`);
+  }
+};
+
+export const sendFriendRequest = async (
+  currentUsername: string,
+  pendingFriendUsername: string
+): Promise<void> => {
+  try {
+    const updates = {
+      [`users/${pendingFriendUsername}/friends/${currentUsername}`]: 'pending',
+    };
+    await update(ref(db), updates);
+  } catch {
+    throw new Error(`Failed to send friend request`);
   }
 };
 

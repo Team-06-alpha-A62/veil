@@ -111,7 +111,7 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
     <>
       <CreateMeetingButton handleClick={handleModalToggle} />
       {showMeetingModal && (
-        <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center bg-base-200 bg-opacity-85 z-10">
+        <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center bg-base-200 bg-opacity-75 z-10">
           <div className="w-96 h-auto relative bg-base-300 rounded-3xl flex flex-col gap-5 p-4">
             <button
               onClick={handleModalToggle}

@@ -3,14 +3,14 @@ import { useAuth } from '../../providers/AuthProvider';
 import {
   acceptFriendRequest,
   declineFriendRequest,
-  getUserFriends, // This function fetches both friends and pending friends
   userStatusListener,
+  listenToFriendsChange, 
 } from '../../services/user.service';
 import { UserStatus } from '../../enums/UserStatus';
 import PendingFriendCard from '../PendingFriendCard/PendingFriendCard';
 import FriendCard from '../FriendCard/FriendCard';
 import { Friend } from '../../models/Friend';
-import { FriendType } from '../../enums/FriendType';
+import AddFriendModal from '../AddFriendModal/AddFriendModal';
 
 const Sidebar: React.FC = () => {
   const { currentUser } = useAuth();
@@ -20,49 +20,42 @@ const Sidebar: React.FC = () => {
   const [pendingFriendsData, setPendingFriendsData] = useState<Friend[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [listeners, setListeners] = useState<Array<() => void>>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchFriendsData = async () => {
-      try {
-        setIsLoading(true);
-        const allFriends = await getUserFriends(currentUser.userData!.username);
-        const friends = allFriends.filter(
-          friend => friend.friendshipStatus === FriendType.FRIEND
+    const handleFriendsChange = (
+      friends: Friend[],
+      pendingFriends: Friend[]
+    ) => {
+      setFriendsData(friends);
+      setPendingFriendsData(pendingFriends);
+
+      const newListeners: Array<() => void> = friends.map(friend => {
+        const cleanupListener = userStatusListener(
+          friend.username,
+          newStatus => {
+            setFriendsData(prevFriends =>
+              prevFriends.map(f =>
+                f.username === friend.username
+                  ? { ...f, status: newStatus as UserStatus }
+                  : f
+              )
+            );
+          }
         );
-        const pendingFriends = allFriends.filter(
-          friend => friend.friendshipStatus === FriendType.PENDING
-        );
+        return cleanupListener;
+      });
 
-        setFriendsData(friends);
-        setPendingFriendsData(pendingFriends);
-
-        const newListeners: Array<() => void> = friends.map(friend => {
-          const cleanupListener = userStatusListener(
-            friend.username,
-            newStatus => {
-              setFriendsData(prevFriends =>
-                prevFriends.map(f =>
-                  f.username === friend.username
-                    ? { ...f, status: newStatus as UserStatus }
-                    : f
-                )
-              );
-            }
-          );
-          return cleanupListener;
-        });
-
-        setListeners(newListeners);
-      } catch (error) {
-        console.error('Error fetching friends:', error);
-      } finally {
-        setIsLoading(false);
-      }
+      setListeners(newListeners);
     };
 
-    fetchFriendsData();
+    const cleanupFriendsListener = listenToFriendsChange(
+      currentUser.userData!.username,
+      handleFriendsChange
+    );
 
     return () => {
+      cleanupFriendsListener();
       listeners.forEach(cleanup => cleanup());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,6 +92,10 @@ const Sidebar: React.FC = () => {
     }
   };
 
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+  };
+
   const filteredFriends =
     selectedCategory === 'Pending'
       ? pendingFriendsData.filter(friend =>
@@ -114,9 +111,9 @@ const Sidebar: React.FC = () => {
           return matchesCategory && matchesSearch;
         });
 
-  if (isLoading) {
-    return <div className="text-center text-white">Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return <div className="text-center text-white">Loading...</div>;
+  // }
 
   return (
     <div className="basis-1/5 rounded-3xl p-6 my-8 bg-base-300 bg-opacity-50 mr-8 flex-shrink-0 text-white">
@@ -125,7 +122,7 @@ const Sidebar: React.FC = () => {
           {['Online', 'All', 'Pending'].map(category => (
             <button
               key={category}
-              onClick={() => setSelectedCategory(category)}
+              onClick={() => handleCategoryClick(category)}
               className={`text-sm font-semibold px-3 py-1 rounded-full ${
                 selectedCategory === category
                   ? 'bg-primary'
@@ -136,7 +133,10 @@ const Sidebar: React.FC = () => {
             </button>
           ))}
         </div>
-        <button className="text-sm font-semibold px-3 py-1 rounded-full bg-success hover:bg-accent-focus transition-colors">
+        <button
+          className="text-sm font-semibold px-3 py-1 rounded-full bg-success hover:bg-accent-focus transition-colors"
+          onClick={() => setIsModalOpen(true)}
+        >
           Add Friend
         </button>
       </div>
@@ -169,6 +169,8 @@ const Sidebar: React.FC = () => {
           <div className="text-center text-gray-400">No friends found.</div>
         )}
       </div>
+
+      {isModalOpen && <AddFriendModal onClose={() => setIsModalOpen(false)} />}
     </div>
   );
 };
