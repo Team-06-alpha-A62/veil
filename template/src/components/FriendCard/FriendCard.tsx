@@ -1,6 +1,8 @@
 import React from 'react';
 import UserStatusIndicator from '../UserStatusIndicator/UserStatusIndicator';
 import { Friend } from '../../models/Friend';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { ImBubble } from 'react-icons/im';
 
 interface FriendCardProps {
   friend: Friend;
@@ -24,8 +26,12 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend }) => {
         </div>
       </div>
       <div className="flex space-x-2">
-        <button className="text-gray-400 hover:text-white">💬</button>
-        <button className="text-gray-400 hover:text-white">⋮</button>
+        <button className="text-gray-400 hover:text-white">
+          <ImBubble />
+        </button>
+        <button className="text-gray-400 hover:text-white">
+          <BsThreeDotsVertical size={20} />
+        </button>
       </div>
     </div>
   );

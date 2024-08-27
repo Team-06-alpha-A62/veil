@@ -5,6 +5,6 @@ export interface Message {
   content: string;
   sentAt: number;
   media?: string;
-  reactions: Record<string, string>;
-  editedAt: number;
+  reactions?: Record<string, string>;
+  editedAt?: number;
 }

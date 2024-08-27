@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,6 +9,12 @@
   --tw-gradient-start: theme('colors.primary');
   --tw-gradient-mid: theme('colors.secondary');
   --tw-gradient-end: theme('colors.accent');
+}
+
+*,
+body,
+html {
+  font-family: 'Oxygen', 'Roboto', sans-serif;
 }
 
 /* Light Theme */

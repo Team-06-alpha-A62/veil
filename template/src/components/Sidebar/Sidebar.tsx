@@ -4,7 +4,7 @@ import {
   acceptFriendRequest,
   declineFriendRequest,
   userStatusListener,
-  listenToFriendsChange, 
+  listenToFriendsChange,
 } from '../../services/user.service';
 import { UserStatus } from '../../enums/UserStatus';
 import PendingFriendCard from '../PendingFriendCard/PendingFriendCard';

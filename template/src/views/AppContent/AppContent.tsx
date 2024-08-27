@@ -1,6 +1,5 @@
-import Chats from '../../components/Chats/Chats';
+import Chats from '../../components/Channels/Channels';
 import Dashboard from '../../components/Dashboard/Dashboard';
-import Friends from '../../components/Friends/Friends';
 import Meetings from '../../components/Meetings/Meetings';
 import Notes from '../../components/Notes/Notes';
 import Notifications from '../../components/Notifications/Notifications';
@@ -14,7 +13,7 @@ const AppContent = () => {
     <ProtectedRoute>
       <div className="flex gap-10  h-screen">
         <SidebarNavigation />
-        <main className="basis-4/5 p-8 my-8 rounded-3xl h-auto bg-opacity-50">
+        <main className="basis-4/5 flex flex-col">
           <Routes>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="notifications" element={<Notifications />} />

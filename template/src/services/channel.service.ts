@@ -1,4 +1,4 @@
-import { get, push, ref, update } from 'firebase/database';
+import { get, onValue, push, ref, update } from 'firebase/database';
 import { ChannelType } from '../enums/ChannelType';
 import { db } from '../config/firebase.config';
 import { Channel } from '../models/Channel';
@@ -97,4 +97,55 @@ export const deleteChannel = async (channelHandle: string): Promise<void> => {
   };
 
   await update(ref(db), updateObject);
+};
+
+export const getUserChannels = async (
+  userHandle: string
+): Promise<Channel[]> => {
+  const snapshot = await get(ref(db, `users/${userHandle}/channels`));
+  if (!snapshot.exists()) return [];
+
+  const channelsObject = snapshot.val() || {};
+  const channels: Channel[] = (
+    await Promise.all(
+      Object.keys(channelsObject).map(async channelId => {
+        const channelSnapshot = await get(ref(db, `channels/${channelId}`));
+        if (!channelSnapshot.exists()) return null;
+
+        return channelSnapshot.val() as Channel;
+      })
+    )
+  ).filter((channel): channel is Channel => channel !== null);
+
+  return channels;
+};
+
+export const listenToChannelChange = (
+  userHandle: string,
+  onChannelsChange: (channels: Channel[]) => void
+): (() => void) => {
+  const channelsRef = ref(db, `users/${userHandle}/channels`);
+
+  return onValue(channelsRef, async () => {
+    try {
+      const allChannels = await getUserChannels(userHandle);
+      onChannelsChange(allChannels);
+    } catch (error) {
+      console.error('Failed to fetch Channels data', error);
+    }
+  });
+};
+
+export const listenToIndividualChannel = (
+  channelId: string,
+  onChannelUpdate: (updatedChannel: Channel) => void
+): (() => void) => {
+  const channelRef = ref(db, `channels/${channelId}`);
+
+  return onValue(channelRef, snapshot => {
+    if (snapshot.exists()) {
+      const updatedChannel = snapshot.val() as Channel;
+      onChannelUpdate(updatedChannel);
+    }
+  });
 };

@@ -88,7 +88,7 @@ export const transformChannelData = (data: Partial<Channel>): Channel => {
     owner: data.owner || '',
     participants: Object.keys(data.participants || {}),
     team: data.team || '',
-    messages: Object.keys(data.messages || {}),
+    messages: data.messages || {},
     createdOn: data.createdOn || Date.now(),
     lastMessageAt: data.lastMessageAt || undefined,
     activeMeetingId: data.activeMeetingId || '',
