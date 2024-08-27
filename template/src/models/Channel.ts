@@ -1,15 +1,14 @@
 import { ChannelType } from '../enums/ChannelType';
-import { Message } from './Message';
-import { Participant } from './Participant';
 
 export interface Channel {
   id: string;
   name: string;
   type: ChannelType;
+  isPrivate: boolean;
   owner: string;
-  participants: Record<string, Participant>;
+  participants: string[];
   team?: string;
-  messages: Record<string, Message>;
+  messages: string[];
   createdOn: number;
   lastMessageAt?: number;
   activeMeetingId?: string;

@@ -41,21 +41,6 @@ export const transformUserData = (data: Partial<UserData>): UserData => {
   };
 };
 
-export const transformChannelData = (data: Partial<Channel>): Channel => {
-  return {
-    id: data.id || '',
-    name: data.name || 'Unnamed Channel',
-    type: data.type || ChannelType.PUBLIC,
-    owner: data.owner || '',
-    participants: data.participants || {},
-    team: data.team || '',
-    messages: data.messages || {},
-    createdOn: data.createdOn || Date.now(),
-    lastMessageAt: data.lastMessageAt || undefined,
-    activeMeetingId: data.activeMeetingId || '',
-  };
-};
-
 export const transformMessageData = (data: Partial<Message>): Message => {
   return {
     id: data.id || '',
@@ -91,5 +76,21 @@ export const transformUserToFriend = (
     avatarUrl: userData.avatarUrl || '',
     friendshipStatus,
     status: userData.status || UserStatus.OFFLINE,
+  };
+};
+
+export const transformChannelData = (data: Partial<Channel>): Channel => {
+  return {
+    id: data.id || '',
+    name: data.name || Object.keys(data.participants || {}).join(', '),
+    type: data.type || ChannelType.DIRECT,
+    isPrivate: data.isPrivate || true,
+    owner: data.owner || '',
+    participants: Object.keys(data.participants || {}),
+    team: data.team || '',
+    messages: Object.keys(data.messages || {}),
+    createdOn: data.createdOn || Date.now(),
+    lastMessageAt: data.lastMessageAt || undefined,
+    activeMeetingId: data.activeMeetingId || '',
   };
 };
