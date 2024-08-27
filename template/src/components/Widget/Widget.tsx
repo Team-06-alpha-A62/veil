@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import { FaPlus } from 'react-icons/fa6';
-import Modal from '../Modal/Modal.tsx';
 
 interface WidgetProps {
   width: number;
@@ -20,18 +19,20 @@ const Widget: React.FC<WidgetProps> = ({
       className={`${
         isInEditMode &&
         'cursor-pointer bg-base-300 hover:bg-base-300 bg-opacity-50 shadow-l'
-      } flex rounded-3xl items-center justify-center`}
+      } rounded-3xl`}
       style={{
         width: `${18.75 * width + (width - 1) * 1.25}rem`,
         height: `${18.75 * height + (height - 1) * 1.25}rem`,
       }}
     >
       {isInEditMode ? (
-        <div className="rounded-full bg-base-200 p-4">
-          <FaPlus />
+        <div className="flex items-center justify-center h-full">
+          <div className="rounded-full bg-base-200 p-4">
+            <FaPlus />
+          </div>
         </div>
       ) : (
-        <div>{widgetComponent}</div>
+        <div className="h-full">{widgetComponent}</div>
       )}
     </div>
   );
