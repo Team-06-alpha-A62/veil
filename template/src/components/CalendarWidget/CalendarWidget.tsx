@@ -41,7 +41,7 @@ const CalendarWidget: React.FC = () => {
     setCurrentMonth(getMonth(currentMonthIndex));
   }, [currentMonthIndex]);
   return (
-    <div className="mt-9">
+    <div className="h-full">
       <header className="flex items-center gap-2 mb-2">
         <button
           className="flex justify-center p-2 border rounded-full btn-outline hover:bg-primary hover:border-primary"
@@ -66,7 +66,7 @@ const CalendarWidget: React.FC = () => {
         </button>
         <CalendarModal selectedDay={selectedDay} />
       </div>
-      <div className="grid grid-cols-7 grid-rows-6">
+      <div className="grid grid-cols-7 grid-rows-6 gap-1">
         {currentMonth[0].map((day, index) => (
           <span key={index} className="text-sm py-1 text-center font-semibold">
             {day?.format('dd').charAt(0)}

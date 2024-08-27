@@ -20,7 +20,6 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // Function to save grid state to localStorage
   const handleSaveChanges = (): void => {
     const muuriGridState = muuriGridInstanceRef.current
       ?.getItems()
@@ -30,7 +29,6 @@ const Dashboard: React.FC = () => {
     setIsInEditMode(false);
   };
 
-  // Function to load grid state from localStorage
   const loadSavedLayout = (muuriGrid: Muuri): void => {
     const savedLayout = localStorage.getItem('dashboardLayout');
     if (savedLayout) {
@@ -48,7 +46,6 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     if (muuriGridInstanceRef.current) {
-      // Cleanup existing Muuri instances before re-initializing
       muuriGridInstanceRef.current?.destroy();
     }
 
@@ -58,13 +55,10 @@ const Dashboard: React.FC = () => {
       dragSort: true,
     });
 
-    // Store the Muuri instances in refs
     muuriGridInstanceRef.current = muuriGrid;
 
-    // Load saved layout when component mounts
     loadSavedLayout(muuriGrid);
 
-    // Cleanup on unmount
     return () => {
       muuriGrid.destroy();
     };
@@ -98,13 +92,28 @@ const Dashboard: React.FC = () => {
           ref={muuriGridRef}
         >
           <div className="item" data-id={`muuriGrid-item-1`}>
-            <Widget width={2} height={2} isInEditMode={isInEditMode} />
+            <Widget
+              width={2}
+              height={2}
+              isInEditMode={isInEditMode}
+              widgetComponent={<CalendarWidget />}
+            />
           </div>
           <div className="item" data-id={`muuriGrid-item-2`}>
-            <Widget width={1} height={2} isInEditMode={isInEditMode} />
+            <Widget
+              width={1}
+              height={2}
+              isInEditMode={isInEditMode}
+              widgetComponent={<CalendarWidget />}
+            />
           </div>
           <div className="item" data-id={`muuriGrid-item-3`}>
-            <Widget width={2} height={1} isInEditMode={isInEditMode} />
+            <Widget
+              width={2}
+              height={1}
+              isInEditMode={isInEditMode}
+              widgetComponent={<CalendarWidget />}
+            />
           </div>
           <div className="item" data-id={`muuriGrid-item-4`}>
             <Widget width={2} height={1} isInEditMode={isInEditMode} />
@@ -113,7 +122,12 @@ const Dashboard: React.FC = () => {
             <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
           <div className="item" data-id={`muuriGrid-item-6`}>
-            <Widget width={1} height={1} isInEditMode={isInEditMode} />
+            <Widget
+              width={1}
+              height={1}
+              isInEditMode={isInEditMode}
+              widgetComponent={<CalendarWidget />}
+            />
           </div>
         </div>
       </div>

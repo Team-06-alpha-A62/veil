@@ -22,20 +22,23 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
   const [showMeetingModal, setShowMeetingModal] = useState<boolean>(false);
   const [participants, setParticipants] = useState<string[]>([]);
 
-  const labelClasses = [
-    'indigo',
-    'green',
-    'gray',
-    'blue',
-    'red',
-    'purple',
-    'yellow',
-  ];
-  const [selectedLabel, setSelectedLabel] = useState<string>(labelClasses[0]);
+  const labelColors: Record<string, string> = {
+    indigo: 'bg-indigo-500',
+    green: 'bg-green-500',
+    gray: 'bg-gray-500',
+    blue: 'bg-blue-500',
+    red: 'bg-red-500',
+    purple: 'bg-purple-500',
+    yellow: 'bg-yellow-500',
+  };
+
+  const [selectedLabel, setSelectedLabel] = useState<string>(
+    labelColors.indigo
+  );
   const [meetingData, setMeetingData] = useState<Meeting>({
     title: '',
     description: '',
-    label: '',
+    label: selectedLabel,
     participantsInput: '',
     date: selectedDay?.valueOf() ?? 0,
     startTime: 0,
@@ -178,13 +181,13 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
               <div className="flex gap-3 flex-col">
                 <span className="label-text">Label</span>
                 <div className="flex gap-2">
-                  {labelClasses.map((label, index) => (
+                  {Object.keys(labelColors).map((label, index) => (
                     <span
                       key={index}
                       onClick={() => setSelectedLabel(label)}
-                      className={`bg-${label}-500 w-6 h-6 rounded-full flex  items-center justify-center cursor-pointer`}
+                      className={`${labelColors[label]} w-6 h-6 rounded-full flex  items-center justify-center cursor-pointer`}
                     >
-                      {selectedLabel === label && (
+                      {selectedLabel === labelColors[label] && (
                         <FaCheck className="text-xs text-primary-content text-opacity-50" />
                       )}
                     </span>
