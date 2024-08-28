@@ -1,11 +1,14 @@
 import { ChannelType } from '../enums/ChannelType';
 import { FriendType } from '../enums/FriendType';
+import { UserRole } from '../enums/UserRole';
 import { UserStatus } from '../enums/UserStatus';
 import { Channel } from '../models/Channel';
 import { Friend } from '../models/Friend';
 import { Message } from '../models/Message';
+import { Participant } from '../models/Participant';
 import { Team } from '../models/Team';
 import { UserData } from '../models/UserData';
+import { getUserByHandle } from '../services/user.service';
 
 export const transformUserData = (data: Partial<UserData>): UserData => {
   const friends: string[] = [];
@@ -31,13 +34,14 @@ export const transformUserData = (data: Partial<UserData>): UserData => {
     avatarUrl: data.avatarUrl || '',
     status: data.status || UserStatus.OFFLINE,
     teams: data.teams || {},
-    channels: Object.keys(data.channels || {}),
+    channels: data.channels || {},
     friends,
     pendingFriends,
     userSince: data.userSince || Date.now(),
     notes: Object.keys(data.notes || {}),
     activeDyteMeetingId: data.activeDyteMeetingId || '',
     dyteParticipantId: data.dyteParticipantId || '',
+    lastSeenMessages: data.lastSeenMessages || {},
   };
 };
 
@@ -79,14 +83,32 @@ export const transformUserToFriend = (
   };
 };
 
-export const transformChannelData = (data: Partial<Channel>): Channel => {
+export const transformChannelData = async (
+  data: Partial<Channel>
+): Promise<Channel> => {
+  const participants = await Promise.all(
+    Object.keys(data.participants || {}).map(async participant =>
+      getUserByHandle(participant)
+    )
+  ).then(usersData =>
+    usersData.reduce((acc: Record<string, Participant>, user: UserData) => {
+      acc[user.username] = {
+        avatarUrl: user.avatarUrl || '',
+        username: user.username,
+        role: data.owner === user.username ? UserRole.OWNER : UserRole.MEMBER,
+        active: false,
+      };
+      return acc;
+    }, {})
+  );
+
   return {
     id: data.id || '',
     name: data.name || Object.keys(data.participants || {}).join(', '),
     type: data.type || ChannelType.DIRECT,
-    isPrivate: data.isPrivate || true,
+    isPrivate: data.isPrivate ?? true,
     owner: data.owner || '',
-    participants: Object.keys(data.participants || {}),
+    participants: participants,
     team: data.team || '',
     messages: data.messages || {},
     createdOn: data.createdOn || Date.now(),

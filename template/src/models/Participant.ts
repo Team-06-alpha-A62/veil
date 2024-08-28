@@ -1,8 +1,8 @@
 import { UserRole } from '../enums/UserRole';
 
 export interface Participant {
-  userId: string;
+  avatarUrl: string;
+  username: string;
   role: UserRole;
-  activce: boolean;
-  lastSeenMessage: string;
+  active: boolean;
 }

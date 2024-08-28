@@ -15,15 +15,16 @@ const Channels: React.FC = () => {
   const [listeners, setListeners] = useState<Array<() => void>>([]);
   const [openedChannel, setOpenedChannel] = useState<Channel | null>(null);
 
+  //handleNewMessgae() =>
+  //
+
   const handleOpenChannelClick = (channel: Channel): void => {
     setOpenedChannel(channel);
   };
 
-  console.log(channelsData);
-
   useEffect(() => {
     const handleChannelsChange = (channels: Channel[]) => {
-      setChannelsData(channels);
+      setChannelsData([...channels]);
       const newListeners: Array<() => void> = channels.map(channel => {
         const cleanupListener = listenToIndividualChannel(
           channel.id,
@@ -61,13 +62,16 @@ const Channels: React.FC = () => {
           </header>
           <div className="max-h-[65vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600">
             {channelsData.length ? (
-              channelsData.map(channel => (
-                <ChannelCard
-                  key={channel.id}
-                  channel={channel}
-                  handleClick={handleOpenChannelClick}
-                />
-              ))
+              channelsData.map(channel => {
+                console.log(channel);
+                return (
+                  <ChannelCard
+                    key={channel.id}
+                    channel={channel}
+                    handleClick={handleOpenChannelClick}
+                  />
+                );
+              })
             ) : (
               <div className="text-center text-gray-400">
                 No Channels Found.

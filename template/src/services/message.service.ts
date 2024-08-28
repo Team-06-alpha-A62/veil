@@ -8,7 +8,7 @@ export const createMessage = async (
   sender: string,
   channelId: string,
   content: string,
-  media: string = ''
+  media: string | undefined = ''
 ): Promise<Message> => {
   const messageId = uuidv4();
 

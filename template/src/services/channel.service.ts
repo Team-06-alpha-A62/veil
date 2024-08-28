@@ -53,19 +53,20 @@ export const getChannelByHandle = async (handle: string): Promise<Channel> => {
   const channelData = transformChannelData(snapshot.val());
   return channelData;
 };
-
 export const getAllChannels = async (): Promise<Channel[]> => {
   const snapshot = await get(ref(db, `channels`));
   if (!snapshot.exists()) throw new Error('No channels found!');
 
   const channelsData = snapshot.val();
-  const transformedChannelsData: Channel[] = Object.values(channelsData).map(
-    channel => transformChannelData(channel as Channel)
+
+  const transformedChannelsData: Channel[] = await Promise.all(
+    Object.values(channelsData).map(channel =>
+      transformChannelData(channel as Channel)
+    )
   );
 
   return transformedChannelsData;
 };
-
 export const addChannelParticipant = async (
   channelHandle: string,
   newParticipantHandle: string
@@ -111,12 +112,13 @@ export const getUserChannels = async (
       Object.keys(channelsObject).map(async channelId => {
         const channelSnapshot = await get(ref(db, `channels/${channelId}`));
         if (!channelSnapshot.exists()) return null;
-
-        return channelSnapshot.val() as Channel;
+        const transformedChannelData = await transformChannelData(
+          channelSnapshot.val() as Channel
+        );
+        return transformedChannelData;
       })
     )
   ).filter((channel): channel is Channel => channel !== null);
-
   return channels;
 };
 
@@ -142,9 +144,11 @@ export const listenToIndividualChannel = (
 ): (() => void) => {
   const channelRef = ref(db, `channels/${channelId}`);
 
-  return onValue(channelRef, snapshot => {
+  return onValue(channelRef, async snapshot => {
     if (snapshot.exists()) {
-      const updatedChannel = snapshot.val() as Channel;
+      const updatedChannel = await transformChannelData(
+        snapshot.val() as Channel
+      );
       onChannelUpdate(updatedChannel);
     }
   });

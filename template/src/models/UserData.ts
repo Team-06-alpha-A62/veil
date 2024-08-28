@@ -11,11 +11,15 @@ export interface UserData {
   avatarUrl?: string;
   status: UserStatus;
   teams: Record<string, UserRole>;
-  channels: string[];
+  channels: Record<string, UserRole>;
   friends: string[];
   pendingFriends: string[];
   userSince: number;
   notes: string[];
   activeDyteMeetingId?: string;
   dyteParticipantId?: string;
+  lastSeenMessages?: Record<
+    string,
+    { messageId: string; messagesAfterThat: number }
+  >;
 }
