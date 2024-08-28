@@ -12,8 +12,6 @@ const Meetings = () => {
   const [monthIndex, setMonthIndex] = useState<number>(dayjs().month());
   const [selectedDay, setSelectedDay] = useState<dayjs.Dayjs>(dayjs());
 
-  console.log(selectedDay.valueOf());
-
   useEffect(() => {
     setCurrentMonth(getMonth(monthIndex));
   }, [monthIndex]);

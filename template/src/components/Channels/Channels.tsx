@@ -13,13 +13,13 @@ const Channels: React.FC = () => {
   const { currentUser } = useAuth();
   const [channelsData, setChannelsData] = useState<Channel[]>([]);
   const [listeners, setListeners] = useState<Array<() => void>>([]);
-  const [openedChannel, setOpenedChannel] = useState<Channel | null>(null);
+  const [openedChannel, setOpenedChannel] = useState<string | null>(null);
 
   //handleNewMessgae() =>
   //
 
   const handleOpenChannelClick = (channel: Channel): void => {
-    setOpenedChannel(channel);
+    setOpenedChannel(channel.id);
   };
 
   useEffect(() => {
@@ -63,7 +63,6 @@ const Channels: React.FC = () => {
           <div className="max-h-[65vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600">
             {channelsData.length ? (
               channelsData.map(channel => {
-                console.log(channel);
                 return (
                   <ChannelCard
                     key={channel.id}
@@ -80,7 +79,13 @@ const Channels: React.FC = () => {
           </div>
         </div>
         <main className="basis-3/4">
-          <ChannelWindow channel={openedChannel!} />
+          <ChannelWindow
+            channel={
+              channelsData.find(
+                channel => channel.id === openedChannel
+              ) as Channel
+            }
+          />
         </main>
       </div>
     </>
