@@ -11,7 +11,7 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 const AppContent = () => {
   return (
     <ProtectedRoute>
-      <div className="flex gap-10  h-screen">
+      <div className="flex gap-10 h-screen ">
         <SidebarNavigation />
         <main className="basis-4/5 flex flex-col">
           <Routes>

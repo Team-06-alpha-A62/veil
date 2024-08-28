@@ -141,7 +141,7 @@ const CreateChannelModal: React.FC = () => {
                   <span className="label-text">Participants</span>
                 </label>
 
-                <div className="px-2 flex items-center gap-2 flex-wrap rounded-3xl bg-base-200 bg-opacity-50">
+                <div className="p-2 flex items-center gap-2 flex-wrap rounded-3xl bg-base-200 bg-opacity-50">
                   {participants.map((participant, index) => (
                     <div key={participant} className="flex items-center gap-1">
                       <span className="badge badge-primary text-primary-content gap-1">
@@ -176,7 +176,7 @@ const CreateChannelModal: React.FC = () => {
               </div>
             </div>
             <button
-              className="text-sm font-semibold px-3 py-1 rounded-full bg-success hover:bg-accent-focus transition-colors"
+              className="text-sm font-semibold px-3 py-1 rounded-full bg-success hover:bg-accent-focus transition-colors text-white"
               onClick={handleCreateChannelClick}
             >
               Start New Conversation

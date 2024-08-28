@@ -4,12 +4,15 @@ import { Channel } from '../../models/Channel.ts';
 
 interface ChannelCardProps {
   channel: Channel;
+  handleClick: (channel: Channel) => void;
 }
 
-const ChannelCard: React.FC<ChannelCardProps> = ({ channel }) => {
-  console.log(channel);
+const ChannelCard: React.FC<ChannelCardProps> = ({ channel, handleClick }) => {
   return (
-    <div className="flex items-center p-6 border-b-2 border-base-100 justify-between hover:bg-base-300 hover:bg-opacity-50 cursor-pointer active:bg-opacity-0 transition-colors">
+    <div
+      className="flex items-center p-6 border-b-2 border-base-100 justify-between hover:bg-base-300 hover:bg-opacity-50 cursor-pointer active:bg-opacity-0 transition-colors"
+      onClick={() => handleClick(channel)}
+    >
       <div className="relative flex items-center space-x-4">
         <div className="avatar placeholder">
           <div className="bg-neutral text-neutral-content w-14 skeleton rounded-full">

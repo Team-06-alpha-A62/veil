@@ -9,7 +9,7 @@ const CreateChannelButton: React.FC<CreateChannelButtonProps> = ({
 }) => {
   return (
     <button
-      className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75"
+      className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
       onClick={handleClick}
     >
       Start Conversation

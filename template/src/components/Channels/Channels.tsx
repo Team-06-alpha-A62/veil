@@ -7,11 +7,17 @@ import {
   listenToChannelChange,
   listenToIndividualChannel,
 } from '../../services/channel.service.ts';
+import ChannelWindow from '../ChannelWindow/ChannelWindow.tsx';
 
-const Chats: React.FC = () => {
+const Channels: React.FC = () => {
   const { currentUser } = useAuth();
   const [channelsData, setChannelsData] = useState<Channel[]>([]);
   const [listeners, setListeners] = useState<Array<() => void>>([]);
+  const [openedChannel, setOpenedChannel] = useState<Channel | null>(null);
+
+  const handleOpenChannelClick = (channel: Channel): void => {
+    setOpenedChannel(channel);
+  };
 
   console.log(channelsData);
 
@@ -56,7 +62,11 @@ const Chats: React.FC = () => {
           <div className="max-h-[65vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600">
             {channelsData.length ? (
               channelsData.map(channel => (
-                <ChannelCard key={channel.id} channel={channel} />
+                <ChannelCard
+                  key={channel.id}
+                  channel={channel}
+                  handleClick={handleOpenChannelClick}
+                />
               ))
             ) : (
               <div className="text-center text-gray-400">
@@ -65,10 +75,12 @@ const Chats: React.FC = () => {
             )}
           </div>
         </div>
-        <div className="basis-3/4"></div>
+        <main className="basis-3/4">
+          <ChannelWindow channel={openedChannel!} />
+        </main>
       </div>
     </>
   );
 };
 
-export default Chats;
+export default Channels;
