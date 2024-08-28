@@ -10,7 +10,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   return (
     <div className="flex flex-col rounded-3xl border border-gray-700 bg-base-300 bg-opacity-50 p-6 h-full ">
       <header className="basis-1/10 h-auto flex-shrink-0">
-        This is where all the controllers will be
+        {channel?.name}
       </header>
       <main className="basis-8/10 h-auto flex-1"></main>
       <div className="basis-1/10">
