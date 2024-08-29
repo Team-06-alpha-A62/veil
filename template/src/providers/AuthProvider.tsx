@@ -10,8 +10,13 @@ import {
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../config/firebase.config';
 import { loginUser, logoutUser, registerUser } from '../services/auth.service';
-import { createUser, getUserData } from '../services/user.service';
+import {
+  createUser,
+  getUserData,
+  listenToFriendsChange,
+} from '../services/user.service';
 import { uploadAvatar } from '../services/storage.service';
+import { Friend } from '../models/Friend.ts';
 
 interface AuthState {
   user: User | null;
@@ -56,6 +61,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorState, setErrorState] = useState<string | null>(null);
   const [user, loading] = useAuthState(auth);
+
+  useEffect(() => {
+    if (!currentUser.userData) {
+      return;
+    }
+
+    return listenToFriendsChange(
+      currentUser.userData!.username,
+      (friends: Friend[], _) => {
+        currentUser.userData!.friends = friends.map(friend => friend.username);
+      }
+    );
+  }, [currentUser.userData]);
 
   useEffect(() => {
     if (loading) {

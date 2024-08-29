@@ -44,7 +44,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   const handleAddClick = async (): Promise<void> => {
     const currentChannelParticipants = Object.keys(channel.participants);
 
-    if (currentChannelParticipants.length > 2) {
+    if (channel.type === ChannelType.DIRECT) {
       participants.forEach(participant =>
         addChannelParticipant(channel.id, participant)
       );
@@ -119,6 +119,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
             <ParticipantsInput
               participants={participants}
               setParticipants={setParticipants}
+              channelParticipants={Object.keys(channel?.participants || {})}
             />
             <button
               className="mt-6 text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
