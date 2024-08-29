@@ -15,9 +15,6 @@ const Channels: React.FC = () => {
   const [listeners, setListeners] = useState<Array<() => void>>([]);
   const [openedChannel, setOpenedChannel] = useState<string | null>(null);
 
-  //handleNewMessgae() =>
-  //
-
   const handleOpenChannelClick = (channel: Channel): void => {
     setOpenedChannel(channel.id);
   };
@@ -60,7 +57,7 @@ const Channels: React.FC = () => {
           <header className="flex flex-row-reverse mb-6">
             <CreateChannelModal />
           </header>
-          <div className="max-h-[65vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600">
+          <div className="max-h-[65vh] scrollbar-thin scrollbar-thumb-gray-600">
             {channelsData.length ? (
               channelsData.map(channel => {
                 return (

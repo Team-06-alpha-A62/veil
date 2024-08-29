@@ -199,3 +199,14 @@ export const getUserFriends = async (username: string): Promise<Friend[]> => {
 
   return friends;
 };
+export const leaveChannel = async (
+  channelHandle: string,
+  userHandle: string
+): Promise<void> => {
+  const updateObject = {
+    [`channels/${channelHandle}/participants/${userHandle}`]: null,
+    [`users/${userHandle}/channels/${channelHandle}`]: null,
+  };
+
+  await update(ref(db), updateObject);
+};
