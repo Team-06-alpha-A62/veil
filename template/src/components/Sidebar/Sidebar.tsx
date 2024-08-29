@@ -11,6 +11,13 @@ import PendingFriendCard from '../PendingFriendCard/PendingFriendCard';
 import FriendCard from '../FriendCard/FriendCard';
 import { Friend } from '../../models/Friend';
 import AddFriendModal from '../AddFriendModal/AddFriendModal';
+import { Channel } from '../../models/Channel';
+import {
+  createChannel,
+  listenToChannelChange,
+} from '../../services/channel.service';
+import { ChannelType } from '../../enums/ChannelType';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
   const { currentUser } = useAuth();
@@ -18,9 +25,51 @@ const Sidebar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [friendsData, setFriendsData] = useState<Friend[]>([]);
   const [pendingFriendsData, setPendingFriendsData] = useState<Friend[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [listeners, setListeners] = useState<Array<() => void>>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [userDirectChannels, setUserDirectChannels] = useState<
+    Record<string, string>
+  >({});
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    return listenToChannelChange(
+      currentUser.userData!.username,
+      (channels: Channel[]) => {
+        setUserDirectChannels(
+          channels
+            .filter(channel => channel.type === ChannelType.DIRECT)
+            .reduce((acc, channel) => {
+              const friendUsername = Object.keys(channel.participants).find(
+                participant => participant !== currentUser.userData!.username
+              );
+              if (friendUsername) {
+                acc[friendUsername] = channel.id;
+              }
+
+              return acc;
+            }, {} as Record<string, string>)
+        );
+      }
+    );
+  }, [currentUser]);
+
+  const handleOpenChannelClick = async (friendUsername: string) => {
+    if (userDirectChannels[friendUsername]) {
+      navigate(`/app/chats/${userDirectChannels[friendUsername]}`);
+    } else {
+      const myUsername = currentUser.userData!.username;
+
+      const channelId = await createChannel(
+        friendUsername,
+        myUsername,
+        [friendUsername, myUsername],
+        ChannelType.DIRECT,
+        true
+      );
+      navigate(`/app/chats/${channelId}`);
+    }
+  };
 
   useEffect(() => {
     const handleFriendsChange = (
@@ -162,7 +211,11 @@ const Sidebar: React.FC = () => {
                 onDecline={handleDecline}
               />
             ) : (
-              <FriendCard key={friend.id} friend={friend} />
+              <FriendCard
+                key={friend.id}
+                friend={friend}
+                handleOpenChannelClick={handleOpenChannelClick}
+              />
             )
           )
         ) : (

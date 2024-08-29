@@ -6,9 +6,13 @@ import { ImBubble } from 'react-icons/im';
 
 interface FriendCardProps {
   friend: Friend;
+  handleOpenChannelClick: (username: string) => Promise<void>;
 }
 
-const FriendCard: React.FC<FriendCardProps> = ({ friend }) => {
+const FriendCard: React.FC<FriendCardProps> = ({
+  friend,
+  handleOpenChannelClick,
+}) => {
   return (
     <div className="flex items-center p-6 border-b-2 border-base-100 justify-between hover:bg-secondary-focus transition-colors">
       <div className="relative flex items-center space-x-4">
@@ -26,7 +30,10 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend }) => {
         </div>
       </div>
       <div className="flex space-x-2">
-        <button className="text-gray-400 hover:text-white">
+        <button
+          className="text-gray-400 hover:text-white"
+          onClick={() => handleOpenChannelClick(friend.username)}
+        >
           <ImBubble />
         </button>
         <button className="text-gray-400 hover:text-white">

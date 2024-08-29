@@ -11,7 +11,7 @@ export const createChannel = async (
   type: ChannelType,
   isPrivate: boolean,
   teamId: string | null = null
-): Promise<void> => {
+): Promise<string> => {
   const participants: Record<string, boolean> = participantsUsernames.reduce(
     (acc: Record<string, boolean>, participant: string) => {
       acc[participant] = true;
@@ -44,6 +44,7 @@ export const createChannel = async (
   };
 
   await update(ref(db), updateObject);
+  return newChannelId;
 };
 
 export const getChannelByHandle = async (handle: string): Promise<Channel> => {

@@ -18,7 +18,7 @@ const AppContent = () => {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="teams" element={<Teams />} />
-            <Route path="chats" element={<Chats />} />
+            <Route path="chats/:id" element={<Chats />} />
             <Route path="notes" element={<Notes />} />
             <Route path="meetings" element={<Meetings />} />
           </Routes>

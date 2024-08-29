@@ -24,7 +24,7 @@ const CreateChannelModal: React.FC = () => {
 
   const handleCreateChannelClick = async (): Promise<void> => {
     const channelType =
-      participants.length === 2 ? ChannelType.DIRECT : ChannelType.GROUP;
+      participants.length === 1 ? ChannelType.DIRECT : ChannelType.GROUP;
 
     await createChannel(
       !channelData.title

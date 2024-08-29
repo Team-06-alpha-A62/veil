@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom'; // Import useParams and useNavigate
 import CreateChannelModal from '../CreateChannelModal/CreateChannelModal.tsx';
 import ChannelCard from '../ChannelCard/ChannelCard.tsx';
 import { Channel } from '../../models/Channel.ts';
@@ -11,13 +12,20 @@ import ChannelWindow from '../ChannelWindow/ChannelWindow.tsx';
 
 const Channels: React.FC = () => {
   const { currentUser } = useAuth();
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [channelsData, setChannelsData] = useState<Channel[]>([]);
   const [listeners, setListeners] = useState<Array<() => void>>([]);
-  const [openedChannel, setOpenedChannel] = useState<string | null>(null);
+  const [openedChannel, setOpenedChannel] = useState<string | null>(id || null);
 
   const handleOpenChannelClick = (channel: Channel): void => {
     setOpenedChannel(channel.id);
+    navigate(`/app/chats/${channel.id}`);
   };
+
+  useEffect(() => {
+    setOpenedChannel(id || null);
+  }, [id]);
 
   useEffect(() => {
     const handleChannelsChange = (channels: Channel[]) => {

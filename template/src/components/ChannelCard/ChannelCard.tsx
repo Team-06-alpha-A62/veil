@@ -3,6 +3,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { Channel } from '../../models/Channel.ts';
 import { useAuth } from '../../providers/AuthProvider';
 import { leaveChannel } from '../../services/user.service.ts';
+import { ChannelType } from '../../enums/ChannelType.ts';
 
 interface ChannelCardProps {
   channel: Channel;
@@ -43,23 +44,18 @@ const ChannelCard: React.FC<ChannelCardProps> = ({ channel, handleClick }) => {
 
   const popupItems = useMemo(() => {
     const isOwner = channel.owner === currentUsername;
-    const numParticipants = Object.keys(channel.participants).length;
-    const isGroup = numParticipants > 2;
+    const isGroup = channel.type === ChannelType.GROUP;
 
     const actions: Record<string, () => void> = {
       'Change Icon': () => console.log('Change Icon clicked'),
       'Mute Conversation': () => console.log('Mute Conversation clicked'),
     };
 
-    if (isGroup) {
-      if (isOwner) {
-        actions['Edit Channel'] = () => console.log('Edit Channel clicked');
-        actions['Leave Group'] = () => onLeaveChannel();
-      } else {
+    if (isOwner) {
+      actions['Edit Channel'] = () => console.log('Edit Channel clicked');
+      if (isGroup) {
         actions['Leave Group'] = () => onLeaveChannel();
       }
-    } else {
-      actions['Remove Chat'] = () => console.log('Remove Chat clicked');
     }
 
     return actions;

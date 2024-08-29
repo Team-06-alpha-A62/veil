@@ -73,7 +73,7 @@ const SidebarNavigation: React.FC = () => {
           icon={<FaComments />}
           label="Chats"
           isExpanded={isExpanded}
-          to="chats"
+          to="chats/:id"
         />
         <SidebarItem
           icon={<FaStickyNote />}
