@@ -116,7 +116,7 @@ const Sidebar: React.FC = () => {
   // }
 
   return (
-    <div className="basis-1/5 rounded-3xl p-6 my-8 bg-base-300 bg-opacity-50 mr-8 flex-shrink-0 text-white">
+    <div className="basis-1/5 rounded-3xl p-6 bg-base-300 bg-opacity-50 flex-shrink-0 text-white">
       <div className="flex justify-between items-center mb-6">
         <div className="flex space-x-2">
           {['Online', 'All', 'Pending'].map(category => (

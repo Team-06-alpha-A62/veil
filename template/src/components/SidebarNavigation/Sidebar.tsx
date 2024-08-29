@@ -34,7 +34,7 @@ const SidebarNavigation: React.FC = () => {
     <div
       className={`${
         isExpanded ? 'w-[300px] px-8' : 'w-[80px]'
-      } mt-8 mb-8 ml-8 flex flex-col items-center bg-base-300 bg-opacity-50 transition-all duration-300 relative rounded-3xl cursor-pointer`}
+      } flex flex-col items-center bg-base-300 bg-opacity-50 transition-all duration-300 relative rounded-3xl cursor-pointer`}
     >
       <div
         className={`w-24 absolute top-0 left-1/2 transform -translate-x-1/2 transition-all duration-300 z-10 ${

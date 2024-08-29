@@ -55,7 +55,7 @@ const Channels: React.FC = () => {
 
   return (
     <>
-      <div className="flex gap-10 rounded-3xl p-6 my-8 bg-base-300 bg-opacity-50 h-full">
+      <div className="flex gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full">
         <div className="basis-1/4">
           <header className="flex flex-row-reverse mb-6">
             <CreateChannelModal />
@@ -78,7 +78,7 @@ const Channels: React.FC = () => {
             )}
           </div>
         </div>
-        <main className="basis-3/4">
+        <main className="basis-3/4 mb-6">
           <ChannelWindow
             channel={
               channelsData.find(
