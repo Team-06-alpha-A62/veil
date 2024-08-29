@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { UserStatus } from '../../enums/UserStatus';
 import UserStatusIndicator from '../UserStatusIndicator/UserStatusIndicator';
-import UserProfilePopup from '../UserProfilePopup/UserProfilePopup';
 import { updateUserStatus } from '../../services/user.service';
+import UserProfilePopup from '../UserProfilePopup/UserProfilePopup';
 
 interface UserProfileCardProps {
   avatarUrl: string | undefined;
@@ -23,6 +23,8 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
   const [currentStatus, setCurrentStatus] = useState<UserStatus | undefined>(
     status
   );
+
+  const popupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -51,6 +53,22 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
       console.error('Failed to update status:', error);
     }
   };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+      setIsPopupVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isPopupVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  });
 
   return (
     <div>
@@ -83,7 +101,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
         )}
       </div>
       {isPopupVisible && (
-        <div className="absolute left-2 bottom-20 mt-2 z-50">
+        <div ref={popupRef} className="absolute left-2 bottom-20 mt-2 z-50">
           <UserProfilePopup
             username={username}
             currentStatus={currentStatus}

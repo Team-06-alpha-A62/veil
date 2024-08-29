@@ -4,6 +4,8 @@ import { FaChevronRight, FaPencilAlt } from 'react-icons/fa';
 import UserStatusIndicator from '../UserStatusIndicator/UserStatusIndicator';
 
 import { IoLogOutOutline } from 'react-icons/io5';
+import { useAuth } from '../../providers/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface UserProfilePopupProps {
   username: string | undefined;
@@ -45,7 +47,14 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
   onClose,
   onStatusChange,
 }) => {
+  const { logout } = useAuth();
   const [isStatusPopupVisible, setIsStatusPopupVisible] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogOut = async () => {
+    await logout();
+    navigate('/');
+  };
 
   return (
     <div className="relative bg-base-300 p-4 rounded-lg shadow-lg w-[250px] z-20 text-white">
@@ -108,7 +117,7 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
       <button className="w-full flex items-center justify-between p-3 bg-base-200 rounded-lg hover:bg-base-100 transition-colors">
         <div className="flex items-center space-x-3">
           <IoLogOutOutline style={{ fontSize: '20px' }} />
-          <span>Logout</span>
+          <span onClick={() => handleLogOut()}>Logout</span>
         </div>
       </button>
     </div>

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../providers/AuthProvider';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 
-interface LoginProps {}
-
 interface LoginState {
   email: string;
   password: string;
@@ -16,8 +14,8 @@ const initialLoginData = {
 
 type ValidationErrorsType = Record<string, string>;
 
-const Login: React.FC<LoginProps> = () => {
-  const { isLoading, currentUser } = useAuth();
+const Login: React.FC = () => {
+  const { currentUser } = useAuth();
   const [loginData, setLoginData] = useState<LoginState>(initialLoginData);
   const [validationErrors, setValidationErrors] =
     useState<ValidationErrorsType>({});
@@ -26,6 +24,7 @@ const Login: React.FC<LoginProps> = () => {
   const location = useLocation();
 
   useEffect(() => {
+    console.log('hi');
     if (currentUser.userData) {
       if (location.state && location.state.from) {
         navigate(location.state.from);
@@ -67,7 +66,7 @@ const Login: React.FC<LoginProps> = () => {
 
     try {
       await login(loginData.email, loginData.password);
-    } catch (error) {
+    } catch {
       alert('Login error');
     }
   };
