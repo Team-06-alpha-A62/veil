@@ -79,6 +79,18 @@ export const addChannelParticipant = async (
   await update(ref(db), updateObject);
 };
 
+export const removeChannelParticipant = async (
+  channelHandle: string,
+  participantHandle: string
+): Promise<void> => {
+  const updateObject = {
+    [`channels/${channelHandle}/participants/${participantHandle}`]: null,
+    [`users/${participantHandle}/channels/${channelHandle}`]: null,
+  };
+
+  await update(ref(db), updateObject);
+};
+
 export const deleteChannel = async (channelHandle: string): Promise<void> => {
   const participantsSnapshot = await get(
     ref(db, `channels/${channelHandle}/participants`)
