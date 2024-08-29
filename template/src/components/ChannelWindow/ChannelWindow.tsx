@@ -94,7 +94,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
                 </div>
                 <div className="chat-header">{message.sender}</div>
                 <div
-                  className={`chat-bubble my-2 break-words ${
+                  className={`chat-bubble my-2 break-words text-primary-content ${
                     message.sender === currentUser.userData?.username
                       ? 'bg-primary text-primary-content'
                       : 'bg-secondary'

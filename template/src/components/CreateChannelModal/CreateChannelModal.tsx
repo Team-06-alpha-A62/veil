@@ -58,22 +58,9 @@ const CreateChannelModal: React.FC = () => {
     );
   };
 
-  const handleParticipantKeydown = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ): void => {
-    if (
-      (event.key === 'Enter' || event.key === ' ') &&
-      channelData.participantsInput.trim()
-    ) {
-      event.preventDefault();
-      if (!participants.includes(channelData.participantsInput.trim())) {
-        setParticipants([
-          ...participants,
-          channelData.participantsInput.trim(),
-        ]);
-        setChannelData({ ...channelData, participantsInput: '' });
-      }
-    }
+  const handleParticipantClick = (participant: string): void => {
+    setParticipants([...participants, participant]);
+    setChannelData({ ...channelData, participantsInput: '' });
   };
 
   const handleInputChange =
@@ -136,7 +123,7 @@ const CreateChannelModal: React.FC = () => {
                   className="input input-sm w-full rounded-3xl bg-base-200 bg-opacity-50 focus:border-transparent focus:outline-accent"
                 />
               </label>
-              <div className="form-control w-full gap-2">
+              <div className="form-control w-full gap-2 dropdown dropdown-bottom">
                 <label htmlFor="participants" className="label">
                   <span className="label-text">Participants</span>
                 </label>
@@ -159,10 +146,28 @@ const CreateChannelModal: React.FC = () => {
                     type="text"
                     value={channelData.participantsInput}
                     onChange={handleInputChange('participantsInput')}
-                    onKeyDown={handleParticipantKeydown}
                     className="input bg-transparent input-sm flex-grow rounded-3xl border-none focus:outline-none"
                   />
                 </div>
+                <ul
+                  tabIndex={0}
+                  className="menu dropdown-content bg-base-200 rounded-box z-[1] w-52 p-2 shadow"
+                >
+                  {currentUser.userData?.friends
+                    .filter(
+                      friend =>
+                        friend.includes(channelData.participantsInput) &&
+                        !participants.includes(friend)
+                    )
+                    .map(friend => (
+                      <li
+                        key={friend}
+                        onClick={() => handleParticipantClick(friend)}
+                      >
+                        <a>{friend}</a>
+                      </li>
+                    ))}
+                </ul>
               </div>
               <div className="form-control items-start">
                 <label className="label cursor-pointer flex gap-4">
