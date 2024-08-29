@@ -38,7 +38,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           {isExpanded && (
             <span
               className={`overflow-hidden ${
-                isActive ? 'text-neutral' : 'text-primary-content'
+                isActive ? 'text-primary-content' : 'text-white'
               } ${isExpanded ? 'expanded' : ''}`}
             >
               {label}

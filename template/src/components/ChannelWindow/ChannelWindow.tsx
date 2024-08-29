@@ -4,6 +4,12 @@ import { BsArrowReturnLeft } from 'react-icons/bs';
 import { useAuth } from '../../providers/AuthProvider.tsx';
 import { createMessage } from '../../services/message.service.ts';
 import { formatDistanceToNow } from 'date-fns';
+import ParticipantsInput from '../ParticipantInput/ParticipantsInput.tsx';
+import {
+  addChannelParticipant,
+  createChannel,
+} from '../../services/channel.service.ts';
+import { ChannelType } from '../../enums/ChannelType.ts';
 
 interface ChannelWindowProps {
   channel: Channel;
@@ -25,6 +31,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   const { currentUser } = useAuth();
   const [newMessage, setNewMessage] = useState<string>('');
   const chatWindowRef = useRef<HTMLDivElement>(null);
+  const [participants, setParticipants] = useState<string[]>([]);
 
   const getParticipantAvatar = (sender: string): string => {
     return (
@@ -32,6 +39,36 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
         participant => participant.username === sender
       )?.avatarUrl ?? ''
     );
+  };
+
+  const handleAddClick = async (): Promise<void> => {
+    const currentChannelParticipants = Object.keys(channel.participants);
+
+    if (currentChannelParticipants.length > 2) {
+      participants.forEach(participant =>
+        addChannelParticipant(channel.id, participant)
+      );
+    } else {
+      const newChannelParticipants = [
+        ...currentChannelParticipants,
+        ...participants,
+      ];
+      const newChannelName = newChannelParticipants
+        .filter(p => p !== currentUser.userData!.username)
+        .join(', ')
+        .concat(` and ${currentUser.userData!.username}`);
+
+      await createChannel(
+        newChannelName,
+        channel.owner,
+        newChannelParticipants,
+        ChannelType.GROUP,
+        channel.isPrivate,
+        channel.team
+      );
+    }
+
+    setParticipants([]);
   };
 
   useEffect(() => {
@@ -67,7 +104,31 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="basis-1/10 h-auto flex-shrink-0">Controllers</header>
+      <header className="basis-1/10 h-auto flex flex-shrink-0 flex-row-reverse pb-6">
+        <div className="dropdown dropdown-bottom dropdown-end">
+          <button
+            tabIndex={0}
+            className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
+          >
+            Add Participant
+          </button>
+          <div
+            tabIndex={0}
+            className="inline-block dropdown-content menu bg-base-100 rounded-box z-[1] w-96 p-6 shadow"
+          >
+            <ParticipantsInput
+              participants={participants}
+              setParticipants={setParticipants}
+            />
+            <button
+              className="mt-6 text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
+              onClick={handleAddClick}
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </header>
       <div className="relative flex flex-col rounded-3xl border border-gray-700 bg-base-300 bg-opacity-50 h-full">
         <main
           ref={chatWindowRef}

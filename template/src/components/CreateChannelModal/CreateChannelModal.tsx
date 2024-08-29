@@ -3,16 +3,15 @@ import CreateChannelButton from '../CreateChannelButton/CreateChannelButton.tsx'
 import { createChannel } from '../../services/channel.service.ts';
 import { useAuth } from '../../providers/AuthProvider.tsx';
 import { ChannelType } from '../../enums/ChannelType.ts';
+import ParticipantsInput from '../ParticipantInput/ParticipantsInput.tsx';
 
 interface Channel {
   title: string;
-  participantsInput: string;
   isPrivate: boolean;
 }
 
 const initialChannelData = {
   title: '',
-  participantsInput: '',
   isPrivate: true,
 };
 
@@ -52,16 +51,16 @@ const CreateChannelModal: React.FC = () => {
     setShowChannelModal(prevValue => !prevValue);
   };
 
-  const handleRemoveParticipant = (participantIndex: number): void => {
-    setParticipants(
-      participants.filter((_, index) => index !== participantIndex)
-    );
-  };
+  // const handleRemoveParticipant = (participantIndex: number): void => {
+  //   setParticipants(
+  //     participants.filter((_, index) => index !== participantIndex)
+  //   );
+  // };
 
-  const handleParticipantClick = (participant: string): void => {
-    setParticipants([...participants, participant]);
-    setChannelData({ ...channelData, participantsInput: '' });
-  };
+  // const handleParticipantClick = (participant: string): void => {
+  //   setParticipants([...participants, participant]);
+  //   setChannelData({ ...channelData, participantsInput: '' });
+  // };
 
   const handleInputChange =
     (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,52 +122,10 @@ const CreateChannelModal: React.FC = () => {
                   className="input input-sm w-full rounded-3xl bg-base-200 bg-opacity-50 focus:border-transparent focus:outline-accent"
                 />
               </label>
-              <div className="form-control w-full gap-2 dropdown dropdown-bottom">
-                <label htmlFor="participants" className="label">
-                  <span className="label-text">Participants</span>
-                </label>
-
-                <div className="p-2 flex items-center gap-2 flex-wrap rounded-3xl bg-base-200 bg-opacity-50">
-                  {participants.map((participant, index) => (
-                    <div key={participant} className="flex items-center gap-1">
-                      <span className="badge badge-primary text-primary-content gap-1">
-                        {participant}
-                        <span
-                          onClick={() => handleRemoveParticipant(index)}
-                          className="cursor-pointer text-primary-content hover:text-gray-800"
-                        >
-                          &times;
-                        </span>
-                      </span>
-                    </div>
-                  ))}
-                  <input
-                    type="text"
-                    value={channelData.participantsInput}
-                    onChange={handleInputChange('participantsInput')}
-                    className="input bg-transparent input-sm flex-grow rounded-3xl border-none focus:outline-none"
-                  />
-                </div>
-                <ul
-                  tabIndex={0}
-                  className="menu dropdown-content bg-base-200 rounded-box z-[1] w-52 p-2 shadow"
-                >
-                  {currentUser.userData?.friends
-                    .filter(
-                      friend =>
-                        friend.includes(channelData.participantsInput) &&
-                        !participants.includes(friend)
-                    )
-                    .map(friend => (
-                      <li
-                        key={friend}
-                        onClick={() => handleParticipantClick(friend)}
-                      >
-                        <a>{friend}</a>
-                      </li>
-                    ))}
-                </ul>
-              </div>
+              <ParticipantsInput
+                participants={participants}
+                setParticipants={setParticipants}
+              />
               <div className="form-control items-start">
                 <label className="label cursor-pointer flex gap-4">
                   <span className="label-text">Private</span>
