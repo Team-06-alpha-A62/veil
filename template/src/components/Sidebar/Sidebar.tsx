@@ -12,12 +12,8 @@ import FriendCard from '../FriendCard/FriendCard';
 import { Friend } from '../../models/Friend';
 import AddFriendModal from '../AddFriendModal/AddFriendModal';
 import { Channel } from '../../models/Channel';
-import {
-  createChannel,
-  listenToChannelChange,
-} from '../../services/channel.service';
+import { listenToChannelChange } from '../../services/channel.service';
 import { ChannelType } from '../../enums/ChannelType';
-import { useNavigate } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
   const { currentUser } = useAuth();
@@ -30,7 +26,6 @@ const Sidebar: React.FC = () => {
   const [userDirectChannels, setUserDirectChannels] = useState<
     Record<string, string>
   >({});
-  const navigate = useNavigate();
 
   useEffect(() => {
     return listenToChannelChange(
@@ -53,23 +48,6 @@ const Sidebar: React.FC = () => {
       }
     );
   }, [currentUser]);
-
-  const handleOpenChannelClick = async (friendUsername: string) => {
-    if (userDirectChannels[friendUsername]) {
-      navigate(`/app/chats/${userDirectChannels[friendUsername]}`);
-    } else {
-      const myUsername = currentUser.userData!.username;
-
-      const channelId = await createChannel(
-        null,
-        myUsername,
-        [friendUsername, myUsername],
-        ChannelType.DIRECT,
-        true
-      );
-      navigate(`/app/chats/${channelId}`);
-    }
-  };
 
   useEffect(() => {
     const handleFriendsChange = (
@@ -200,7 +178,7 @@ const Sidebar: React.FC = () => {
         />
       </div>
 
-      <div className="max-h-[65vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600">
+      <div className="max-h-[65vh]  scrollbar-thin scrollbar-thumb-gray-600">
         {filteredFriends.length ? (
           filteredFriends.map(friend =>
             selectedCategory === 'Pending' ? (
@@ -214,7 +192,7 @@ const Sidebar: React.FC = () => {
               <FriendCard
                 key={friend.id}
                 friend={friend}
-                handleOpenChannelClick={handleOpenChannelClick}
+                commonChannel={userDirectChannels[friend.username]}
               />
             )
           )

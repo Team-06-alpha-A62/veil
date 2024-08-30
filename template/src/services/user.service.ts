@@ -146,6 +146,22 @@ export const acceptFriendRequest = async (
   }
 };
 
+export const removeFriend = async (
+  currentUsername: string,
+  friendUsername: string
+): Promise<void> => {
+  try {
+    const updates: Record<string, null> = {
+      [`users/${currentUsername}/friends/${friendUsername}`]: null,
+      [`users/${friendUsername}/friends/${currentUsername}`]: null,
+    };
+
+    await update(ref(db), updates);
+  } catch {
+    throw new Error(`Failed to remove friend`);
+  }
+};
+
 export const sendFriendRequest = async (
   currentUsername: string,
   pendingFriendUsername: string

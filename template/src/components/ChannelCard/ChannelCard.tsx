@@ -97,7 +97,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({ channel, handleClick }) => {
         {isMenuVisible && (
           <div
             ref={channelCardMenuRef}
-            className="absolute top-6 bg-base-300 text-white shadow-lg rounded-lg w-48 z-10"
+            className="absolute left-4 bottom-1 bg-base-300 text-white shadow-lg rounded-lg w-48 z-10 list-none"
           >
             {Object.entries(popupItems).map(([itemName, action]) => (
               <li
