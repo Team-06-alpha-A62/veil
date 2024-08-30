@@ -84,9 +84,10 @@ export default {
         'custom-gradient':
           'radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.1) 0%, rgba(26, 25, 41, 0) 60%), radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.1) 0%, rgba(26, 25, 41, 0) 60%), linear-gradient(135deg, #1B1B34 0%, #292942 35%, #3A2D46 100%)',
       },
-        backgroundColor: {
-          'default': 'linear-gradient(135deg, #1B1B34 0%, #292942 35%, #2E2035 70%, #3A2D46 100%)',
-        },
+      backgroundColor: {
+        default:
+          'linear-gradient(135deg, #1B1B34 0%, #292942 35%, #2E2035 70%, #3A2D46 100%)',
+      },
       textTransform: {
         btn: 'uppercase', // btn-text-case
       },

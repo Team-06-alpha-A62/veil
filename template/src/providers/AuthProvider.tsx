@@ -71,6 +71,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       currentUser.userData!.username,
       (friends: Friend[], _) => {
         currentUser.userData!.friends = friends.map(friend => friend.username);
+        setCurrentUser({ ...currentUser });
       }
     );
   }, [currentUser.userData]);
