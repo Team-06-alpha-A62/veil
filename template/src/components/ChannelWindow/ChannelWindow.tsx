@@ -3,7 +3,7 @@ import { Channel } from '../../models/Channel.ts';
 import { BsArrowReturnLeft } from 'react-icons/bs';
 import { useAuth } from '../../providers/AuthProvider.tsx';
 import { createMessage } from '../../services/message.service.ts';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, set } from 'date-fns';
 import ParticipantsInput from '../ParticipantInput/ParticipantsInput.tsx';
 import {
   addChannelParticipant,
@@ -11,7 +11,8 @@ import {
 } from '../../services/channel.service.ts';
 import { ChannelType } from '../../enums/ChannelType.ts';
 import { getChannelName } from '../../utils/TransformDataHelpers.ts';
-
+import EmojiPicker from 'emoji-picker-react';
+import { MdEmojiEmotions } from 'react-icons/md';
 interface ChannelWindowProps {
   channel: Channel;
 }
@@ -33,6 +34,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   const [newMessage, setNewMessage] = useState<string>('');
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const [participants, setParticipants] = useState<string[]>([]);
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState<boolean>(false);
 
   const getParticipantAvatar = (sender: string): string => {
     return (
@@ -99,6 +101,9 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [newMessage, currentUser, channel?.id]);
 
+  const handleEmojiPickerOpenToggle = () => {
+    setIsEmojiPickerOpen(prev => !prev);
+  };
   return (
     <div className="flex flex-col h-full">
       <header className="basis-1/10 h-auto flex flex-shrink-0 flex-row-reverse justify-between pb-6">
@@ -182,8 +187,12 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
               </div>
             ))}
         </main>
-        <div className="sticky bottom-0 p-5 border-t border-gray-700">
-          <label className=" input px-4 py-2 rounded-full bg-gray-700 focus:outline-none flex items-center gap-2">
+        <div className="sticky flex items-center gap-3 bottom-0 p-5 border-t border-gray-700">
+          <EmojiPicker
+            style={{ position: 'absolute', right: '45px', bottom: '55px' }}
+            open={isEmojiPickerOpen}
+          />
+          <label className=" input flex-1 px-4 py-2 rounded-full bg-gray-700 focus:outline-none flex items-center gap-2">
             <input
               value={newMessage}
               type="text"
@@ -193,6 +202,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
             />
             <BsArrowReturnLeft />
           </label>
+          <MdEmojiEmotions size={30} onClick={handleEmojiPickerOpenToggle} />
         </div>
       </div>
     </div>
