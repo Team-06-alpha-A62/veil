@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../providers/AuthProvider.tsx';
-import { getUserFriends } from '../../services/user.service.ts';
 
 interface ParticipantsInputProps {
   participants: string[];
   setParticipants: (participants: string[]) => void;
-  channelParticipants: string[] | undefined;
+  channelParticipants?: string[] | undefined;
 }
 
 const ParticipantsInput: React.FC<ParticipantsInputProps> = ({

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../../providers/AuthProvider';
 import {
   acceptFriendRequest,
@@ -61,7 +61,7 @@ const Sidebar: React.FC = () => {
       const myUsername = currentUser.userData!.username;
 
       const channelId = await createChannel(
-        friendUsername,
+        null,
         myUsername,
         [friendUsername, myUsername],
         ChannelType.DIRECT,
@@ -145,8 +145,8 @@ const Sidebar: React.FC = () => {
     setSelectedCategory(category);
   };
 
-  const filteredFriends =
-    selectedCategory === 'Pending'
+  const filteredFriends = useMemo(() => {
+    return selectedCategory === 'Pending'
       ? pendingFriendsData.filter(friend =>
           friend.username.toLowerCase().includes(searchQuery.toLowerCase())
         )
@@ -159,7 +159,7 @@ const Sidebar: React.FC = () => {
             .includes(searchQuery.toLowerCase());
           return matchesCategory && matchesSearch;
         });
-
+  }, [selectedCategory, pendingFriendsData, friendsData, searchQuery]);
   // if (isLoading) {
   //   return <div className="text-center text-white">Loading...</div>;
   // }

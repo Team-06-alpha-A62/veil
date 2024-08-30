@@ -104,7 +104,7 @@ export const transformChannelData = async (
 
   return {
     id: data.id || '',
-    name: data.name || Object.keys(data.participants || {}).join(', '),
+    name: data.name || null,
     type: data.type || ChannelType.DIRECT,
     isPrivate: data.isPrivate ?? true,
     owner: data.owner || '',
@@ -115,4 +115,24 @@ export const transformChannelData = async (
     lastMessageAt: data.lastMessageAt || undefined,
     activeMeetingId: data.activeMeetingId || '',
   };
+};
+
+export const getChannelName = (
+  myUsername: string,
+  channel: Channel
+): string => {
+  if (channel?.name) {
+    return channel?.name;
+  } else {
+    const filteredParticipants = Object.keys(
+      channel?.participants || {}
+    ).filter(p => p !== myUsername);
+
+    if (channel?.type === ChannelType.DIRECT) {
+      return filteredParticipants[0];
+    } else {
+      console.log('hi');
+      return filteredParticipants.join(', ').concat(` and ${myUsername}`);
+    }
+  }
 };

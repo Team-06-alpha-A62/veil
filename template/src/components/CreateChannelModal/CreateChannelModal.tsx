@@ -23,22 +23,11 @@ const CreateChannelModal: React.FC = () => {
   const [channelData, setChannelData] = useState<Channel>(initialChannelData);
 
   const handleCreateChannelClick = async (): Promise<void> => {
-    const channelType =
-      participants.length === 1 ? ChannelType.DIRECT : ChannelType.GROUP;
-
     await createChannel(
-      !channelData.title
-        ? participants
-            .join(', ')
-            .concat(
-              participants.length > 1
-                ? ` and ${currentUser.userData!.username}`
-                : ''
-            )
-        : channelData.title,
+      channelData.title ? channelData.title : null,
       currentUser.userData!.username,
       [...participants, currentUser.userData!.username],
-      channelType,
+      ChannelType.GROUP,
       channelData.isPrivate
     );
 
@@ -50,17 +39,6 @@ const CreateChannelModal: React.FC = () => {
   const handleModalToggle = (): void => {
     setShowChannelModal(prevValue => !prevValue);
   };
-
-  // const handleRemoveParticipant = (participantIndex: number): void => {
-  //   setParticipants(
-  //     participants.filter((_, index) => index !== participantIndex)
-  //   );
-  // };
-
-  // const handleParticipantClick = (participant: string): void => {
-  //   setParticipants([...participants, participant]);
-  //   setChannelData({ ...channelData, participantsInput: '' });
-  // };
 
   const handleInputChange =
     (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {

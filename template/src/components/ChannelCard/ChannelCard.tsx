@@ -4,6 +4,7 @@ import { Channel } from '../../models/Channel.ts';
 import { useAuth } from '../../providers/AuthProvider';
 import { leaveChannel } from '../../services/user.service.ts';
 import { ChannelType } from '../../enums/ChannelType.ts';
+import { getChannelName } from '../../utils/TransformDataHelpers.ts';
 
 interface ChannelCardProps {
   channel: Channel;
@@ -80,7 +81,9 @@ const ChannelCard: React.FC<ChannelCardProps> = ({ channel, handleClick }) => {
           </div>
         </div>
         <div>
-          <h2 className="font-semibold text-m">{channel.name}</h2>
+          <h2 className="font-semibold text-m">
+            {getChannelName(currentUser.userData!.username, channel)}
+          </h2>
         </div>
       </div>
       <div className="flex space-x-2 relative">

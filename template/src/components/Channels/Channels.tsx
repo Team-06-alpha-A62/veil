@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; // Import useParams and useNavigate
 import CreateChannelModal from '../CreateChannelModal/CreateChannelModal.tsx';
 import ChannelCard from '../ChannelCard/ChannelCard.tsx';
@@ -9,6 +9,7 @@ import {
   listenToIndividualChannel,
 } from '../../services/channel.service.ts';
 import ChannelWindow from '../ChannelWindow/ChannelWindow.tsx';
+import { ChannelType } from '../../enums/ChannelType.ts';
 
 const Channels: React.FC = () => {
   const { currentUser } = useAuth();
@@ -17,6 +18,9 @@ const Channels: React.FC = () => {
   const [channelsData, setChannelsData] = useState<Channel[]>([]);
   const [listeners, setListeners] = useState<Array<() => void>>([]);
   const [openedChannel, setOpenedChannel] = useState<string | null>(id || null);
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    ChannelType.GROUP
+  );
 
   const handleOpenChannelClick = (channel: Channel): void => {
     setOpenedChannel(channel.id);
@@ -58,16 +62,42 @@ const Channels: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+  };
+
+  const filteredChannels = useMemo(() => {
+    return selectedCategory === ChannelType.GROUP
+      ? channelsData.filter(channel => channel.type === ChannelType.GROUP)
+      : channelsData.filter(channel => channel.type === ChannelType.DIRECT);
+  }, [selectedCategory, channelsData]);
+
   return (
     <>
       <div className="flex gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full">
         <div className="basis-1/4">
-          <header className="flex flex-row-reverse mb-6">
+          <header className="flex flex-row-reverse justify-between mb-6">
             <CreateChannelModal />
+
+            <div className="flex space-x-2 text-white">
+              {['Group', 'Direct'].map(category => (
+                <button
+                  key={category}
+                  onClick={() => handleCategoryClick(category.toLowerCase())}
+                  className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                    selectedCategory === category.toLowerCase()
+                      ? 'bg-primary'
+                      : 'bg-gray-700 bg-opacity-50'
+                  } hover:bg-gray-600 transition-colors`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
           </header>
           <div className="max-h-[65vh] scrollbar-thin scrollbar-thumb-gray-600">
-            {channelsData.length ? (
-              channelsData.map(channel => {
+            {filteredChannels.length ? (
+              filteredChannels.map(channel => {
                 return (
                   <ChannelCard
                     key={channel.id}

@@ -10,6 +10,7 @@ import {
   createChannel,
 } from '../../services/channel.service.ts';
 import { ChannelType } from '../../enums/ChannelType.ts';
+import { getChannelName } from '../../utils/TransformDataHelpers.ts';
 
 interface ChannelWindowProps {
   channel: Channel;
@@ -44,7 +45,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   const handleAddClick = async (): Promise<void> => {
     const currentChannelParticipants = Object.keys(channel.participants);
 
-    if (channel.type === ChannelType.DIRECT) {
+    if (channel.type === ChannelType.GROUP) {
       participants.forEach(participant =>
         addChannelParticipant(channel.id, participant)
       );
@@ -53,13 +54,9 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
         ...currentChannelParticipants,
         ...participants,
       ];
-      const newChannelName = newChannelParticipants
-        .filter(p => p !== currentUser.userData!.username)
-        .join(', ')
-        .concat(` and ${currentUser.userData!.username}`);
 
       await createChannel(
-        newChannelName,
+        channel.name || null,
         channel.owner,
         newChannelParticipants,
         ChannelType.GROUP,
@@ -104,7 +101,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="basis-1/10 h-auto flex flex-shrink-0 flex-row-reverse pb-6">
+      <header className="basis-1/10 h-auto flex flex-shrink-0 flex-row-reverse justify-between pb-6">
         <div className="dropdown dropdown-bottom dropdown-end">
           <button
             tabIndex={0}
@@ -128,6 +125,19 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
               Add
             </button>
           </div>
+        </div>
+        <div
+          className="tooltip tooltip-bottom"
+          data-tip={`Channel participants: ${Object.keys(
+            channel?.participants || {}
+          )
+            .filter(p => p !== currentUser.userData!.username)
+            .join(', ')
+            .concat(` and ${currentUser.userData!.username}`)}`}
+        >
+          <h2 className="font-semibold">
+            {getChannelName(currentUser.userData!.username, channel)}
+          </h2>
         </div>
       </header>
       <div className="relative flex flex-col rounded-3xl border border-gray-700 bg-base-300 bg-opacity-50 h-full">

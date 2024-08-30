@@ -4,7 +4,7 @@ import { Participant } from './Participant.ts';
 
 export interface Channel {
   id: string;
-  name: string;
+  name: string | null;
   type: ChannelType;
   isPrivate: boolean;
   owner: string;
