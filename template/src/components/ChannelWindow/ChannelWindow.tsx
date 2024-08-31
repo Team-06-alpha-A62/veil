@@ -13,6 +13,10 @@ import { ChannelType } from '../../enums/ChannelType.ts';
 import { getChannelName } from '../../utils/TransformDataHelpers.ts';
 import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
 import { MdEmojiEmotions } from 'react-icons/md';
+import { SiGiphy } from 'react-icons/si';
+import GiphySearch from '../GiphySearch/GiphySearch.tsx';
+import DragZone from '../DragZone/DragZone.tsx';
+import { uploadImage } from '../../services/storage.service.ts';
 
 interface ChannelWindowProps {
   channel: Channel;
@@ -21,10 +25,15 @@ interface ChannelWindowProps {
 const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   const { currentUser } = useAuth();
   const [newMessage, setNewMessage] = useState<string>('');
+  const [newMessageImage, setNewMessageImage] = useState<string>('');
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const [participants, setParticipants] = useState<string[]>([]);
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState<boolean>(false);
+  const [isGifPickerOpen, setIsGifPickerOpen] = useState<boolean>(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
+  const gifPickerRef = useRef<HTMLDivElement>(null);
+  console.log(newMessageImage);
   useEffect(() => {
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
@@ -33,28 +42,38 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
 
   useEffect(() => {
     const handleKeyDown = async (e: KeyboardEvent) => {
-      if (newMessage.trim().length === 0) return;
+      if (newMessage.trim().length === 0 && !newMessageImage) return;
       if (e.key === 'Enter') {
+        let finalImageUrl = newMessageImage;
+        if (uploadedFile) {
+          const fileUrl = await uploadImage(uploadedFile);
+          finalImageUrl = fileUrl;
+        }
         await createMessage(
           currentUser.userData!.username,
           channel.id,
-          newMessage
+          newMessage,
+          finalImageUrl
         );
         setNewMessage('');
+        setNewMessageImage('');
+        setUploadedFile(null);
 
-        if (chatWindowRef.current) {
-          chatWindowRef.current.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-          });
-        }
+        setTimeout(() => {
+          if (chatWindowRef.current) {
+            chatWindowRef.current.scrollTo({
+              top: chatWindowRef.current.scrollHeight,
+              behavior: 'smooth',
+            });
+          }
+        }, 500);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
 
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [newMessage, currentUser, channel?.id]);
+  }, [newMessage, newMessageImage, currentUser, channel?.id]);
 
   useEffect(() => {
     if (isEmojiPickerOpen) {
@@ -100,6 +119,13 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
     setParticipants([]);
   };
 
+  const handleFileChange = (file: File) => {
+    //validate the file
+    const previewUrl = URL.createObjectURL(file);
+    setUploadedFile(file);
+    setNewMessageImage(previewUrl);
+  };
+
   const handleClickOutsideEmojiPicker = (event: MouseEvent) => {
     if (
       emojiPickerRef.current &&
@@ -110,15 +136,22 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   };
 
   const handleEmojiPickerOpenToggle = () => {
+    if (isGifPickerOpen) setIsGifPickerOpen(false);
     setIsEmojiPickerOpen(prev => !prev);
+  };
+
+  const handleGifPickerOpenToggle = () => {
+    if (isEmojiPickerOpen) setIsEmojiPickerOpen(false);
+    setIsGifPickerOpen(prev => !prev);
   };
 
   const handleEmojiClick = (emojiData: EmojiClickData) => {
     setNewMessage(prev => prev.concat(emojiData.emoji));
   };
+
   return (
     <div className="flex flex-col h-full">
-      <header className="basis-1/10 h-auto flex flex-shrink-0 flex-row-reverse justify-between pb-6">
+      <header className="basis-2/10 h-auto flex flex-shrink-0 flex-row-reverse justify-between pb-6">
         <div className="dropdown dropdown-bottom dropdown-end">
           <button
             tabIndex={0}
@@ -171,7 +204,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
                   message.sender === currentUser.userData?.username
                     ? 'chat-end'
                     : 'chat-start'
-                } py-4`}
+                } py-2`}
               >
                 <div className="chat-image avatar">
                   <div className="w-10 rounded-full">
@@ -189,7 +222,10 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
                       : 'bg-secondary'
                   }`}
                 >
-                  {message.content}
+                  <p>{message.content}</p>
+                  {message.media && (
+                    <img className="mt-2 rounded-xl" src={message.media} />
+                  )}
                 </div>
                 <time className="mx-2  text-xs chat-footer opacity-50">
                   {formatDistanceToNow(new Date(message.sentAt), {
@@ -199,28 +235,70 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
               </div>
             ))}
         </main>
-        <div className="sticky flex items-center gap-3 bottom-0 p-5 border-t border-gray-700">
-          <div ref={emojiPickerRef}>
-            <EmojiPicker
-              onEmojiClick={emojiData => handleEmojiClick(emojiData)}
-              autoFocusSearch={true}
-              theme={Theme.AUTO}
-              lazyLoadEmojis={true}
-              style={{ position: 'absolute', right: '45px', bottom: '55px' }}
-              open={isEmojiPickerOpen}
+        <div className="sticky flex flex-col gap-3 bottom-0 p-5 border-t border-gray-700">
+          {newMessageImage && (
+            <div className="relative ml-6 w-36">
+              <span
+                className="absolute top-2 right-2 cursor-pointer bg-white bg-opacity-90 w-6 h-6 flex justify-center items-center rounded-full text-primary-content"
+                onClick={() => setNewMessageImage('')}
+              >
+                &times;
+              </span>
+              <img
+                src={newMessageImage}
+                alt="Selected image"
+                className="rounded-3xl w-36"
+              />
+            </div>
+          )}
+          <div className="flex items-center w-full">
+            <div ref={emojiPickerRef}>
+              <EmojiPicker
+                onEmojiClick={emojiData => handleEmojiClick(emojiData)}
+                autoFocusSearch={true}
+                theme={Theme.AUTO}
+                lazyLoadEmojis={true}
+                style={{ position: 'absolute', right: '100px', bottom: '70px' }}
+                open={isEmojiPickerOpen}
+              />
+            </div>
+            {isGifPickerOpen && (
+              <div ref={gifPickerRef}>
+                <GiphySearch
+                  styleProps={{
+                    right: '60px',
+                    bottom: '70px',
+                  }}
+                  setNewMessageImage={setNewMessageImage}
+                />
+              </div>
+            )}
+            <label className="mr-4 input flex-1 px-4 py-2 rounded-full bg-gray-700 focus:outline-none flex items-center gap-2">
+              <input
+                value={newMessage}
+                type="text"
+                className="grow"
+                placeholder="Type here"
+                onChange={e => setNewMessage(e.target.value)}
+              />
+              <BsArrowReturnLeft />
+            </label>
+            <MdEmojiEmotions
+              size={30}
+              onClick={handleEmojiPickerOpenToggle}
+              className="mr-4"
+            />
+            <SiGiphy
+              style={{ fontSize: '25px', marginRight: '16px' }}
+              onClick={handleGifPickerOpenToggle}
+            />
+            <DragZone
+              handleFileChange={handleFileChange}
+              width={25}
+              height={25}
+              round={true}
             />
           </div>
-          <label className=" input flex-1 px-4 py-2 rounded-full bg-gray-700 focus:outline-none flex items-center gap-2">
-            <input
-              value={newMessage}
-              type="text"
-              className="grow"
-              placeholder="Type here"
-              onChange={e => setNewMessage(e.target.value)}
-            />
-            <BsArrowReturnLeft />
-          </label>
-          <MdEmojiEmotions size={30} onClick={handleEmojiPickerOpenToggle} />
         </div>
       </div>
     </div>

@@ -76,7 +76,6 @@ const DragZone: React.FC<DragZoneProps> = ({
               borderRadius: `${round ? '50%' : '10px'}`,
             }}
             className="w-full h-full"
-            alt="Image Preview"
           ></div>
         ) : (
           <span className="text-gray-600">

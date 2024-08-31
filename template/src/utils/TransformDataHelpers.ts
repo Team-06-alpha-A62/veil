@@ -131,7 +131,6 @@ export const getChannelName = (
     if (channel?.type === ChannelType.DIRECT) {
       return filteredParticipants[0];
     } else {
-      console.log('hi');
       return filteredParticipants.join(', ').concat(` and ${myUsername}`);
     }
   }
