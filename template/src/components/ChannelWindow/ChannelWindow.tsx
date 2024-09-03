@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Channel } from '../../models/Channel.ts';
 import { BsArrowReturnLeft } from 'react-icons/bs';
 import { useAuth } from '../../providers/AuthProvider.tsx';
-import { createMessage } from '../../services/message.service.ts';
-import { formatDistanceToNow } from 'date-fns';
+import {
+  createMessage,
+  updateMessageReactions,
+} from '../../services/message.service.ts';
 import ParticipantsInput from '../ParticipantInput/ParticipantsInput.tsx';
 import {
   addChannelParticipant,
@@ -13,6 +15,7 @@ import { ChannelType } from '../../enums/ChannelType.ts';
 import { getChannelName } from '../../utils/TransformDataHelpers.ts';
 import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
 import { MdEmojiEmotions } from 'react-icons/md';
+import Message from '../Message/Message.tsx';
 
 interface ChannelWindowProps {
   channel: Channel;
@@ -25,6 +28,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   const [participants, setParticipants] = useState<string[]>([]);
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState<boolean>(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
+  const emojiesIconRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
@@ -66,6 +70,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
     return () =>
       document.removeEventListener('mousedown', handleClickOutsideEmojiPicker);
   });
+
   const getParticipantAvatar = (sender: string): string => {
     return (
       Object.values(channel.participants).find(
@@ -103,7 +108,9 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   const handleClickOutsideEmojiPicker = (event: MouseEvent) => {
     if (
       emojiPickerRef.current &&
-      !emojiPickerRef.current.contains(event.target as Node)
+      !emojiPickerRef.current.contains(event.target as Node) &&
+      emojiesIconRef.current &&
+      !emojiesIconRef.current.contains(event.target as Node)
     ) {
       setIsEmojiPickerOpen(false);
     }
@@ -116,6 +123,25 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   const handleEmojiClick = (emojiData: EmojiClickData) => {
     setNewMessage(prev => prev.concat(emojiData.emoji));
   };
+
+  const handleReactionClick = async (
+    messageId: string,
+    emojiData: EmojiClickData
+  ) => {
+    console.log(emojiData);
+    try {
+      await updateMessageReactions(
+        channel.id,
+        messageId,
+        currentUser.userData!.username,
+        emojiData.unified
+      );
+      console.log(`Reaction ${emojiData.emoji} added to message ${messageId}`);
+    } catch (error) {
+      console.error('Failed to update reaction:', error);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       <header className="basis-1/10 h-auto flex flex-shrink-0 flex-row-reverse justify-between pb-6">
@@ -165,38 +191,15 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
           {Object.values(channel?.messages || {})
             .sort((a, b) => a.sentAt - b.sentAt)
             .map(message => (
-              <div
+              <Message
                 key={message.id}
-                className={`chat ${
-                  message.sender === currentUser.userData?.username
-                    ? 'chat-end'
-                    : 'chat-start'
-                } py-4`}
-              >
-                <div className="chat-image avatar">
-                  <div className="w-10 rounded-full">
-                    <img
-                      alt="Tailwind CSS chat bubble component"
-                      src={getParticipantAvatar(message.sender)}
-                    />
-                  </div>
-                </div>
-                <div className="chat-header">{message.sender}</div>
-                <div
-                  className={`chat-bubble my-2 break-words text-primary-content ${
-                    message.sender === currentUser.userData?.username
-                      ? 'bg-primary text-primary-content'
-                      : 'bg-secondary'
-                  }`}
-                >
-                  {message.content}
-                </div>
-                <time className="mx-2  text-xs chat-footer opacity-50">
-                  {formatDistanceToNow(new Date(message.sentAt), {
-                    addSuffix: true,
-                  })}
-                </time>
-              </div>
+                message={message}
+                senderAvatar={getParticipantAvatar(message.sender)}
+                currentUserUsername={currentUser.userData!.username}
+                onReactionClick={emojiData =>
+                  handleReactionClick(message.id, emojiData)
+                }
+              />
             ))}
         </main>
         <div className="sticky flex items-center gap-3 bottom-0 p-5 border-t border-gray-700">
@@ -220,7 +223,9 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
             />
             <BsArrowReturnLeft />
           </label>
-          <MdEmojiEmotions size={30} onClick={handleEmojiPickerOpenToggle} />
+          <div ref={emojiesIconRef}>
+            <MdEmojiEmotions size={30} onClick={handleEmojiPickerOpenToggle} />
+          </div>
         </div>
       </div>
     </div>

@@ -83,4 +83,33 @@ export const editMessage = async (
   await update(ref(db), updateObject);
 };
 
-// React to message
+export const updateMessageReactions = async (
+  channelId: string,
+  messageId: string,
+  username: string,
+  emojiId: string
+): Promise<void> => {
+  const messageReactionsRef = ref(
+    db,
+    `channels/${channelId}/messages/${messageId}/reactions/${username}`
+  );
+
+  const snapshot = await get(messageReactionsRef);
+  const currentReaction: string | null = snapshot.val() || null;
+
+  let updateObject;
+
+  if (currentReaction === emojiId) {
+    updateObject = {
+      [`channels/${channelId}/messages/${messageId}/reactions/${username}`]:
+        null,
+    };
+  } else {
+    updateObject = {
+      [`channels/${channelId}/messages/${messageId}/reactions/${username}`]:
+        emojiId,
+    };
+  }
+
+  await update(ref(db), updateObject);
+};
