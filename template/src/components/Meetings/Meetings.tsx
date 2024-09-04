@@ -23,7 +23,7 @@ const Meetings = () => {
         setMonthIndex={setMonthIndex}
         selectedDay={selectedDay}
       />
-      <div className="flex flex-1 gap-4">
+      <div className="flex flex-1 gap-4 ">
         <CalendarWidget />
         <CalendarMonth
           month={currentMonth}

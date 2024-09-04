@@ -36,7 +36,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
 
   return (
     <div
-      className={`${
+      className={` ${
         !isDayInCurrentMonth(day) ? 'bg-base-300 opacity-50' : ''
       } ${
         selectedDay === day && 'bg-base-300 bg-opacity-50'

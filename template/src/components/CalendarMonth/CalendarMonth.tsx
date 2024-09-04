@@ -15,7 +15,7 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
   currentMonthIndex,
 }) => {
   return (
-    <div className="flex-1 grid grid-cols-7 grid-rows-5">
+    <div className={`flex-1 grid grid-cols-7 grid-rows-${month.length}`}>
       {month?.map((row, index) => (
         <React.Fragment key={index}>
           {row.map((day, dayIndex) => (

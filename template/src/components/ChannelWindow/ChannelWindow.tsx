@@ -175,7 +175,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="basis-2/10 h-auto flex flex-shrink-0 flex-row-reverse justify-between pb-6">
+      <header className=" h-auto flex flex-row-reverse justify-between pb-6">
         <div className="dropdown dropdown-bottom dropdown-end">
           <button
             tabIndex={0}
@@ -214,11 +214,8 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
           </h2>
         </div>
       </header>
-      <div className="relative flex flex-col rounded-3xl border border-gray-700 bg-base-300 bg-opacity-50 h-full">
-        <main
-          ref={chatWindowRef}
-          className="basis-8/10 h-auto flex-1 overflow-y-scroll px-6"
-        >
+      <div className=" relative flex flex-col rounded-3xl border border-gray-700 bg-base-300 bg-opacity-50 min-h-full">
+        <main ref={chatWindowRef} className="flex-1 overflow-y-scroll px-6">
           {Object.values(channel?.messages || {})
             .sort((a, b) => a.sentAt - b.sentAt)
             .map(message => (
