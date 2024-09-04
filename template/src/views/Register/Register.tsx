@@ -4,8 +4,6 @@ import './Register.scss';
 import DragZone from '../../components/DragZone/DragZone';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-interface RegisterProps {}
-
 interface RegisterState {
   username: string;
   firstName: string;
@@ -32,7 +30,7 @@ const registrationInitialData: RegisterState = {
   avatarUrl: null,
 };
 
-const Register: React.FC<RegisterProps> = () => {
+const Register: React.FC = () => {
   const { currentUser } = useAuth();
   const [step, setStep] = useState<number>(1);
   const [registrationData, setRegistrationData] = useState<RegisterState>(
@@ -137,7 +135,6 @@ const Register: React.FC<RegisterProps> = () => {
     };
 
   const handleFileChange = (file: File) => {
-    //validate the file
     const previewUrl = URL.createObjectURL(file);
     setRegistrationData(prevData => ({
       ...prevData,
@@ -157,7 +154,7 @@ const Register: React.FC<RegisterProps> = () => {
         phoneNumber,
         avatarFile
       );
-    } catch (error) {
+    } catch {
       alert('Registration error');
     }
   };

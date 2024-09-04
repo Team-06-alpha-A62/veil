@@ -1,6 +1,6 @@
 import { UserRole } from '../enums/UserRole';
 
-export interface Participant {
+export interface TeamMember {
   avatarUrl: string;
   username: string;
   role: UserRole;

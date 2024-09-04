@@ -62,7 +62,10 @@ const Message: React.FC<MessageProps> = ({
             : 'bg-secondary'
         }`}
       >
-        {message.content}
+        <p>{message.content}</p>
+        {message.media && (
+          <img className="mt-2 rounded-xl" src={message.media} />
+        )}
         <button onClick={() => setIsReactionPickerOpen(true)}>React</button>
         {isReactionPickerOpen && (
           <div ref={pickerRef}>

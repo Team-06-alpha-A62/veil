@@ -37,7 +37,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const emojiesIconRef = useRef<HTMLDivElement>(null);
   const gifPickerRef = useRef<HTMLDivElement>(null);
-  console.log(newMessageImage);
+
   useEffect(() => {
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
@@ -125,7 +125,6 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   };
 
   const handleFileChange = (file: File) => {
-    //validate the file
     const previewUrl = URL.createObjectURL(file);
     setUploadedFile(file);
     setNewMessageImage(previewUrl);
@@ -297,19 +296,6 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
               height={25}
               round={true}
             />
-          </div>
-          <label className=" input flex-1 px-4 py-2 rounded-full bg-gray-700 focus:outline-none flex items-center gap-2">
-            <input
-              value={newMessage}
-              type="text"
-              className="grow"
-              placeholder="Type here"
-              onChange={e => setNewMessage(e.target.value)}
-            />
-            <BsArrowReturnLeft />
-          </label>
-          <div ref={emojiesIconRef}>
-            <MdEmojiEmotions size={30} onClick={handleEmojiPickerOpenToggle} />
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ import { UserStatus } from '../enums/UserStatus';
 import { Channel } from '../models/Channel';
 import { Friend } from '../models/Friend';
 import { Message } from '../models/Message';
-import { Participant } from '../models/Participant';
+import { TeamMember } from '../models/Participant';
 import { Team } from '../models/Team';
 import { UserData } from '../models/UserData';
 import { getUserByHandle } from '../services/user.service';
@@ -58,15 +58,24 @@ export const transformMessageData = (data: Partial<Message>): Message => {
   };
 };
 
-export const transformTeamData = (data: Partial<Team>): Team => {
+export const transformTeamData = async (data: Partial<Team>): Promise<Team> => {
+  const membersObject: Record<string, TeamMember> = {};
+
+  for (const member of Object.keys(data.members || {})) {
+    const userData = await getUserByHandle(member);
+    membersObject[member] = transformTeamMemberData(userData, data.owner || '');
+  }
+
   return {
     id: data.id || '',
     name: data.name || 'Untitled Team',
     owner: data.owner || '',
-    members: data.members || {},
-    channels: Object.keys(data.channels || {}),
-    meetings: Object.keys(data.meetings || {}),
+    members: membersObject,
+    channels: data.channels || {},
+    meetings: data.meetings || [],
     createdOn: data.createdOn || Date.now(),
+    isPrivate: data.isPrivate || false,
+    imageUrl: data.imageUrl || '',
   };
 };
 
@@ -91,7 +100,7 @@ export const transformChannelData = async (
       getUserByHandle(participant)
     )
   ).then(usersData =>
-    usersData.reduce((acc: Record<string, Participant>, user: UserData) => {
+    usersData.reduce((acc: Record<string, TeamMember>, user: UserData) => {
       acc[user.username] = {
         avatarUrl: user.avatarUrl || '',
         username: user.username,
@@ -114,6 +123,18 @@ export const transformChannelData = async (
     createdOn: data.createdOn || Date.now(),
     lastMessageAt: data.lastMessageAt || undefined,
     activeMeetingId: data.activeMeetingId || '',
+  };
+};
+
+export const transformTeamMemberData = (
+  userData: Partial<UserData>,
+  owner: string
+): TeamMember => {
+  return {
+    avatarUrl: userData.avatarUrl || '',
+    username: userData.username || 'Unknown Username',
+    role: userData.username === owner ? UserRole.OWNER : UserRole.MEMBER,
+    active: userData.username === owner ? true : false,
   };
 };
 
