@@ -223,11 +223,8 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
           </h2>
         </div>
       </header>
-      <div className="relative flex flex-col rounded-3xl border border-gray-700 bg-base-300 bg-opacity-50 h-full">
-        <main
-          ref={chatWindowRef}
-          className="basis-8/10 h-auto flex-1 overflow-y-scroll px-6"
-        >
+      <div className=" relative flex flex-col rounded-3xl border border-gray-700 bg-base-300 bg-opacity-50 min-h-full">
+        <main ref={chatWindowRef} className="flex-1 overflow-y-scroll px-6">
           {Object.values(channel?.messages || {})
             .sort((a, b) => a.sentAt - b.sentAt)
             .map(message => (

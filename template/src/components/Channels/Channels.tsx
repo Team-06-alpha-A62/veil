@@ -112,7 +112,7 @@ const Channels: React.FC = () => {
             )}
           </div>
         </div>
-        <main className="basis-3/4 mb-6">
+        <main className="basis-3/4 mb-12 ">
           <ChannelWindow
             channel={
               channelsData.find(
