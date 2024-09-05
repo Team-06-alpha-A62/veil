@@ -49,7 +49,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, commonChannel }) => {
       const myUsername = currentUser.userData!.username;
 
       const channelId = await createChannel(
-        friendUsername,
+        null,
         myUsername,
         [friendUsername, myUsername],
         ChannelType.DIRECT,

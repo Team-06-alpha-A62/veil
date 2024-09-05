@@ -15,7 +15,7 @@ interface TeamData {
 
 const initialTeamData = {
   name: '',
-  isPrivate: true,
+  isPrivate: false,
 };
 
 const CreateTeamModal: React.FC = () => {

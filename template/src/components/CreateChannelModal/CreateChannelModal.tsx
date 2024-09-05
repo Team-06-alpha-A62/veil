@@ -4,6 +4,8 @@ import { createChannel } from '../../services/channel.service.ts';
 import { useAuth } from '../../providers/AuthProvider.tsx';
 import { ChannelType } from '../../enums/ChannelType.ts';
 import ParticipantsInput from '../ParticipantInput/ParticipantsInput.tsx';
+import { uploadImage } from '../../services/storage.service.ts';
+import DragZone from '../DragZone/DragZone.tsx';
 
 interface Channel {
   title: string;
@@ -19,20 +21,32 @@ const CreateChannelModal: React.FC = () => {
   const { currentUser } = useAuth();
   const [showChannelModal, setShowChannelModal] = useState<boolean>(false);
   const [participants, setParticipants] = useState<string[]>([]);
-
   const [channelData, setChannelData] = useState<Channel>(initialChannelData);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
   const handleCreateChannelClick = async (): Promise<void> => {
+    let imageUrl = '';
+
+    if (imageFile) {
+      imageUrl = await uploadImage(imageFile);
+    }
+
     await createChannel(
       channelData.title ? channelData.title : null,
       currentUser.userData!.username,
       [...participants, currentUser.userData!.username],
       ChannelType.GROUP,
-      channelData.isPrivate
+      channelData.isPrivate,
+      null,
+      undefined,
+      imageUrl
     );
 
     setChannelData(initialChannelData);
     setParticipants([]);
+    setImageFile(null);
+    setImagePreviewUrl(null);
     handleModalToggle();
   };
 
@@ -47,6 +61,13 @@ const CreateChannelModal: React.FC = () => {
         [key]: event.target.value,
       });
     };
+
+  const handleFileChange = (file: File) => {
+    setImageFile(file);
+
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreviewUrl(previewUrl);
+  };
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
@@ -110,9 +131,26 @@ const CreateChannelModal: React.FC = () => {
                   <input
                     type="checkbox"
                     className="toggle toggle-primary"
-                    defaultChecked
+                    checked={channelData.isPrivate}
+                    onChange={() =>
+                      setChannelData(prev => ({
+                        ...prev,
+                        isPrivate: !prev.isPrivate,
+                      }))
+                    }
                   />
                 </label>
+              </div>
+
+              <div className="flex items-center justify-between px-1">
+                <span className="label-text">Upload Channel Image</span>
+                <DragZone
+                  handleFileChange={handleFileChange}
+                  width={100}
+                  height={100}
+                  round={true}
+                  imageUrl={imagePreviewUrl || ''}
+                />
               </div>
             </div>
             <button

@@ -1,17 +1,26 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { Channel } from '../../models/Channel.ts';
 import { useAuth } from '../../providers/AuthProvider';
 import { leaveChannel } from '../../services/user.service.ts';
 import { ChannelType } from '../../enums/ChannelType.ts';
-import { getChannelName } from '../../utils/TransformDataHelpers.ts';
-
+import {
+  getChannelImage,
+  getChannelName,
+} from '../../utils/TransformDataHelpers.ts';
+import ChannelCardMenu from '../ChannelCardMenu/ChannelCardMenu.tsx';
+import { FaUserGroup } from 'react-icons/fa6';
 interface ChannelCardProps {
   channel: Channel;
   handleClick: (channel: Channel) => void;
+  isTeamChannel?: boolean;
 }
 
-const ChannelCard: React.FC<ChannelCardProps> = ({ channel, handleClick }) => {
+const ChannelCard: React.FC<ChannelCardProps> = ({
+  channel,
+  handleClick,
+  isTeamChannel = false,
+}) => {
   const { currentUser } = useAuth();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const threeDotsButtonRef = useRef<HTMLButtonElement>(null);
@@ -43,43 +52,38 @@ const ChannelCard: React.FC<ChannelCardProps> = ({ channel, handleClick }) => {
     await leaveChannel(channel.id, currentUser.userData!.username);
   };
 
-  const popupItems = useMemo(() => {
-    const isOwner = channel.owner === currentUsername;
-    const isGroup = channel.type === ChannelType.GROUP;
-
-    const actions: Record<string, () => void> = {
-      'Change Icon': () => console.log('Change Icon clicked'),
-      'Mute Conversation': () => console.log('Mute Conversation clicked'),
-    };
-
-    if (isOwner) {
-      actions['Edit Channel'] = () => console.log('Edit Channel clicked');
-      if (isGroup) {
-        actions['Leave Group'] = () => onLeaveChannel();
-      }
-    }
-
-    return actions;
-  }, [channel, currentUsername]);
-
-  const handleMenuToggle = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    setIsMenuVisible(prev => !prev);
-  };
-
+  const isOwner = channel.owner === currentUsername;
+  const isGroup = channel.type === ChannelType.GROUP;
+  const channelImage = getChannelImage(channel, currentUser.userData!.username);
   return (
     <div
       className="flex relative items-center p-6 border-b-2 border-base-100 justify-between hover:bg-base-300 hover:bg-opacity-50 cursor-pointer active:bg-opacity-0 transition-colors"
-      onClick={() => {
-        handleClick(channel);
-      }}
+      onClick={() => handleClick(channel)}
     >
-      <div className="flex items-center space-x-4">
-        <div className="avatar placeholder">
-          <div className="bg-neutral text-neutral-content w-14 skeleton rounded-full">
-            <span className="text-3xl">D</span>
+      <div
+        className={`flex items-center ${
+          isTeamChannel ? 'space-x-1  ' : 'space-x-4'
+        }`}
+      >
+        {!isTeamChannel ? (
+          <div className="avatar placeholder">
+            <div className="bg-base-300 text-neutral-content w-14  rounded-full">
+              {channelImage ? (
+                channelImage.startsWith('http') ? (
+                  <img src={channelImage} />
+                ) : (
+                  <span className="text-3xl">{channelImage}</span>
+                )
+              ) : (
+                <span className="text-3xl">
+                  <FaUserGroup />
+                </span>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="space-x-4">#</div>
+        )}
         <div>
           <h2 className="font-semibold text-m">
             {getChannelName(currentUser.userData!.username, channel)}
@@ -89,27 +93,24 @@ const ChannelCard: React.FC<ChannelCardProps> = ({ channel, handleClick }) => {
       <div className="flex space-x-2 relative">
         <button
           className="text-gray-400 hover:text-primary-content"
-          onClick={handleMenuToggle}
+          onClick={event => {
+            event.stopPropagation();
+            setIsMenuVisible(prev => !prev);
+          }}
           ref={threeDotsButtonRef}
         >
           <BsThreeDotsVertical size={20} />
         </button>
-        {isMenuVisible && (
-          <div
-            ref={channelCardMenuRef}
-            className="absolute left-4 bottom-1 bg-base-300 text-white shadow-lg rounded-lg w-48 z-10 list-none"
-          >
-            {Object.entries(popupItems).map(([itemName, action]) => (
-              <li
-                key={itemName}
-                className="p-2 hover:bg-base-200 cursor-pointer"
-                onClick={action}
-              >
-                {itemName}
-              </li>
-            ))}
-          </div>
-        )}
+        <div ref={channelCardMenuRef}>
+          {isMenuVisible && (
+            <ChannelCardMenu
+              isTeamChannel={isTeamChannel}
+              isOwner={isOwner}
+              isGroup={isGroup}
+              onLeaveChannel={onLeaveChannel}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

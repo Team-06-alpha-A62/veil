@@ -12,7 +12,8 @@ export const createChannel = async (
   type: ChannelType,
   isPrivate: boolean,
   teamId: string | null = null,
-  category?: ChannelCategory
+  category?: ChannelCategory,
+  imageUrl?: string
 ): Promise<string> => {
   const participants: Record<string, boolean> = participantsUsernames.reduce(
     (acc: Record<string, boolean>, participant: string) => {
@@ -35,6 +36,10 @@ export const createChannel = async (
 
   if (category) {
     newChannel.category = category;
+  }
+
+  if (imageUrl) {
+    newChannel.imageUrl = imageUrl;
   }
 
   const result = await push(ref(db, 'channels'), newChannel);

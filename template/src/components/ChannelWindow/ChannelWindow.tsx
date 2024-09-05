@@ -102,7 +102,15 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   const canAddParticipants = (): boolean => {
     const userRole =
       channel?.participants[currentUser.userData!.username]?.role;
-    return userRole === UserRole.OWNER || userRole === UserRole.MODERATOR;
+
+    const isOwnerOrModerator =
+      userRole === UserRole.OWNER || userRole === UserRole.MODERATOR;
+
+    if (channel.type === ChannelType.TEAM && channel.isPrivate) {
+      if (isOwnerOrModerator) return true;
+    }
+
+    return isOwnerOrModerator;
   };
 
   const handleAddClick = async (): Promise<void> => {

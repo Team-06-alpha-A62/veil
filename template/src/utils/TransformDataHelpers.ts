@@ -156,3 +156,17 @@ export const getChannelName = (
     }
   }
 };
+export const getChannelImage = (
+  channel: Channel,
+  currentUsername: string
+): string | null => {
+  if (channel.type === ChannelType.GROUP) {
+    return channel.imageUrl || null;
+  } else if (channel.type === ChannelType.DIRECT) {
+    const otherParticipant = Object.values(channel.participants).find(
+      participant => participant.username !== currentUsername
+    );
+    return otherParticipant?.avatarUrl || otherParticipant!.username;
+  }
+  return null;
+};

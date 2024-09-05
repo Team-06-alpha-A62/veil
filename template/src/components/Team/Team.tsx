@@ -5,6 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ChannelWindow from '../ChannelWindow/ChannelWindow';
 import { listenToTeamChannels } from '../../services/teams.service';
 import { listenToIndividualChannel } from '../../services/channel.service';
+import ChannelCard from '../ChannelCard/ChannelCard';
+import { BsArrowLeftCircle } from 'react-icons/bs';
 
 const Team: React.FC = () => {
   const { teamId, channelId } = useParams<{
@@ -80,8 +82,14 @@ const Team: React.FC = () => {
 
   return (
     <div className="flex gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full">
-      <div className="w-1/4 p-4 rounded-lg">
-        <header className="flex justify-between mb-4">
+      <div className="w-1/4 rounded-lg">
+        <header className="flex justify-between items-center mb-4">
+          <button
+            className="text-gray-400 hover:text-primary rounded-full p-2"
+            onClick={() => navigate('/app/teams')}
+          >
+            <BsArrowLeftCircle size={30} />
+          </button>
           <h3 className="font-bold text-lg">Channels</h3>
         </header>
         {Object.entries(categorizedChannels).map(([category, channels]) => (
@@ -97,31 +105,30 @@ const Team: React.FC = () => {
             </div>
             {!collapsedCategories[category as ChannelCategory] && (
               <ul className="pl-4">
-                {channels.map(channel => (
-                  <li
-                    key={channel.id}
-                    className={`p-2 cursor-pointer ${
-                      channel.id === activeChannelId ? 'bg-gray-700' : ''
-                    }`}
-                    onClick={() => handleChannelClick(channel)}
-                  >
-                    #{channel.name}
-                  </li>
-                ))}
+                {channels.map(channel => {
+                  return (
+                    <ChannelCard
+                      key={channel.id}
+                      channel={channel}
+                      handleClick={handleChannelClick}
+                      isTeamChannel={true}
+                    />
+                  );
+                })}
               </ul>
             )}
           </div>
         ))}
       </div>
-      <div className="flex-1 p-4 rounded-lg">
+      <main className="basis-3/4 mb-12">
         {activeChannel ? (
           <ChannelWindow channel={activeChannel} />
         ) : (
-          <div className="text-center text-gray-400 mt-4">
+          <div className="text-center text-primary mt-4">
             Please select a channel to view.
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 };
