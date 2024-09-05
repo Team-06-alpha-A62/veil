@@ -44,7 +44,17 @@ export const createTeam = async (
 
   return teamId;
 };
+export const getTeamById = async (teamId: string): Promise<Team | null> => {
+  const teamRef = ref(db, `teams/${teamId}`);
+  const snapshot = await get(teamRef);
 
+  if (snapshot.exists()) {
+    const teamData = snapshot.val() as Partial<Team>;
+    return await transformTeamData(teamData);
+  } else {
+    return null;
+  }
+};
 export const fetchAllTeams = async (): Promise<Team[]> => {
   const teamsSnapshot = await get(ref(db, 'teams'));
   if (!teamsSnapshot.exists()) {
