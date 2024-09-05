@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { BsThreeDotsVertical } from 'react-icons/bs';
+import { useState, useRef, useEffect } from 'react';
+import { BsThreeDotsVertical, BsXCircle, BsCheckCircle } from 'react-icons/bs';
 import { Channel } from '../../models/Channel.ts';
 import { useAuth } from '../../providers/AuthProvider';
 import { leaveChannel } from '../../services/user.service.ts';
@@ -9,7 +9,11 @@ import {
   getChannelName,
 } from '../../utils/TransformDataHelpers.ts';
 import ChannelCardMenu from '../ChannelCardMenu/ChannelCardMenu.tsx';
+import DragZone from '../DragZone/DragZone.tsx';
 import { FaUserGroup } from 'react-icons/fa6';
+import { uploadImage, deleteImage } from '../../services/storage.service.ts';
+import { changeChannelImage } from '../../services/channel.service.ts';
+
 interface ChannelCardProps {
   channel: Channel;
   handleClick: (channel: Channel) => void;
@@ -23,6 +27,11 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
 }) => {
   const { currentUser } = useAuth();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isEditingImage, setIsEditingImage] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [isImageRemoved, setIsImageRemoved] = useState(false);
+
   const threeDotsButtonRef = useRef<HTMLButtonElement>(null);
   const channelCardMenuRef = useRef<HTMLDivElement>(null);
   const currentUsername = currentUser.userData!.username;
@@ -52,6 +61,32 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
     await leaveChannel(channel.id, currentUser.userData!.username);
   };
 
+  const handleFileChange = (file: File) => {
+    setImageFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreviewUrl(previewUrl);
+    setIsImageRemoved(false);
+  };
+
+  const onSaveImage = async () => {
+    if (isImageRemoved) {
+      if (channel.imageUrl) await deleteImage(channel.imageUrl);
+      await changeChannelImage(channel.id, '');
+    } else if (imageFile) {
+      const imageUrl = await uploadImage(imageFile);
+      await changeChannelImage(channel.id, imageUrl);
+    }
+    setImagePreviewUrl(null);
+    setIsEditingImage(false);
+    setIsImageRemoved(false);
+  };
+
+  const onRemoveImage = () => {
+    setImageFile(null);
+    setImagePreviewUrl(null);
+    setIsImageRemoved(true);
+  };
+
   const isOwner = channel.owner === currentUsername;
   const isGroup = channel.type === ChannelType.GROUP;
   const channelImage = getChannelImage(channel, currentUser.userData!.username);
@@ -59,19 +94,19 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
   return (
     <div
       className="flex relative items-center p-6 border-b-2 border-base-100 justify-between hover:bg-base-300 hover:bg-opacity-50 cursor-pointer active:bg-opacity-0 transition-colors"
-      onClick={() => handleClick(channel)}
+      onClick={() => !isEditingImage && handleClick(channel)}
     >
       <div
         className={`flex items-center ${
           isTeamChannel ? 'space-x-1  ' : 'space-x-4'
         }`}
       >
-        {!isTeamChannel ? (
+        {!isTeamChannel && !isEditingImage ? (
           <div className="avatar placeholder">
-            <div className="bg-base-300 text-neutral-content w-14  rounded-full">
-              {channelImage ? (
+            <div className="bg-base-300 text-neutral-content w-14 rounded-full">
+              {channelImage && !isImageRemoved ? (
                 channelImage.startsWith('http') ? (
-                  <img src={channelImage} />
+                  <img src={channelImage} alt="Channel" />
                 ) : (
                   <span className="text-3xl">{channelImage}</span>
                 )
@@ -83,35 +118,87 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
             </div>
           </div>
         ) : (
-          <div className="space-x-4">#</div>
+          isEditingImage && (
+            <DragZone
+              handleFileChange={handleFileChange}
+              width={56}
+              height={56}
+              round={true}
+              imageUrl={imagePreviewUrl || (isImageRemoved ? '' : channelImage)}
+            />
+          )
         )}
         <div>
           <h2 className="font-semibold text-m">
-            {getChannelName(currentUser.userData!.username, channel)}
+            {isEditingImage
+              ? 'Choose Image'
+              : getChannelName(currentUser.userData!.username, channel)}
           </h2>
+          {isEditingImage && (
+            <button
+              className="text-orange-500 mt-1 text-sm"
+              onClick={event => {
+                event.stopPropagation();
+                onRemoveImage();
+              }}
+            >
+              Remove Image
+            </button>
+          )}
         </div>
       </div>
       <div className="flex space-x-2 relative">
-        <button
-          className="text-gray-400 hover:text-primary-content"
-          onClick={event => {
-            event.stopPropagation();
-            setIsMenuVisible(prev => !prev);
-          }}
-          ref={threeDotsButtonRef}
-        >
-          <BsThreeDotsVertical size={20} />
-        </button>
-        <div ref={channelCardMenuRef}>
-          {isMenuVisible && (
-            <ChannelCardMenu
-              isTeamChannel={isTeamChannel}
-              isOwner={isOwner}
-              isGroup={isGroup}
-              onLeaveChannel={onLeaveChannel}
-            />
-          )}
-        </div>
+        {isEditingImage ? (
+          <div className="pr-1 flex flex-col gap-2">
+            <button
+              className="text-success"
+              onClick={event => {
+                event.stopPropagation();
+                onSaveImage();
+              }}
+            >
+              <BsCheckCircle size={20} />
+            </button>
+            <button
+              className="text-error"
+              onClick={event => {
+                event.stopPropagation();
+                setIsEditingImage(false);
+                setImagePreviewUrl(null);
+                setIsImageRemoved(false);
+              }}
+            >
+              <BsXCircle size={20} />
+            </button>
+          </div>
+        ) : (
+          <>
+            <button
+              className="text-gray-400 hover:text-primary-content"
+              onClick={event => {
+                event.stopPropagation();
+                setIsMenuVisible(prev => !prev);
+              }}
+              ref={threeDotsButtonRef}
+            >
+              <BsThreeDotsVertical size={20} />
+            </button>
+            <div ref={channelCardMenuRef}>
+              {isMenuVisible && (
+                <ChannelCardMenu
+                  isTeamChannel={isTeamChannel}
+                  isOwner={isOwner}
+                  isGroup={isGroup}
+                  onLeaveChannel={onLeaveChannel}
+                  onChangeIcon={() => {
+                    setIsEditingImage(true);
+                    setIsMenuVisible(false);
+                  }}
+                />
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

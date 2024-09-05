@@ -194,3 +194,13 @@ export const listenToIndividualChannel = (
     }
   });
 };
+
+export const changeChannelImage = async (
+  channelId: string,
+  imageUrl: string
+): Promise<void> => {
+  const updateObject = {
+    [`channels/${channelId}/imageUrl`]: imageUrl,
+  };
+  await update(ref(db), updateObject);
+};

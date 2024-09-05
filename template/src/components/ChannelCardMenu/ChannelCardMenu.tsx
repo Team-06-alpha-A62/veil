@@ -5,6 +5,7 @@ interface ChannelCardMenuProps {
   isOwner: boolean;
   isGroup: boolean;
   onLeaveChannel: () => void;
+  onChangeIcon: () => void;
 }
 
 const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
@@ -12,6 +13,7 @@ const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
   isOwner,
   isGroup,
   onLeaveChannel,
+  onChangeIcon,
 }) => {
   const popupItems = useMemo(() => {
     const actions: Record<string, () => void> = {
@@ -19,17 +21,17 @@ const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
     };
 
     if (isOwner && !isTeamChannel) {
-      actions['Change Icon'] = () => console.log('Change Icon clicked');
+      actions['Change Icon'] = onChangeIcon;
     }
     if (isOwner) {
       actions['Edit Channel'] = () => console.log('Edit Channel clicked');
     }
     if (isGroup && !isTeamChannel) {
-      actions['Leave Group'] = () => onLeaveChannel();
+      actions['Leave Group'] = onLeaveChannel;
     }
 
     return actions;
-  }, [isOwner, isGroup, isTeamChannel, onLeaveChannel]);
+  }, [isOwner, isGroup, isTeamChannel, onLeaveChannel, onChangeIcon]);
 
   return (
     <div className="absolute left-4 bottom-1 bg-base-300 text-white shadow-lg rounded-lg w-48 z-10 list-none">

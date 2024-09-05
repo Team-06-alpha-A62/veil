@@ -149,7 +149,7 @@ const CreateChannelModal: React.FC = () => {
                   width={100}
                   height={100}
                   round={true}
-                  imageUrl={imagePreviewUrl || ''}
+                  imageUrl={imagePreviewUrl}
                 />
               </div>
             </div>
