@@ -5,6 +5,7 @@ import { UserStatus } from '../enums/UserStatus';
 import { Channel } from '../models/Channel';
 import { Friend } from '../models/Friend';
 import { Message } from '../models/Message';
+import { Note } from '../models/Note.ts';
 import { Participant } from '../models/Participant';
 import { Team } from '../models/Team';
 import { UserData } from '../models/UserData';
@@ -135,6 +136,20 @@ export const transformTeamMemberData = (
     username: userData.username || 'Unknown Username',
     role: userData.username === owner ? UserRole.OWNER : UserRole.MEMBER,
     active: userData.username === owner ? true : false,
+  };
+};
+
+export const transformNoteData = (
+  data: Partial<Note> & { tagsObject?: Record<string, boolean> }
+): Note => {
+  return {
+    title: data.title || '',
+    username: data.username || 'Unknown Username',
+    id: data.id || '',
+    createdOn: data.createdOn || 0,
+    tags: Object.keys(data.tagsObject || {}),
+    content: data.content || '',
+    label: data.label || '',
   };
 };
 

@@ -184,7 +184,7 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
                   {Object.keys(labelColors).map((label, index) => (
                     <span
                       key={index}
-                      onClick={() => setSelectedLabel(label)}
+                      onClick={() => setSelectedLabel(labelColors[label])}
                       className={`${labelColors[label]} w-6 h-6 rounded-full flex  items-center justify-center cursor-pointer`}
                     >
                       {selectedLabel === labelColors[label] && (
