@@ -3,6 +3,7 @@ import { ChannelType } from '../enums/ChannelType';
 import { db } from '../config/firebase.config';
 import { Channel } from '../models/Channel';
 import { transformChannelData } from '../utils/TransformDataHelpers';
+import { ChannelCategory } from '../enums/ChannelCategory';
 
 export const createChannel = async (
   name: string | null,
@@ -10,7 +11,8 @@ export const createChannel = async (
   participantsUsernames: string[],
   type: ChannelType,
   isPrivate: boolean,
-  teamId: string | null = null
+  teamId: string | null = null,
+  category?: ChannelCategory
 ): Promise<string> => {
   const participants: Record<string, boolean> = participantsUsernames.reduce(
     (acc: Record<string, boolean>, participant: string) => {
@@ -20,7 +22,8 @@ export const createChannel = async (
     {}
   );
 
-  const newChannel = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const newChannel: Record<string, any> = {
     name,
     type,
     owner,
@@ -29,8 +32,14 @@ export const createChannel = async (
     teamId,
     createdOn: Date.now(),
   };
+
+  if (category) {
+    newChannel.category = category;
+  }
+
   const result = await push(ref(db, 'channels'), newChannel);
   const newChannelId = result.key as string;
+
   const updateObject = {
     [`channels/${newChannelId}/id`]: newChannelId,
     ...participantsUsernames.reduce(
@@ -40,10 +49,10 @@ export const createChannel = async (
       },
       {}
     ),
-    //ADD CHANNEL FROM TEAM IN FUTURE !!!!!!!!!!!!!!!!!!!!!!!!
   };
 
   await update(ref(db), updateObject);
+
   return newChannelId;
 };
 

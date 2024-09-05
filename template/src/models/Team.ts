@@ -1,12 +1,11 @@
-import { ChannelCategory } from '../enums/ChannelCategory';
-import { TeamMember } from './Participant';
+import { Participant } from './Participant';
 
 export interface Team {
   id: string;
   name: string;
   owner: string;
-  members: Record<string, TeamMember>;
-  channels: Record<string, ChannelCategory>;
+  members: Record<string, Participant>;
+  channels: string[];
   meetings: string[];
   createdOn: number;
   isPrivate: boolean;

@@ -23,7 +23,6 @@ const Channels: React.FC = () => {
   );
 
   const handleOpenChannelClick = (channel: Channel): void => {
-    setOpenedChannel(channel.id);
     navigate(`/app/chats/${channel.id}`);
   };
 

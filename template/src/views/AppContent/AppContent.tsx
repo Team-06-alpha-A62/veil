@@ -8,6 +8,7 @@ import Teams from '../../components/Teams/Teams';
 import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from '../../hoc/ProtectedRoute';
 import Sidebar from '../../components/Sidebar/Sidebar';
+import Team from '../../components/Team/Team';
 const AppContent = () => {
   return (
     <ProtectedRoute>
@@ -18,6 +19,11 @@ const AppContent = () => {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="teams" element={<Teams />} />
+            <Route path="teams/:teamId" element={<Team />} />
+            <Route
+              path="teams/:teamId/channels/:channelId"
+              element={<Team />}
+            />
             <Route path="chats/:id" element={<Chats />} />
             <Route path="notes" element={<Notes />} />
             <Route path="meetings" element={<Meetings />} />

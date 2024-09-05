@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Team } from '../../models/Team';
 import TeamCard from '../TeamCard/TeamCard';
 import CreateTeamModal from '../CreateTeamModal/CreateTeamModal';
@@ -73,7 +73,7 @@ const Teams: React.FC = () => {
         </label>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1  md:grid-cols-4 gap-4">
         {filteredTeams.map(team => (
           <TeamCard
             key={team.id}

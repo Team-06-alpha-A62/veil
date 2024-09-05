@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import ParticipantsInput from '../ParticipantInput/ParticipantsInput';
 import { useAuth } from '../../providers/AuthProvider';
-import { createTeam } from '../../services/teams.service';
-import DragZone from '../DragZone/DragZone'; // Import DragZone component
+import { addChannelsToTeam, createTeam } from '../../services/teams.service';
+import DragZone from '../DragZone/DragZone';
 import { uploadImage } from '../../services/storage.service';
+import { createChannel } from '../../services/channel.service';
+import { ChannelType } from '../../enums/ChannelType';
+import { ChannelCategory } from '../../enums/ChannelCategory';
 
 interface TeamData {
   name: string;
@@ -30,13 +33,56 @@ const CreateTeamModal: React.FC = () => {
       imageUrl = await uploadImage(imageFile);
     }
 
-    await createTeam(
+    const teamId = await createTeam(
       teamData.name,
       currentUser.userData!.username,
       [...participants, currentUser.userData!.username],
       teamData.isPrivate,
       imageUrl
     );
+
+    const channelPromises = [
+      createChannel(
+        'Welcome and Rules',
+        currentUser.userData!.username,
+        [...participants, currentUser.userData!.username],
+        ChannelType.TEAM,
+        teamData.isPrivate,
+        teamId,
+        ChannelCategory.INFORMATION
+      ),
+      createChannel(
+        'Announcements',
+        currentUser.userData!.username,
+        [...participants, currentUser.userData!.username],
+        ChannelType.TEAM,
+        teamData.isPrivate,
+        teamId,
+        ChannelCategory.INFORMATION
+      ),
+      createChannel(
+        'General',
+        currentUser.userData!.username,
+        [...participants, currentUser.userData!.username],
+        ChannelType.TEAM,
+        teamData.isPrivate,
+        teamId,
+        ChannelCategory.TEXT_CHANNELS
+      ),
+      createChannel(
+        'Off-topic',
+        currentUser.userData!.username,
+        [...participants, currentUser.userData!.username],
+        ChannelType.TEAM,
+        teamData.isPrivate,
+        teamId,
+        ChannelCategory.TEXT_CHANNELS
+      ),
+    ];
+
+    const channelIds = await Promise.all(channelPromises);
+
+    await addChannelsToTeam(teamId, channelIds);
 
     setTeamData(initialTeamData);
     setParticipants([]);

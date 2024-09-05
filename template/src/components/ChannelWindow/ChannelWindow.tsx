@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Channel } from '../../models/Channel.ts';
 import { BsArrowReturnLeft } from 'react-icons/bs';
 import { useAuth } from '../../providers/AuthProvider.tsx';
@@ -20,6 +20,7 @@ import { SiGiphy } from 'react-icons/si';
 import GiphySearch from '../GiphySearch/GiphySearch.tsx';
 import DragZone from '../DragZone/DragZone.tsx';
 import { uploadImage } from '../../services/storage.service.ts';
+import { UserRole } from '../../enums/UserRole.ts';
 
 interface ChannelWindowProps {
   channel: Channel;
@@ -98,14 +99,16 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
     );
   };
 
+  const canAddParticipants = (): boolean => {
+    const userRole =
+      channel?.participants[currentUser.userData!.username]?.role;
+    return userRole === UserRole.OWNER || userRole === UserRole.MODERATOR;
+  };
+
   const handleAddClick = async (): Promise<void> => {
     const currentChannelParticipants = Object.keys(channel.participants);
 
-    if (channel.type === ChannelType.GROUP) {
-      participants.forEach(participant =>
-        addChannelParticipant(channel.id, participant)
-      );
-    } else {
+    if (channel.type === ChannelType.DIRECT) {
       const newChannelParticipants = [
         ...currentChannelParticipants,
         ...participants,
@@ -117,7 +120,11 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
         newChannelParticipants,
         ChannelType.GROUP,
         channel.isPrivate,
-        channel.team
+        channel.teamId
+      );
+    } else {
+      participants.forEach(participant =>
+        addChannelParticipant(channel.id, participant)
       );
     }
 
@@ -176,30 +183,32 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   return (
     <div className="flex flex-col h-full">
       <header className="basis-2/10 h-auto flex flex-shrink-0 flex-row-reverse justify-between pb-6">
-        <div className="dropdown dropdown-bottom dropdown-end">
-          <button
-            tabIndex={0}
-            className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
-          >
-            Add Participant
-          </button>
-          <div
-            tabIndex={0}
-            className="inline-block dropdown-content menu bg-base-100 rounded-box z-[1] w-96 p-6 shadow"
-          >
-            <ParticipantsInput
-              participants={participants}
-              setParticipants={setParticipants}
-              channelParticipants={Object.keys(channel?.participants || {})}
-            />
+        {canAddParticipants() && (
+          <div className="dropdown dropdown-bottom dropdown-end">
             <button
-              className="mt-6 text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
-              onClick={handleAddClick}
+              tabIndex={0}
+              className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
             >
-              Add
+              Add Participant
             </button>
+            <div
+              tabIndex={0}
+              className="inline-block dropdown-content menu bg-base-100 rounded-box z-[1] w-96 p-6 shadow"
+            >
+              <ParticipantsInput
+                participants={participants}
+                setParticipants={setParticipants}
+                channelParticipants={Object.keys(channel?.participants || {})}
+              />
+              <button
+                className="mt-6 text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
+                onClick={handleAddClick}
+              >
+                Add
+              </button>
+            </div>
           </div>
-        </div>
+        )}
         <div
           className="tooltip tooltip-bottom"
           data-tip={`Channel participants: ${Object.keys(
