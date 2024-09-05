@@ -72,13 +72,14 @@ export const transformTeamData = async (data: Partial<Team>): Promise<Team> => {
     name: data.name || 'Untitled Team',
     owner: data.owner || '',
     members: membersObject,
-    channels: Object.keys(data.channels || {}),
+    channels: data.channels || undefined,
     meetings: data.meetings || [],
     createdOn: data.createdOn || Date.now(),
     isPrivate: data.isPrivate || false,
     imageUrl: data.imageUrl || '',
   };
 };
+
 export const transformUserToFriend = (
   userData: UserData,
   friendshipStatus: FriendType
@@ -124,6 +125,7 @@ export const transformChannelData = async (
     lastMessageAt: data.lastMessageAt || undefined,
     activeMeetingId: data.activeMeetingId || '',
     category: data.category,
+    imageUrl: data.imageUrl,
   };
 };
 
@@ -170,4 +172,18 @@ export const getChannelName = (
       return filteredParticipants.join(', ').concat(` and ${myUsername}`);
     }
   }
+};
+export const getChannelImage = (
+  channel: Channel,
+  currentUsername: string
+): string | null => {
+  if (channel.type === ChannelType.GROUP) {
+    return channel.imageUrl || null;
+  } else if (channel.type === ChannelType.DIRECT) {
+    const otherParticipant = Object.values(channel.participants).find(
+      participant => participant.username !== currentUsername
+    );
+    return otherParticipant?.avatarUrl || otherParticipant!.username;
+  }
+  return null;
 };

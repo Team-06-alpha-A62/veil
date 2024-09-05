@@ -21,7 +21,6 @@ const Channels: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>(
     ChannelType.GROUP
   );
-
   const handleOpenChannelClick = (channel: Channel): void => {
     navigate(`/app/chats/${channel.id}`);
   };
@@ -71,6 +70,10 @@ const Channels: React.FC = () => {
       : channelsData.filter(channel => channel.type === ChannelType.DIRECT);
   }, [selectedCategory, channelsData]);
 
+  const activeChannel = channelsData.find(
+    channel => channel.id === openedChannel
+  );
+
   return (
     <>
       <div className="flex gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full">
@@ -102,6 +105,7 @@ const Channels: React.FC = () => {
                     key={channel.id}
                     channel={channel}
                     handleClick={handleOpenChannelClick}
+                    isTeamChannel={false}
                   />
                 );
               })
@@ -112,14 +116,14 @@ const Channels: React.FC = () => {
             )}
           </div>
         </div>
-        <main className="basis-3/4 mb-12 ">
-          <ChannelWindow
-            channel={
-              channelsData.find(
-                channel => channel.id === openedChannel
-              ) as Channel
-            }
-          />
+        <main className="basis-3/4 mb-12">
+          {activeChannel ? (
+            <ChannelWindow channel={activeChannel} />
+          ) : (
+            <div className="text-center text-primary  mt-4">
+              Please select a channel to view.
+            </div>
+          )}
         </main>
       </div>
     </>

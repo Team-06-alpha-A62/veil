@@ -1,19 +1,37 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { BsThreeDotsVertical } from 'react-icons/bs';
+import { useState, useRef, useEffect } from 'react';
+import { BsThreeDotsVertical, BsXCircle, BsCheckCircle } from 'react-icons/bs';
 import { Channel } from '../../models/Channel.ts';
 import { useAuth } from '../../providers/AuthProvider';
 import { leaveChannel } from '../../services/user.service.ts';
 import { ChannelType } from '../../enums/ChannelType.ts';
-import { getChannelName } from '../../utils/TransformDataHelpers.ts';
+import {
+  getChannelImage,
+  getChannelName,
+} from '../../utils/TransformDataHelpers.ts';
+import ChannelCardMenu from '../ChannelCardMenu/ChannelCardMenu.tsx';
+import DragZone from '../DragZone/DragZone.tsx';
+import { FaUserGroup } from 'react-icons/fa6';
+import { uploadImage, deleteImage } from '../../services/storage.service.ts';
+import { changeChannelImage } from '../../services/channel.service.ts';
 
 interface ChannelCardProps {
   channel: Channel;
   handleClick: (channel: Channel) => void;
+  isTeamChannel?: boolean;
 }
 
-const ChannelCard: React.FC<ChannelCardProps> = ({ channel, handleClick }) => {
+const ChannelCard: React.FC<ChannelCardProps> = ({
+  channel,
+  handleClick,
+  isTeamChannel = false,
+}) => {
   const { currentUser } = useAuth();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isEditingImage, setIsEditingImage] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [isImageRemoved, setIsImageRemoved] = useState(false);
+
   const threeDotsButtonRef = useRef<HTMLButtonElement>(null);
   const channelCardMenuRef = useRef<HTMLDivElement>(null);
   const currentUsername = currentUser.userData!.username;
@@ -43,72 +61,143 @@ const ChannelCard: React.FC<ChannelCardProps> = ({ channel, handleClick }) => {
     await leaveChannel(channel.id, currentUser.userData!.username);
   };
 
-  const popupItems = useMemo(() => {
-    const isOwner = channel.owner === currentUsername;
-    const isGroup = channel.type === ChannelType.GROUP;
-
-    const actions: Record<string, () => void> = {
-      'Change Icon': () => console.log('Change Icon clicked'),
-      'Mute Conversation': () => console.log('Mute Conversation clicked'),
-    };
-
-    if (isOwner) {
-      actions['Edit Channel'] = () => console.log('Edit Channel clicked');
-      if (isGroup) {
-        actions['Leave Group'] = () => onLeaveChannel();
-      }
-    }
-
-    return actions;
-  }, [channel, currentUsername]);
-
-  const handleMenuToggle = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    setIsMenuVisible(prev => !prev);
+  const handleFileChange = (file: File) => {
+    setImageFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreviewUrl(previewUrl);
+    setIsImageRemoved(false);
   };
+
+  const onSaveImage = async () => {
+    if (isImageRemoved) {
+      if (channel.imageUrl) await deleteImage(channel.imageUrl);
+      await changeChannelImage(channel.id, '');
+    } else if (imageFile) {
+      const imageUrl = await uploadImage(imageFile);
+      await changeChannelImage(channel.id, imageUrl);
+    }
+    setImagePreviewUrl(null);
+    setIsEditingImage(false);
+    setIsImageRemoved(false);
+  };
+
+  const onRemoveImage = () => {
+    setImageFile(null);
+    setImagePreviewUrl(null);
+    setIsImageRemoved(true);
+  };
+
+  const isOwner = channel.owner === currentUsername;
+  const isGroup = channel.type === ChannelType.GROUP;
+  const channelImage = getChannelImage(channel, currentUser.userData!.username);
 
   return (
     <div
       className="flex relative items-center p-6 border-b-2 border-base-100 justify-between hover:bg-base-300 hover:bg-opacity-50 cursor-pointer active:bg-opacity-0 transition-colors"
-      onClick={() => {
-        handleClick(channel);
-      }}
+      onClick={() => !isEditingImage && handleClick(channel)}
     >
-      <div className="flex items-center space-x-4">
-        <div className="avatar placeholder">
-          <div className="bg-neutral text-neutral-content w-14 skeleton rounded-full">
-            <span className="text-3xl">D</span>
+      <div
+        className={`flex items-center ${
+          isTeamChannel ? 'space-x-1  ' : 'space-x-4'
+        }`}
+      >
+        {!isTeamChannel && !isEditingImage ? (
+          <div className="avatar placeholder">
+            <div className="bg-base-300 text-neutral-content w-14 rounded-full">
+              {channelImage && !isImageRemoved ? (
+                channelImage.startsWith('http') ? (
+                  <img src={channelImage} alt="Channel" />
+                ) : (
+                  <span className="text-3xl">{channelImage}</span>
+                )
+              ) : (
+                <span className="text-3xl">
+                  <FaUserGroup />
+                </span>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          isEditingImage && (
+            <DragZone
+              handleFileChange={handleFileChange}
+              width={56}
+              height={56}
+              round={true}
+              imageUrl={imagePreviewUrl || (isImageRemoved ? '' : channelImage)}
+            />
+          )
+        )}
         <div>
           <h2 className="font-semibold text-m">
-            {getChannelName(currentUser.userData!.username, channel)}
+            {isEditingImage
+              ? 'Choose Image'
+              : getChannelName(currentUser.userData!.username, channel)}
           </h2>
+          {isEditingImage && (
+            <button
+              className="text-orange-500 mt-1 text-sm"
+              onClick={event => {
+                event.stopPropagation();
+                onRemoveImage();
+              }}
+            >
+              Remove Image
+            </button>
+          )}
         </div>
       </div>
       <div className="flex space-x-2 relative">
-        <button
-          className="text-gray-400 hover:text-primary-content"
-          onClick={handleMenuToggle}
-          ref={threeDotsButtonRef}
-        >
-          <BsThreeDotsVertical size={20} />
-        </button>
-        {isMenuVisible && (
-          <div
-            ref={channelCardMenuRef}
-            className="absolute left-4 bottom-1 bg-base-300 text-white shadow-lg rounded-lg w-48 z-10 list-none"
-          >
-            {Object.entries(popupItems).map(([itemName, action]) => (
-              <li
-                key={itemName}
-                className="p-2 hover:bg-base-200 cursor-pointer"
-                onClick={action}
-              >
-                {itemName}
-              </li>
-            ))}
+        {isEditingImage ? (
+          <div className="pr-1 flex flex-col gap-2">
+            <button
+              className="text-success"
+              onClick={event => {
+                event.stopPropagation();
+                onSaveImage();
+              }}
+            >
+              <BsCheckCircle size={20} />
+            </button>
+            <button
+              className="text-error"
+              onClick={event => {
+                event.stopPropagation();
+                setIsEditingImage(false);
+                setImagePreviewUrl(null);
+                setIsImageRemoved(false);
+              }}
+            >
+              <BsXCircle size={20} />
+            </button>
           </div>
+        ) : (
+          <>
+            <button
+              className="text-gray-400 hover:text-primary-content"
+              onClick={event => {
+                event.stopPropagation();
+                setIsMenuVisible(prev => !prev);
+              }}
+              ref={threeDotsButtonRef}
+            >
+              <BsThreeDotsVertical size={20} />
+            </button>
+            <div ref={channelCardMenuRef}>
+              {isMenuVisible && (
+                <ChannelCardMenu
+                  isTeamChannel={isTeamChannel}
+                  isOwner={isOwner}
+                  isGroup={isGroup}
+                  onLeaveChannel={onLeaveChannel}
+                  onChangeIcon={() => {
+                    setIsEditingImage(true);
+                    setIsMenuVisible(false);
+                  }}
+                />
+              )}
+            </div>
+          </>
         )}
       </div>
     </div>

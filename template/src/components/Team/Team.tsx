@@ -3,14 +3,22 @@ import { Channel } from '../../models/Channel';
 import { ChannelCategory } from '../../enums/ChannelCategory';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChannelWindow from '../ChannelWindow/ChannelWindow';
-import { listenToTeamChannels } from '../../services/teams.service';
+import {
+  listenToTeamChannels,
+  getTeamById,
+} from '../../services/teams.service';
 import { listenToIndividualChannel } from '../../services/channel.service';
+import ChannelCard from '../ChannelCard/ChannelCard';
+import { BsArrowLeftCircle } from 'react-icons/bs';
+import CreateTeamChannelModal from '../CreateTeamChannelModal/CreateTeamChannelModal';
+import { Team as TeamData } from '../../models/Team';
 
 const Team: React.FC = () => {
   const { teamId, channelId } = useParams<{
     teamId: string;
     channelId: string;
   }>();
+  const [team, setTeam] = useState<TeamData | null>(null);
   const [channels, setChannels] = useState<Channel[]>([]);
   const [activeChannelId, setActiveChannelId] = useState<string | null>(
     channelId || null
@@ -21,10 +29,23 @@ const Team: React.FC = () => {
     [ChannelCategory.INFORMATION]: false,
     [ChannelCategory.TEXT_CHANNELS]: false,
   });
-
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchTeam = async () => {
+      if (teamId) {
+        const fetchedTeam = await getTeamById(teamId);
+        if (fetchedTeam) {
+          setTeam(fetchedTeam);
+        } else {
+          console.log('Team not found');
+        }
+      }
+    };
+
+    fetchTeam();
+
     if (teamId) {
       const handleChannelsChange = (channels: Channel[]) => {
         setChannels(channels);
@@ -80,9 +101,20 @@ const Team: React.FC = () => {
 
   return (
     <div className="flex gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full">
-      <div className="w-1/4 p-4 rounded-lg">
-        <header className="flex justify-between mb-4">
-          <h3 className="font-bold text-lg">Channels</h3>
+      <div className="w-1/4 rounded-lg">
+        <header className="flex justify-between items-center mb-4">
+          <button
+            className="text-gray-400 hover:text-primary rounded-full p-2"
+            onClick={() => navigate('/app/teams')}
+          >
+            <BsArrowLeftCircle size={30} />
+          </button>
+          <button
+            className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
+            onClick={() => setIsModalOpen(true)}
+          >
+            Add Channel
+          </button>
         </header>
         {Object.entries(categorizedChannels).map(([category, channels]) => (
           <div key={category} className="mb-4">
@@ -97,31 +129,37 @@ const Team: React.FC = () => {
             </div>
             {!collapsedCategories[category as ChannelCategory] && (
               <ul className="pl-4">
-                {channels.map(channel => (
-                  <li
-                    key={channel.id}
-                    className={`p-2 cursor-pointer ${
-                      channel.id === activeChannelId ? 'bg-gray-700' : ''
-                    }`}
-                    onClick={() => handleChannelClick(channel)}
-                  >
-                    #{channel.name}
-                  </li>
-                ))}
+                {channels.map(channel => {
+                  return (
+                    <ChannelCard
+                      key={channel.id}
+                      channel={channel}
+                      handleClick={handleChannelClick}
+                      isTeamChannel={true}
+                    />
+                  );
+                })}
               </ul>
             )}
           </div>
         ))}
       </div>
-      <div className="flex-1 p-4 rounded-lg">
+      <main className="basis-3/4 mb-12">
         {activeChannel ? (
           <ChannelWindow channel={activeChannel} />
         ) : (
-          <div className="text-center text-gray-400 mt-4">
+          <div className="text-center text-primary mt-4">
             Please select a channel to view.
           </div>
         )}
-      </div>
+      </main>
+      {isModalOpen && team && (
+        <CreateTeamChannelModal
+          teamId={teamId!}
+          teamMembers={Object.keys(team.members)}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

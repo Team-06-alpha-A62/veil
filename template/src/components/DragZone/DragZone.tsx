@@ -5,7 +5,7 @@ interface DragZoneProps {
   width?: number;
   height?: number;
   round?: boolean;
-  imageUrl?: string;
+  imageUrl?: string | null;
 }
 
 const DragZone: React.FC<DragZoneProps> = ({

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import ParticipantsInput from '../ParticipantInput/ParticipantsInput';
 import { useAuth } from '../../providers/AuthProvider';
-import { addChannelsToTeam, createTeam } from '../../services/teams.service';
+import { createTeam } from '../../services/teams.service';
 import DragZone from '../DragZone/DragZone';
 import { uploadImage } from '../../services/storage.service';
 import { createChannel } from '../../services/channel.service';
@@ -15,7 +15,7 @@ interface TeamData {
 
 const initialTeamData = {
   name: '',
-  isPrivate: true,
+  isPrivate: false,
 };
 
 const CreateTeamModal: React.FC = () => {
@@ -80,9 +80,7 @@ const CreateTeamModal: React.FC = () => {
       ),
     ];
 
-    const channelIds = await Promise.all(channelPromises);
-
-    await addChannelsToTeam(teamId, channelIds);
+    await Promise.all(channelPromises);
 
     setTeamData(initialTeamData);
     setParticipants([]);

@@ -12,7 +12,8 @@ export const createChannel = async (
   type: ChannelType,
   isPrivate: boolean,
   teamId: string | null = null,
-  category?: ChannelCategory
+  category?: ChannelCategory,
+  imageUrl?: string
 ): Promise<string> => {
   const participants: Record<string, boolean> = participantsUsernames.reduce(
     (acc: Record<string, boolean>, participant: string) => {
@@ -33,14 +34,18 @@ export const createChannel = async (
     createdOn: Date.now(),
   };
 
+  if (imageUrl) {
+    newChannel.imageUrl = imageUrl;
+  }
+
   if (category) {
     newChannel.category = category;
   }
-
   const result = await push(ref(db, 'channels'), newChannel);
   const newChannelId = result.key as string;
 
-  const updateObject = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const updateObject: Record<string, any> = {
     [`channels/${newChannelId}/id`]: newChannelId,
     ...participantsUsernames.reduce(
       (acc: Record<string, boolean>, participant: string) => {
@@ -51,11 +56,14 @@ export const createChannel = async (
     ),
   };
 
+  if (teamId && category) {
+    updateObject[`teams/${teamId}/channels/${category}/${newChannelId}`] = true;
+  }
+
   await update(ref(db), updateObject);
 
   return newChannelId;
 };
-
 export const getChannelByHandle = async (handle: string): Promise<Channel> => {
   const snapshot = await get(ref(db, `channels/${handle}`));
   if (!snapshot.exists()) throw new Error('Could not find channel.');
@@ -185,4 +193,14 @@ export const listenToIndividualChannel = (
       onChannelUpdate(updatedChannel);
     }
   });
+};
+
+export const changeChannelImage = async (
+  channelId: string,
+  imageUrl: string
+): Promise<void> => {
+  const updateObject = {
+    [`channels/${channelId}/imageUrl`]: imageUrl,
+  };
+  await update(ref(db), updateObject);
 };

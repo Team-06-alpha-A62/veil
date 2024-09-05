@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../../providers/AuthProvider.tsx';
 
 interface ParticipantsInputProps {
   participants: string[];
   setParticipants: (participants: string[]) => void;
   channelParticipants?: string[] | undefined;
+  teamMembers?: string[];
+  disabled?: boolean;
 }
 
 const ParticipantsInput: React.FC<ParticipantsInputProps> = ({
   participants,
   setParticipants,
   channelParticipants,
+  teamMembers = [],
+  disabled = false,
 }) => {
   const { currentUser } = useAuth();
   const [participantsInput, setParticipantsInput] = useState<string>('');
@@ -24,7 +28,7 @@ const ParticipantsInput: React.FC<ParticipantsInputProps> = ({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setParticipantsInput(event.target.value);
+    setParticipantsInput(value);
     if (value.length > 0) {
       setIsOpen(true);
     } else {
@@ -39,21 +43,23 @@ const ParticipantsInput: React.FC<ParticipantsInputProps> = ({
     }
   };
 
-  const renderFilteredFriends = () => {
-    const filteredFriends = currentUser.userData!.friends.filter(
-      friend =>
+  const renderFilteredParticipants = () => {
+    const filteredParticipants = (
+      teamMembers.length > 0 ? teamMembers : currentUser.userData!.friends
+    ).filter(
+      user =>
         participantsInput &&
-        friend.toLowerCase().includes(participantsInput.toLowerCase()) &&
-        !channelParticipants?.includes(friend)
+        user.toLowerCase().includes(participantsInput.toLowerCase()) &&
+        !channelParticipants?.includes(user)
     );
 
-    if (filteredFriends.length === 0) {
-      return <p>No friend found</p>;
+    if (filteredParticipants.length === 0) {
+      return <p>No participant found</p>;
     }
 
-    return filteredFriends.map(friend => (
-      <li key={friend} onClick={() => handleParticipantClick(friend)}>
-        <a>{friend}</a>
+    return filteredParticipants.map(user => (
+      <li key={user} onClick={() => handleParticipantClick(user)}>
+        <a>{user}</a>
       </li>
     ));
   };
@@ -83,14 +89,15 @@ const ParticipantsInput: React.FC<ParticipantsInputProps> = ({
           value={participantsInput}
           onChange={handleInputChange}
           className="input bg-transparent input-sm flex-grow rounded-3xl border-none focus:outline-none"
+          disabled={disabled}
         />
       </div>
-      {isOpen && (
+      {isOpen && !disabled && (
         <ul
           tabIndex={0}
           className="menu dropdown-content bg-base-200 rounded-box z-[1] w-52 p-2 shadow"
         >
-          {renderFilteredFriends()}
+          {renderFilteredParticipants()}
         </ul>
       )}
     </div>
