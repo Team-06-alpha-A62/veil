@@ -55,6 +55,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
   const isOwner = channel.owner === currentUsername;
   const isGroup = channel.type === ChannelType.GROUP;
   const channelImage = getChannelImage(channel, currentUser.userData!.username);
+
   return (
     <div
       className="flex relative items-center p-6 border-b-2 border-base-100 justify-between hover:bg-base-300 hover:bg-opacity-50 cursor-pointer active:bg-opacity-0 transition-colors"

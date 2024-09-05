@@ -11,6 +11,7 @@ import {
 import { getUserByHandle } from './user.service';
 import { Participant } from '../models/Participant';
 import { Channel } from '../models/Channel';
+import { ChannelCategory } from '../enums/ChannelCategory';
 
 export const createTeam = async (
   name: string,
@@ -34,8 +35,6 @@ export const createTeam = async (
     name,
     owner,
     members: membersObject,
-    channels: [],
-    meetings: [],
     createdOn,
     isPrivate,
     imageUrl,
@@ -64,7 +63,11 @@ export const fetchAllTeams = async (): Promise<Team[]> => {
 export const getTeamChannels = async (teamId: string): Promise<Channel[]> => {
   const teamChannelsRef = ref(db, `teams/${teamId}/channels`);
   const snapshot = await get(teamChannelsRef);
-  const channelIds = Object.keys(snapshot.val() || {});
+  const channelsData = snapshot.val() || {};
+
+  const channelIds = Object.values(channelsData).flatMap(category =>
+    Object.keys(category || {})
+  );
 
   const channels = await Promise.all(
     channelIds.map(async channelId => {
@@ -81,7 +84,6 @@ export const getTeamChannels = async (teamId: string): Promise<Channel[]> => {
 
   return channels.filter(channel => channel !== null) as Channel[];
 };
-
 export const listenToTeamsChange = (
   changeTeams: (teams: Team[]) => void
 ): (() => void) => {
@@ -133,6 +135,7 @@ export const listenToTeamChannels = (
   const unsubscribe = onValue(teamChannelsRef, async () => {
     try {
       const channels = await getTeamChannels(teamId);
+
       onChannelsChange(channels);
     } catch (error) {
       console.error('Failed to fetch or listen to team channels', error);
@@ -146,17 +149,13 @@ export const listenToTeamChannels = (
 
 export const addChannelsToTeam = async (
   teamId: string,
-  channelIds: string[]
+  channels: { id: string; category: ChannelCategory }[]
 ): Promise<void> => {
-  const teamRef = ref(db, `teams/${teamId}/channels`);
+  const updates: Record<string, boolean> = {};
 
-  const channelsObject = channelIds.reduce(
-    (acc: Record<string, boolean>, channelId) => {
-      acc[channelId] = true;
-      return acc;
-    },
-    {}
-  );
+  channels.forEach(({ id, category }) => {
+    updates[`teams/${teamId}/channels/${category}/${id}`] = true;
+  });
 
-  await update(teamRef, channelsObject);
+  await update(ref(db), updates);
 };

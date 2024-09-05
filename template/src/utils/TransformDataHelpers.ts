@@ -71,13 +71,14 @@ export const transformTeamData = async (data: Partial<Team>): Promise<Team> => {
     name: data.name || 'Untitled Team',
     owner: data.owner || '',
     members: membersObject,
-    channels: Object.keys(data.channels || {}),
+    channels: data.channels || undefined,
     meetings: data.meetings || [],
     createdOn: data.createdOn || Date.now(),
     isPrivate: data.isPrivate || false,
     imageUrl: data.imageUrl || '',
   };
 };
+
 export const transformUserToFriend = (
   userData: UserData,
   friendshipStatus: FriendType
@@ -123,6 +124,7 @@ export const transformChannelData = async (
     lastMessageAt: data.lastMessageAt || undefined,
     activeMeetingId: data.activeMeetingId || '',
     category: data.category,
+    imageUrl: data.imageUrl,
   };
 };
 

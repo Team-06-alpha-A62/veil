@@ -18,6 +18,12 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onlineMembersCount }) => {
     navigate(`/app/teams/${team.id}`);
   };
 
+  // Calculate the total number of channels across all categories
+  const totalChannels = Object.values(team.channels || {}).reduce(
+    (count, category) => count + Object.keys(category).length,
+    0
+  );
+
   return (
     <div className="relative bg-gray-800 text-white rounded-lg p-3 w-full shadow-lg flex flex-col items-center group">
       <h3 className="text-xl font-bold pb-2">{team.name}</h3>
@@ -29,7 +35,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onlineMembersCount }) => {
       ></div>
       <div className="flex justify-between w-full p-4">
         <div className="text-center">
-          <p className="font-semibold">{Object.keys(team.channels).length}</p>
+          <p className="font-semibold">{totalChannels}</p>
           <p className="text-gray-400">Channels</p>
         </div>
         <div className="text-center">

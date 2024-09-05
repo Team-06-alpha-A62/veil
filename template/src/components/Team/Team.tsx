@@ -63,7 +63,6 @@ const Team: React.FC = () => {
       [ChannelCategory.TEXT_CHANNELS]: [],
     }
   );
-
   const handleChannelClick = (channel: Channel) => {
     setActiveChannelId(channel.id);
     navigate(`/app/teams/${teamId}/channels/${channel.id}`);
