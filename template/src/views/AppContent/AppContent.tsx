@@ -9,6 +9,7 @@ import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from '../../hoc/ProtectedRoute';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Team from '../../components/Team/Team';
+
 const AppContent = () => {
   return (
     <ProtectedRoute>

@@ -15,22 +15,12 @@ import { transformNoteData } from '../utils/TransformDataHelpers.ts';
 export const createNote = async (
   title: string,
   username: string,
-  tags: string[],
   label: string
 ): Promise<string> => {
-  const tagsObject: Record<string, boolean> = tags.reduce(
-    (acc: Record<string, boolean>, tag: string) => {
-      acc[tag] = true;
-      return acc;
-    },
-    {}
-  );
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const newNote: Record<string, any> = {
     title,
     username,
-    tagsObject,
     label,
     createdOn: Date.now(),
   };
@@ -47,6 +37,18 @@ export const createNote = async (
   return newNoteId;
 };
 
+export const deleteNote = async (
+  noteHandle: string,
+  userHandle: string
+): Promise<void> => {
+  const updateObject = {
+    [`notes/${noteHandle}`]: null,
+    [`users/${userHandle}/notes/${noteHandle}`]: null,
+  };
+
+  await update(ref(db), updateObject);
+};
+
 export const getNoteByHandle = async (noteHandle: string): Promise<Note> => {
   const snapshot = await get(ref(db, `notes/${noteHandle}`));
   if (!snapshot.exists()) throw new Error('Could not find note.');
@@ -59,7 +61,7 @@ export const getUserNotes = async (username: string): Promise<Note[]> => {
   const snapshot = await get(
     query(ref(db, 'notes'), orderByChild('username'), equalTo(username))
   );
-  if (!snapshot.exists()) throw new Error('No notes found!');
+  if (!snapshot.exists()) return [];
 
   const notesData = snapshot.val();
 
@@ -68,28 +70,6 @@ export const getUserNotes = async (username: string): Promise<Note[]> => {
   );
 
   return transformedNotesData;
-};
-
-export const addTagToNote = async (
-  noteHandle: string,
-  newTag: string
-): Promise<void> => {
-  const updateObject = {
-    [`notes/${noteHandle}/tags/${newTag}`]: true,
-  };
-
-  await update(ref(db), updateObject);
-};
-
-export const removeTagFromNote = async (
-  noteHandle: string,
-  tagToRemove: string
-): Promise<void> => {
-  const updateObject = {
-    [`notes/${noteHandle}/tags/${tagToRemove}`]: null,
-  };
-
-  await update(ref(db), updateObject);
 };
 
 export const updateNote = async (

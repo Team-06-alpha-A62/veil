@@ -142,14 +142,13 @@ export const transformTeamMemberData = (
 };
 
 export const transformNoteData = (
-  data: Partial<Note> & { tagsObject?: Record<string, boolean> }
+  data: Partial<Note> & { tags?: Record<string, boolean> }
 ): Note => {
   return {
     title: data.title || '',
     username: data.username || 'Unknown Username',
     id: data.id || '',
     createdOn: data.createdOn || 0,
-    tags: Object.keys(data.tagsObject || {}),
     content: data.content || '',
     label: data.label || '',
   };

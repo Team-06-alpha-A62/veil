@@ -6,24 +6,22 @@ import { debounce } from 'lodash';
 import dayjs from 'dayjs';
 
 const SingleNoteDetailsModal: React.FC = () => {
-  const { isOpen, note, closeModal } = useNoteModal();
+  const { isOpen, note, closeModal, modalPosition, setModalPosition } =
+    useNoteModal();
   const [title, setTitle] = useState(note?.title || '');
   const [content, setContent] = useState(note?.content || '');
-  const [tags, setTags] = useState<string[]>(note?.tags || []);
-  const [tagsInput, setTagsInput] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (note) {
       setTitle(note.title);
       setContent(note.content || '');
-      setTags(note.tags);
     }
   }, [note]);
 
   const debouncedSave = debounce(() => {
     if (note) {
-      updateNote(note.id, { title, content, tags });
+      updateNote(note.id, { title, content });
     }
     setIsLoading(false);
   }, 500);
@@ -33,12 +31,13 @@ const SingleNoteDetailsModal: React.FC = () => {
     if (note) {
       debouncedSave();
     }
+
     // Cancel debounce on cleanup
     return () => {
       debouncedSave.cancel();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, content, tags]);
+  }, [title, content]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -48,15 +47,23 @@ const SingleNoteDetailsModal: React.FC = () => {
     setContent(e.target.value);
   };
 
-  const handleRemoveTag = (tagIndex: number): void => {
-    const updatedTags = tags.filter((_, index) => index !== tagIndex);
-    setTags(updatedTags);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleDragStop = (event: any, data: { x: number; y: number }) => {
+    setModalPosition({ x: data.x, y: data.y });
+    localStorage.setItem(
+      'modalPosition',
+      JSON.stringify({ x: data.x, y: data.y })
+    );
   };
 
   if (!isOpen || !note) return null;
 
   return (
-    <Draggable handle=".handle">
+    <Draggable
+      handle=".handle"
+      defaultPosition={{ x: modalPosition.x, y: modalPosition.y }}
+      onStop={handleDragStop}
+    >
       <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center z-10 pointer-events-none">
         <div className="relative w-1/5 h-auto bg-base-100 text-white rounded-3xl flex flex-col pointer-events-auto shadow-lg">
           <div
@@ -69,7 +76,7 @@ const SingleNoteDetailsModal: React.FC = () => {
             </div>
             <button onClick={closeModal}>&times;</button>
           </div>
-          <div className="px-4">
+          <div className="px-4 pt-4">
             <input
               className="text-lg font-semibold bg-transparent focus:outline-none"
               type="text"
@@ -83,25 +90,6 @@ const SingleNoteDetailsModal: React.FC = () => {
             <p className="font-light text-sm opacity-50">
               Created: {dayjs(note.createdOn).format('D MMMM YYYY [at] HH:mm')}
             </p>
-            <div className="mt-3">
-              {tags.map((tag, index) => (
-                <div key={tag} className="mr-2 badge badge-primary">
-                  <span>{tag}</span>
-                  <span
-                    className="ml-1 cursor-pointer"
-                    onClick={() => handleRemoveTag(index)}
-                  >
-                    &times;
-                  </span>
-                </div>
-              ))}
-              <input
-                type="text"
-                value={tagsInput}
-                onChange={e => setTagsInput(e.target.value)}
-                className="input bg-transparent input-sm flex-grow rounded-3xl border-none focus:outline-none"
-              />
-            </div>
           </div>
 
           <textarea

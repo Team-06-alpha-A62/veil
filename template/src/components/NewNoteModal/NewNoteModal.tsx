@@ -6,14 +6,12 @@ import { useAuth } from '../../providers/AuthProvider.tsx';
 interface newNoteState {
   title: string;
   createdOn: number;
-  tagsInput: string;
   content: string | null;
 }
 
 const initialNoteData: newNoteState = {
   title: '',
   content: null,
-  tagsInput: '',
   createdOn: 0,
 };
 
@@ -30,7 +28,6 @@ const labelColors: Record<string, string> = {
 const NewNoteModal: React.FC = () => {
   const { currentUser } = useAuth();
   const [showNewNoteModal, setShowNewNoteModal] = useState<boolean>(false);
-  const [tags, setTags] = useState<string[]>([]);
   const [newNoteData, setNewNoteData] = useState<newNoteState>(initialNoteData);
   const [selectedLabel, setSelectedLabel] = useState<string>(
     labelColors.indigo
@@ -54,25 +51,6 @@ const NewNoteModal: React.FC = () => {
     setShowNewNoteModal(prevValue => !prevValue);
   };
 
-  const handleRemoveTag = (tagIndex: number): void => {
-    setTags(tags.filter((_, index) => index !== tagIndex));
-  };
-
-  const handleTagKeydown = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ): void => {
-    if (
-      (event.key === 'Enter' || event.key === ' ') &&
-      newNoteData.tagsInput.trim()
-    ) {
-      event.preventDefault();
-      if (!tags.includes(newNoteData.tagsInput.trim())) {
-        setTags([...tags, newNoteData.tagsInput.trim()]);
-        setNewNoteData({ ...newNoteData, tagsInput: '' });
-      }
-    }
-  };
-
   const handleInputChange =
     (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
       setNewNoteData({
@@ -85,12 +63,10 @@ const NewNoteModal: React.FC = () => {
     await createNote(
       newNoteData.title,
       currentUser.userData!.username,
-      tags,
       selectedLabel
     );
     setShowNewNoteModal(false);
     setSelectedLabel(labelColors.indigo);
-    setTags([]);
     setNewNoteData(initialNoteData);
   };
 
@@ -130,38 +106,6 @@ const NewNoteModal: React.FC = () => {
                   className="input input-sm w-full rounded-3xl bg-base-200 bg-opacity-50 focus:border-transparent focus:outline-accent"
                 />
               </label>
-              <div className="form-control w-full gap-2">
-                <label htmlFor="participants" className="label">
-                  <span className="label-text">Tags</span>
-                  <span className="badge badge-accent badge-outline text-accent">
-                    Optional
-                  </span>
-                </label>
-
-                <div className="flex items-center gap-2 flex-wrap rounded-3xl bg-base-200 bg-opacity-50">
-                  {tags.map((tag, index) => (
-                    <div key={tag} className="flex items-center gap-1">
-                      <span className="badge badge-primary text-primary-content gap-1">
-                        {tag}
-                        <span
-                          onClick={() => handleRemoveTag(index)}
-                          className="cursor-pointer text-primary-content hover:text-gray-800"
-                        >
-                          &times;
-                        </span>
-                      </span>
-                    </div>
-                  ))}
-
-                  <input
-                    type="text"
-                    value={newNoteData.tagsInput}
-                    onChange={handleInputChange('tagsInput')}
-                    onKeyDown={handleTagKeydown}
-                    className="input bg-transparent input-sm flex-grow rounded-3xl border-none focus:outline-none"
-                  />
-                </div>
-              </div>
               <div className="flex gap-3 flex-col">
                 <span className="label-text">Label</span>
                 <div className="flex gap-2">

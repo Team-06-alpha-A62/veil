@@ -12,15 +12,23 @@ const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <NoteModalProvider>
-          <Routes>
-            <Route index path="/app/*" element={<AppContent />} />
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Routes>
-          <SingleNoteDetailsModal />
-        </NoteModalProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+
+          <Route
+            index
+            path="/app/*"
+            element={
+              <NoteModalProvider>
+                <AppContent />
+                <SingleNoteDetailsModal />
+              </NoteModalProvider>
+            }
+          />
+
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
       </AuthProvider>
     </BrowserRouter>
   );
