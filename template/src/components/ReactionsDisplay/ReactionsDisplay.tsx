@@ -18,13 +18,13 @@ const ReactionsDisplay: React.FC<ReactionsDisplayProps> = ({ reactions }) => {
   );
 
   return (
-    <div className="flex space-x-2 mt-2 absolute  -top-3 left-2 transform translate-y-full">
+    <div className="flex space-x-1 mt-1 absolute bottom-[10px] left-0 transform translate-y-full">
       {Object.entries(aggregatedReactions).map(([emojiId, count]) => (
         <div
           key={emojiId}
-          className="flex items-center space-x-1 bg-gray-600 rounded-full px-2 py-1 text-sm"
+          className="flex items-center space-x-1 bg-gray-500 rounded-full px-1 py-0.5 text-xs"
         >
-          <Emoji unified={emojiId} size={16} />
+          <Emoji unified={emojiId} size={12} />
           <span>{count}</span>
         </div>
       ))}

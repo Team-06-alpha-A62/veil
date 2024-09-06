@@ -1,5 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { BsThreeDotsVertical, BsXCircle, BsCheckCircle } from 'react-icons/bs';
+import {
+  BsThreeDotsVertical,
+  BsXCircle,
+  BsCheckCircle,
+  BsLock,
+} from 'react-icons/bs';
 import { Channel } from '../../models/Channel.ts';
 import { useAuth } from '../../providers/AuthProvider';
 import { leaveChannel } from '../../services/user.service.ts';
@@ -13,6 +18,7 @@ import DragZone from '../DragZone/DragZone.tsx';
 import { FaUserGroup } from 'react-icons/fa6';
 import { uploadImage, deleteImage } from '../../services/storage.service.ts';
 import { changeChannelImage } from '../../services/channel.service.ts';
+import ManageChannelModal from '../ManageChannelModal/ManageChannelModal.tsx';
 
 interface ChannelCardProps {
   channel: Channel;
@@ -31,6 +37,8 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [isImageRemoved, setIsImageRemoved] = useState(false);
+  const [isManageChannelModalOpen, setIsManageChannelModalOpen] =
+    useState(false);
 
   const threeDotsButtonRef = useRef<HTMLButtonElement>(null);
   const channelCardMenuRef = useRef<HTMLDivElement>(null);
@@ -87,18 +95,28 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
     setIsImageRemoved(true);
   };
 
-  const isOwner = channel.owner === currentUsername;
+  const userRole = channel.participants[currentUser.userData!.username].role;
+
   const isGroup = channel.type === ChannelType.GROUP;
-  const channelImage = getChannelImage(channel, currentUser.userData!.username);
+  const channelImage = getChannelImage(channel, currentUsername);
+
+  const isParticipant = channel.participants?.[currentUsername];
+  const isPrivateChannel = channel.isPrivate;
 
   return (
     <div
-      className="flex relative items-center p-6 border-b-2 border-base-100 justify-between hover:bg-base-300 hover:bg-opacity-50 cursor-pointer active:bg-opacity-0 transition-colors"
-      onClick={() => !isEditingImage && handleClick(channel)}
+      className={`flex relative items-center p-6 border-b-2 border-base-100 justify-between 
+    ${
+      isPrivateChannel && !isParticipant
+        ? 'cursor-not-allowed'
+        : 'cursor-pointer'
+    } 
+    hover:bg-base-300 hover:bg-opacity-50 active:bg-opacity-0 transition-colors`}
+      onClick={() => !isEditingImage && isParticipant && handleClick(channel)}
     >
       <div
         className={`flex items-center ${
-          isTeamChannel ? 'space-x-1  ' : 'space-x-4'
+          isTeamChannel ? 'space-x-1' : 'space-x-4'
         }`}
       >
         {!isTeamChannel && !isEditingImage ? (
@@ -132,7 +150,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
           <h2 className="font-semibold text-m">
             {isEditingImage
               ? 'Choose Image'
-              : getChannelName(currentUser.userData!.username, channel)}
+              : getChannelName(currentUsername, channel)}
           </h2>
           {isEditingImage && (
             <button
@@ -173,30 +191,45 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
           </div>
         ) : (
           <>
-            <button
-              className="text-gray-400 hover:text-primary-content"
-              onClick={event => {
-                event.stopPropagation();
-                setIsMenuVisible(prev => !prev);
-              }}
-              ref={threeDotsButtonRef}
-            >
-              <BsThreeDotsVertical size={20} />
-            </button>
+            {isPrivateChannel && !isParticipant ? (
+              <BsLock size={20} className="text-gray-400" />
+            ) : (
+              <button
+                className="text-gray-400 hover:text-primary-content"
+                onClick={event => {
+                  event.stopPropagation();
+                  setIsMenuVisible(prev => !prev);
+                }}
+                ref={threeDotsButtonRef}
+              >
+                <BsThreeDotsVertical size={20} />
+              </button>
+            )}
             <div ref={channelCardMenuRef}>
               {isMenuVisible && (
                 <ChannelCardMenu
                   isTeamChannel={isTeamChannel}
-                  isOwner={isOwner}
+                  userRole={userRole}
                   isGroup={isGroup}
                   onLeaveChannel={onLeaveChannel}
                   onChangeIcon={() => {
                     setIsEditingImage(true);
                     setIsMenuVisible(false);
                   }}
+                  onManageChannel={() => {
+                    setIsManageChannelModalOpen(true);
+                    setIsMenuVisible(false);
+                  }}
                 />
               )}
             </div>
+            {isManageChannelModalOpen && (
+              <ManageChannelModal
+                channel={channel}
+                onClose={() => setIsManageChannelModalOpen(false)}
+                currentUsername={currentUsername}
+              />
+            )}
           </>
         )}
       </div>

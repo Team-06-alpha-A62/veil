@@ -12,8 +12,10 @@ import ChannelCard from '../ChannelCard/ChannelCard';
 import { BsArrowLeftCircle } from 'react-icons/bs';
 import CreateTeamChannelModal from '../CreateTeamChannelModal/CreateTeamChannelModal';
 import { Team as TeamData } from '../../models/Team';
+import { useAuth } from '../../providers/AuthProvider';
 
 const Team: React.FC = () => {
+  const { currentUser } = useAuth();
   const { teamId, channelId } = useParams<{
     teamId: string;
     channelId: string;
@@ -30,14 +32,24 @@ const Team: React.FC = () => {
     [ChannelCategory.TEXT_CHANNELS]: false,
   });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isParticipant, setIsParticipant] = useState<boolean>(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTeam = async () => {
       if (teamId) {
+        setIsLoading(true);
         const fetchedTeam = await getTeamById(teamId);
+        setIsLoading(false);
+
         if (fetchedTeam) {
           setTeam(fetchedTeam);
+
+          if (!fetchedTeam.members[currentUser.userData!.username]) {
+            setIsParticipant(false);
+            return;
+          }
         } else {
           console.log('Team not found');
         }
@@ -99,6 +111,30 @@ const Team: React.FC = () => {
     channel => channel.id === activeChannelId
   );
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <h2 className="text-lg font-semibold">Loading...</h2>
+      </div>
+    );
+  }
+
+  if (!isParticipant) {
+    return (
+      <div className="flex flex-col gap-4 rounded-3xl items-center justify-center bg-base-300 bg-opacity-50 h-full">
+        <h2 className="text-3xl font-semibold text-primary">
+          Access Denied: You are not a participant in this team.
+        </h2>
+        <button
+          onClick={() => navigate('/app/teams')}
+          className="text-base pt-4 text-primary-content underline hover:text-primary"
+        >
+          Return to Teams
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full">
       <div className="w-1/4 rounded-lg">
@@ -109,12 +145,14 @@ const Team: React.FC = () => {
           >
             <BsArrowLeftCircle size={30} />
           </button>
-          <button
-            className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
-            onClick={() => setIsModalOpen(true)}
-          >
-            Add Channel
-          </button>
+          {team?.owner === currentUser.userData?.username && (
+            <button
+              className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Add Channel
+            </button>
+          )}
         </header>
         {Object.entries(categorizedChannels).map(([category, channels]) => (
           <div key={category} className="mb-4">
@@ -146,7 +184,12 @@ const Team: React.FC = () => {
       </div>
       <main className="basis-3/4 mb-12">
         {activeChannel ? (
-          <ChannelWindow channel={activeChannel} />
+          <ChannelWindow
+            channel={activeChannel}
+            teamMembers={Object.keys(team?.members || {}).filter(
+              member => member !== currentUser.userData?.username
+            )}
+          />
         ) : (
           <div className="text-center text-primary mt-4">
             Please select a channel to view.

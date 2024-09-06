@@ -104,7 +104,7 @@ export const transformChannelData = async (
       acc[user.username] = {
         avatarUrl: user.avatarUrl || '',
         username: user.username,
-        role: data.owner === user.username ? UserRole.OWNER : UserRole.MEMBER,
+        role: user.channels[data.id!],
         active: false,
       };
       return acc;
@@ -168,7 +168,10 @@ export const getChannelImage = (
     const otherParticipant = Object.values(channel.participants).find(
       participant => participant.username !== currentUsername
     );
-    return otherParticipant?.avatarUrl || otherParticipant!.username;
+    return (
+      otherParticipant?.avatarUrl ||
+      otherParticipant!.username[0].toLocaleUpperCase()
+    );
   }
   return null;
 };

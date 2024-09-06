@@ -12,13 +12,19 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onlineMembersCount }) => {
   const isOwner = team.owner === currentUser.userData!.username;
   const isModerator =
     team.members[currentUser.userData!.username]?.role === 'moderator';
+  const hasJoined = !!team.members[currentUser.userData!.username];
+  const isPrivateTeam = team.isPrivate;
 
   const navigate = useNavigate();
+
   const handleGoToTeamClick = () => {
     navigate(`/app/teams/${team.id}`);
   };
 
-  // Calculate the total number of channels across all categories
+  const handleRequestJoinClick = () => {
+    console.log(`Request to join team: ${team.name}`);
+  };
+
   const totalChannels = Object.values(team.channels || {}).reduce(
     (count, category) => count + Object.keys(category).length,
     0
@@ -48,15 +54,24 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onlineMembersCount }) => {
         </div>
       </div>
       <div className="absolute top-0 left-0 w-full h-full bg-gray-900 bg-opacity-80 flex items-center justify-center space-y-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex-col">
-        <button
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded-lg"
-          onClick={handleGoToTeamClick}
-        >
-          Go to Team
-        </button>
-        {(isOwner || isModerator) && (
-          <button className="px-4 py-2 bg-orange-500 hover:bg-orange-400 text-white rounded-lg">
-            Change Info
+        {hasJoined || isPrivateTeam ? (
+          <button
+            className="px-4 py-2  w-1/2 bg-blue-500 hover:bg-blue-400 text-white rounded-lg"
+            onClick={handleGoToTeamClick}
+          >
+            Go to Team
+          </button>
+        ) : (
+          <button
+            className="px-4 py-2 w-1/2 bg-green-500 hover:bg-green-400 text-white rounded-lg"
+            onClick={handleRequestJoinClick}
+          >
+            Request to Join
+          </button>
+        )}
+        {(isOwner || isModerator) && hasJoined && (
+          <button className="px-4 py-2 w-1/2 bg-orange-500 hover:bg-orange-400 text-white rounded-lg">
+            Manage Team
           </button>
         )}
       </div>

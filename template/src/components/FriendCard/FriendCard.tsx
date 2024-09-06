@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import UserStatusIndicator from '../UserStatusIndicator/UserStatusIndicator';
 import { Friend } from '../../models/Friend';
 import { BsThreeDotsVertical } from 'react-icons/bs';
@@ -50,7 +50,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, commonChannel }) => {
 
       const channelId = await createChannel(
         null,
-        myUsername,
+        null,
         [friendUsername, myUsername],
         ChannelType.DIRECT,
         true
@@ -60,7 +60,6 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, commonChannel }) => {
   };
 
   const handleRemoveFriendClick = async (friendUsername: string) => {
-    console.log('az sum debil');
     try {
       await removeFriend(currentUser.userData!.username, friendUsername);
     } catch (error) {
@@ -76,9 +75,13 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, commonChannel }) => {
   return (
     <div className="flex items-center p-6 border-b-2 border-base-100 justify-between hover:bg-secondary-focus transition-colors">
       <div className="relative flex items-center space-x-4">
-        <div className="avatar relative">
-          <div className="w-14 rounded-full skeleton">
-            <img src={friend.avatarUrl} alt="User Avatar" />
+        <div className="avatar placeholder">
+          <div className="bg-base-300 text-neutral-content w-14 rounded-full">
+            {friend.avatarUrl ? (
+              <img src={friend.avatarUrl} alt="User Avatar" />
+            ) : (
+              <span>{friend.username![0].toLocaleUpperCase()}</span>
+            )}
           </div>
           <UserStatusIndicator status={friend.status} absolute={true} />
         </div>

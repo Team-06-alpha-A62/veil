@@ -4,10 +4,11 @@ import { db } from '../config/firebase.config';
 import { Channel } from '../models/Channel';
 import { transformChannelData } from '../utils/TransformDataHelpers';
 import { ChannelCategory } from '../enums/ChannelCategory';
+import { UserRole } from '../enums/UserRole';
 
 export const createChannel = async (
   name: string | null,
-  owner: string,
+  owner: string | null,
   participantsUsernames: string[],
   type: ChannelType,
   isPrivate: boolean,
@@ -48,8 +49,9 @@ export const createChannel = async (
   const updateObject: Record<string, any> = {
     [`channels/${newChannelId}/id`]: newChannelId,
     ...participantsUsernames.reduce(
-      (acc: Record<string, boolean>, participant: string) => {
-        acc[`users/${participant}/channels/${newChannelId}`] = true;
+      (acc: Record<string, UserRole>, participant: string) => {
+        acc[`users/${participant}/channels/${newChannelId}`] =
+          participant === owner ? UserRole.OWNER : UserRole.MEMBER;
         return acc;
       },
       {}
@@ -91,7 +93,8 @@ export const addChannelParticipant = async (
 ): Promise<void> => {
   const updateObject = {
     [`channels/${channelHandle}/participants/${newParticipantHandle}`]: true,
-    [`users/${newParticipantHandle}/channels/${channelHandle}`]: true,
+    [`users/${newParticipantHandle}/channels/${channelHandle}`]:
+      UserRole.MEMBER,
   };
 
   await update(ref(db), updateObject);
@@ -198,9 +201,34 @@ export const listenToIndividualChannel = (
 export const changeChannelImage = async (
   channelId: string,
   imageUrl: string
-): Promise<void> => {
+): Promise<string> => {
   const updateObject = {
     [`channels/${channelId}/imageUrl`]: imageUrl,
   };
+  await update(ref(db), updateObject);
+  return imageUrl;
+};
+
+export const updateParticipantRole = async (
+  channelId: string,
+  participantHandle: string,
+  newRole: UserRole
+): Promise<void> => {
+  const updateObject = {
+    [`users/${participantHandle}/channels/${channelId}`]: newRole,
+  };
+
+  await update(ref(db), updateObject);
+};
+
+export const removeParticipant = async (
+  channelId: string,
+  participantHandle: string
+): Promise<void> => {
+  const updateObject = {
+    [`channels/${channelId}/participants/${participantHandle}`]: null,
+    [`users/${participantHandle}/channels/${channelId}`]: null,
+  };
+
   await update(ref(db), updateObject);
 };

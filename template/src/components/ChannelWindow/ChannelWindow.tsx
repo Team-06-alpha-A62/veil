@@ -24,9 +24,13 @@ import { UserRole } from '../../enums/UserRole.ts';
 
 interface ChannelWindowProps {
   channel: Channel;
+  teamMembers?: string[];
 }
 
-const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
+const ChannelWindow: React.FC<ChannelWindowProps> = ({
+  channel,
+  teamMembers = [],
+}) => {
   const { currentUser } = useAuth();
   const [newMessage, setNewMessage] = useState<string>('');
   const [newMessageImage, setNewMessageImage] = useState<string>('');
@@ -195,7 +199,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full z-0">
       <header className="basis-2/10 h-auto flex flex-shrink-0 flex-row-reverse justify-between pb-6">
         {canAddParticipants() && (
           <div className="dropdown dropdown-bottom dropdown-end">
@@ -212,7 +216,13 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({ channel }) => {
               <ParticipantsInput
                 participants={participants}
                 setParticipants={setParticipants}
-                channelParticipants={Object.keys(channel?.participants || {})}
+                {...(teamMembers.length > 0
+                  ? { teamMembers }
+                  : {
+                      channelParticipants: Object.keys(
+                        channel?.participants || {}
+                      ),
+                    })}
               />
               <button
                 className="mt-6 text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"

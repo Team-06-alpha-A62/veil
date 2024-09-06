@@ -76,9 +76,13 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
         className="flex items-center absolute bottom-3 left-3 space-x-3 cursor-pointer"
         onClick={() => setIsPopupVisible(true)}
       >
-        <div className="avatar relative">
-          <div className="w-14 rounded-full skeleton">
-            <img src={avatarUrl} alt="User Avatar" />
+        <div className="avatar placeholder">
+          <div className="bg-base-300 text-neutral-content w-14 rounded-full">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="User Avatar" />
+            ) : (
+              <span>{username![0].toLocaleUpperCase()}</span>
+            )}
           </div>
           {!shouldRenderContent && (
             <UserStatusIndicator status={currentStatus} size={12} />

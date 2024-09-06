@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Import useParams and useNavigate
+import { useEffect, useMemo, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import CreateChannelModal from '../CreateChannelModal/CreateChannelModal.tsx';
 import ChannelCard from '../ChannelCard/ChannelCard.tsx';
 import { Channel } from '../../models/Channel.ts';
@@ -21,6 +21,7 @@ const Channels: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>(
     ChannelType.GROUP
   );
+
   const handleOpenChannelClick = (channel: Channel): void => {
     navigate(`/app/chats/${channel.id}`);
   };
@@ -57,7 +58,6 @@ const Channels: React.FC = () => {
       cleanupChannelsListener();
       listeners.forEach(cleanup => cleanup());
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
   const handleCategoryClick = (category: string) => {
@@ -70,63 +70,56 @@ const Channels: React.FC = () => {
       : channelsData.filter(channel => channel.type === ChannelType.DIRECT);
   }, [selectedCategory, channelsData]);
 
-  const activeChannel = channelsData.find(
+  const activeChannel: Channel | undefined = channelsData.find(
     channel => channel.id === openedChannel
   );
 
   return (
-    <>
-      <div className="flex gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full">
-        <div className="basis-1/4">
-          <header className="flex flex-row-reverse justify-between mb-6">
-            <CreateChannelModal />
-
-            <div className="flex space-x-2 text-white">
-              {['Group', 'Direct'].map(category => (
-                <button
-                  key={category}
-                  onClick={() => handleCategoryClick(category.toLowerCase())}
-                  className={`text-sm font-semibold px-3 py-1 rounded-full ${
-                    selectedCategory === category.toLowerCase()
-                      ? 'bg-primary'
-                      : 'bg-gray-700 bg-opacity-50'
-                  } hover:bg-gray-600 transition-colors`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </header>
-          <div className="max-h-[65vh] scrollbar-thin scrollbar-thumb-gray-600">
-            {filteredChannels.length ? (
-              filteredChannels.map(channel => {
-                return (
-                  <ChannelCard
-                    key={channel.id}
-                    channel={channel}
-                    handleClick={handleOpenChannelClick}
-                    isTeamChannel={false}
-                  />
-                );
-              })
-            ) : (
-              <div className="text-center text-gray-400">
-                No Channels Found.
-              </div>
-            )}
+    <div className="flex gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full z-0">
+      <div className="flex flex-col basis-1/4 h-full">
+        <header className="flex flex-row-reverse justify-between mb-6">
+          <CreateChannelModal />
+          <div className="flex space-x-2 text-white">
+            {['Group', 'Direct'].map(category => (
+              <button
+                key={category}
+                onClick={() => handleCategoryClick(category.toLowerCase())}
+                className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                  selectedCategory === category.toLowerCase()
+                    ? 'bg-primary'
+                    : 'bg-gray-700 bg-opacity-50'
+                } hover:bg-gray-600 transition-colors`}
+              >
+                {category}
+              </button>
+            ))}
           </div>
-        </div>
-        <main className="basis-3/4 mb-12">
-          {activeChannel ? (
-            <ChannelWindow channel={activeChannel} />
+        </header>
+        <div className="flex-grow overflow-y-scroll  overflow-x-clip max-h-[calc(100vh-120px)] scrollbar-thin scrollbar-thumb-gray-600">
+          {filteredChannels.length ? (
+            filteredChannels.map(channel => (
+              <ChannelCard
+                key={channel.id}
+                channel={channel}
+                handleClick={handleOpenChannelClick}
+                isTeamChannel={false}
+              />
+            ))
           ) : (
-            <div className="text-center text-primary  mt-4">
-              Please select a channel to view.
-            </div>
+            <div className="text-center text-gray-400">No Channels Found.</div>
           )}
-        </main>
+        </div>
       </div>
-    </>
+      <main className="basis-3/4 mb-12">
+        {activeChannel ? (
+          <ChannelWindow channel={activeChannel} />
+        ) : (
+          <div className="text-center text-primary mt-4">
+            Please select a channel to view.
+          </div>
+        )}
+      </main>
+    </div>
   );
 };
 

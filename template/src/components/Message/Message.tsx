@@ -3,7 +3,6 @@ import { formatDistanceToNow } from 'date-fns';
 import ReactionPicker from '../ReactionPicker/ReactionPicker';
 import { Message as MessageType } from '../../models/Message';
 import { EmojiClickData } from 'emoji-picker-react';
-import MessageReactions from '../MessageReactions/MessageReactions';
 import ReactionsDisplay from '../ReactionsDisplay/ReactionsDisplay';
 
 interface MessageProps {
@@ -21,6 +20,7 @@ const Message: React.FC<MessageProps> = ({
 }) => {
   const [isReactionPickerOpen, setIsReactionPickerOpen] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
     if (
@@ -29,6 +29,19 @@ const Message: React.FC<MessageProps> = ({
     ) {
       setIsReactionPickerOpen(false);
     }
+  };
+
+  const handleMouseEnter = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsReactionPickerOpen(true);
+    }, 300);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    setIsReactionPickerOpen(false);
   };
 
   useEffect(() => {
@@ -40,15 +53,16 @@ const Message: React.FC<MessageProps> = ({
 
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
     };
   }, [isReactionPickerOpen]);
 
+  const isCurrentUser = message.sender === currentUserUsername;
+
   return (
-    <div
-      className={`chat ${
-        message.sender === currentUserUsername ? 'chat-end' : 'chat-start'
-      } py-4`}
-    >
+    <div className={`chat ${isCurrentUser ? 'chat-end' : 'chat-start'} py-4`}>
       <div className="chat-image avatar">
         <div className="w-10 rounded-full">
           <img alt="User Avatar" src={senderAvatar} />
@@ -56,19 +70,23 @@ const Message: React.FC<MessageProps> = ({
       </div>
       <div className="chat-header">{message.sender}</div>
       <div
-        className={`chat-bubble my-2 break-words text-primary-content ${
-          message.sender === currentUserUsername
-            ? 'bg-primary text-primary-content'
-            : 'bg-secondary'
+        className={`chat-bubble relative my-2 break-words text-primary-content ${
+          isCurrentUser ? 'bg-primary text-primary-content' : 'bg-secondary'
         }`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         <p>{message.content}</p>
         {message.media && (
           <img className="mt-2 rounded-xl" src={message.media} />
         )}
-        <button onClick={() => setIsReactionPickerOpen(true)}>React</button>
         {isReactionPickerOpen && (
-          <div ref={pickerRef}>
+          <div
+            ref={pickerRef}
+            className={`absolute bottom-2 z-10 ${
+              isCurrentUser ? 'right-[230px]' : 'right-[135px]'
+            }`}
+          >
             <ReactionPicker
               onReactionClick={emojiData => {
                 onReactionClick(emojiData);

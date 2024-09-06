@@ -10,23 +10,30 @@ const ReactionPicker: React.FC<ReactionPickerProps> = ({
   onReactionClick,
   onClose,
 }) => {
-  const handleReactionClick = (
-    emojiData: EmojiClickData,
-    event: MouseEvent
-  ) => {
+  const handleReactionClick = (emojiData: EmojiClickData) => {
     onReactionClick(emojiData);
     onClose();
   };
 
   return (
-    <div className="absolute z-10">
-      <EmojiPicker
-        reactionsDefaultOpen={true}
-        onReactionClick={handleReactionClick}
-        theme={Theme.AUTO}
-        lazyLoadEmojis={true}
-      />
-    </div>
+    <>
+      <style>{`
+        button[aria-label="Show all Emojis"],
+        button[title="Show all Emojis"] {
+          display: none;
+        }
+      `}</style>
+      <div className="absolute z-10" style={{ transform: 'scale(0.6)' }}>
+        <EmojiPicker
+          reactionsDefaultOpen={true}
+          onEmojiClick={handleReactionClick}
+          lazyLoadEmojis={true}
+          theme={Theme.DARK}
+          searchDisabled={true}
+          skinTonesDisabled={true}
+        />
+      </div>
+    </>
   );
 };
 

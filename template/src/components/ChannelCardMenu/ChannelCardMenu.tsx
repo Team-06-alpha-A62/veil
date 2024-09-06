@@ -1,50 +1,55 @@
 import { useMemo } from 'react';
+import { UserRole } from '../../enums/UserRole';
 
 interface ChannelCardMenuProps {
   isTeamChannel: boolean;
-  isOwner: boolean;
+  userRole: UserRole;
   isGroup: boolean;
   onLeaveChannel: () => void;
   onChangeIcon: () => void;
+  onManageChannel: () => void;
 }
 
 const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
   isTeamChannel,
-  isOwner,
+  userRole,
   isGroup,
   onLeaveChannel,
   onChangeIcon,
+  onManageChannel,
 }) => {
   const popupItems = useMemo(() => {
     const actions: Record<string, () => void> = {
       'Mute Conversation': () => console.log('Mute Conversation clicked'),
     };
 
-    if (isOwner && !isTeamChannel) {
+    if (userRole === 'owner') {
       actions['Change Icon'] = onChangeIcon;
+      actions['Manage Channel'] = onManageChannel;
+      actions['Leave Group'] = onLeaveChannel;
     }
-    if (isOwner) {
-      actions['Edit Channel'] = () => console.log('Edit Channel clicked');
-    }
+
     if (isGroup && !isTeamChannel) {
       actions['Leave Group'] = onLeaveChannel;
     }
 
     return actions;
-  }, [isOwner, isGroup, isTeamChannel, onLeaveChannel, onChangeIcon]);
+  }, [userRole, isGroup, isTeamChannel, onLeaveChannel, onChangeIcon]);
 
   return (
-    <div className="absolute left-4 bottom-1 bg-base-300 text-white shadow-lg rounded-lg w-48 z-10 list-none">
-      {Object.entries(popupItems).map(([itemName, action]) => (
-        <li
-          key={itemName}
-          className="p-2 hover:bg-base-200 cursor-pointer"
-          onClick={action}
-        >
-          {itemName}
-        </li>
-      ))}
-    </div>
+    <>
+      <div className="absolute right-8 top-0 mt-2 bg-base-100 text-white shadow-lg rounded-lg w-48 z-[1000] list-none">
+        {Object.entries(popupItems).map(([itemName, action]) => (
+          <li
+            key={itemName}
+            className="p-2 hover:bg-base-200 cursor-pointer rounded-lg"
+            onClick={action}
+          >
+            {itemName}
+          </li>
+        ))}
+      </div>
+    </>
   );
 };
 
