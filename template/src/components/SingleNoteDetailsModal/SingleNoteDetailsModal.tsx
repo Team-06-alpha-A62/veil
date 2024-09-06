@@ -11,6 +11,7 @@ const SingleNoteDetailsModal: React.FC = () => {
   const [content, setContent] = useState(note?.content || '');
   const [tags, setTags] = useState<string[]>(note?.tags || []);
   const [tagsInput, setTagsInput] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (note) {
@@ -24,9 +25,11 @@ const SingleNoteDetailsModal: React.FC = () => {
     if (note) {
       updateNote(note.id, { title, content, tags });
     }
+    setIsLoading(false);
   }, 500);
 
   useEffect(() => {
+    setIsLoading(true);
     if (note) {
       debouncedSave();
     }
@@ -55,61 +58,61 @@ const SingleNoteDetailsModal: React.FC = () => {
   return (
     <Draggable handle=".handle">
       <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center z-10 pointer-events-none">
-        <div className="relative w-1/5 h-auto bg-base-100 text-white rounded-3xl flex flex-col gap-5 pointer-events-auto shadow-lg">
-          <div>
-            <div
-              className={`flex justify-end h-10 rounded-t-3xl ${note.label} handle`}
-            >
-              <button onClick={closeModal} className="px-4">
-                &times;
-              </button>
+        <div className="relative w-1/5 h-auto bg-base-100 text-white rounded-3xl flex flex-col pointer-events-auto shadow-lg">
+          <div
+            className={`flex justify-between h-10 px-4 rounded-t-3xl ${note.label} handle`}
+          >
+            <div className="flex items-center">
+              {isLoading && (
+                <span className="loading loading-ring loading-md"></span>
+              )}
             </div>
-            <div className="p-4">
-              <input
-                className="text-lg font-semibold bg-transparent focus:outline-none"
-                type="text"
-                name="title"
-                id="title"
-                autoFocus
-                value={title}
-                onChange={handleTitleChange}
-                required
-              />
-              <p className="font-light text-sm opacity-50">
-                Created:{' '}
-                {dayjs(note.createdOn).format('D MMMM YYYY [at] HH:mm')}
-              </p>
-              <div className="mt-3">
-                {tags.map((tag, index) => (
-                  <div key={tag} className="mr-2 badge badge-primary">
-                    <span>{tag}</span>
-                    <span
-                      className="ml-1 cursor-pointer"
-                      onClick={() => handleRemoveTag(index)}
-                    >
-                      &times;
-                    </span>
-                  </div>
-                ))}
-                <input
-                  type="text"
-                  value={tagsInput}
-                  onChange={e => setTagsInput(e.target.value)}
-                  className="input bg-transparent input-sm flex-grow rounded-3xl border-none focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <textarea
-              autoFocus
-              className="w-full bg-transparent focus:outline-none resize-none p-4"
-              name="content"
-              id="content"
-              rows={8}
-              value={content}
-              onChange={handleContentChange}
-            />
+            <button onClick={closeModal}>&times;</button>
           </div>
+          <div className="px-4">
+            <input
+              className="text-lg font-semibold bg-transparent focus:outline-none"
+              type="text"
+              name="title"
+              id="title"
+              autoFocus
+              value={title}
+              onChange={handleTitleChange}
+              required
+            />
+            <p className="font-light text-sm opacity-50">
+              Created: {dayjs(note.createdOn).format('D MMMM YYYY [at] HH:mm')}
+            </p>
+            <div className="mt-3">
+              {tags.map((tag, index) => (
+                <div key={tag} className="mr-2 badge badge-primary">
+                  <span>{tag}</span>
+                  <span
+                    className="ml-1 cursor-pointer"
+                    onClick={() => handleRemoveTag(index)}
+                  >
+                    &times;
+                  </span>
+                </div>
+              ))}
+              <input
+                type="text"
+                value={tagsInput}
+                onChange={e => setTagsInput(e.target.value)}
+                className="input bg-transparent input-sm flex-grow rounded-3xl border-none focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <textarea
+            autoFocus
+            className="w-full bg-transparent focus:outline-none resize-none p-4"
+            name="content"
+            id="content"
+            rows={8}
+            value={content}
+            onChange={handleContentChange}
+          />
         </div>
       </div>
     </Draggable>
