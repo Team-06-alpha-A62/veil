@@ -5,14 +5,27 @@ import Home from './views/Home/Home';
 import Login from './views/Login/Login';
 import Register from './views/Register/Register';
 import { AuthProvider } from './providers/AuthProvider';
+import { NoteModalProvider } from './providers/NoteModalProvider.tsx';
+import SingleNoteDetailsModal from './components/SingleNoteDetailsModal/SingleNoteDetailsModal.tsx';
 
 const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route index path="/app/*" element={<AppContent />} />
           <Route path="/" element={<Home />} />
+
+          <Route
+            index
+            path="/app/*"
+            element={
+              <NoteModalProvider>
+                <AppContent />
+                <SingleNoteDetailsModal />
+              </NoteModalProvider>
+            }
+          />
+
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>
