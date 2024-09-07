@@ -7,6 +7,7 @@ import Register from './views/Register/Register';
 import { AuthProvider } from './providers/AuthProvider';
 import { NoteModalProvider } from './providers/NoteModalProvider.tsx';
 import SingleNoteDetailsModal from './components/SingleNoteDetailsModal/SingleNoteDetailsModal.tsx';
+import { NotificationProvider } from './providers/NotificationProvider.tsx';
 
 const App = () => {
   return (
@@ -19,10 +20,12 @@ const App = () => {
             index
             path="/app/*"
             element={
-              <NoteModalProvider>
-                <AppContent />
-                <SingleNoteDetailsModal />
-              </NoteModalProvider>
+              <NotificationProvider>
+                <NoteModalProvider>
+                  <AppContent />
+                  <SingleNoteDetailsModal />
+                </NoteModalProvider>
+              </NotificationProvider>
             }
           />
 

@@ -9,6 +9,7 @@ import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from '../../hoc/ProtectedRoute';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Team from '../../components/Team/Team';
+import NotificationToasts from '../../components/NotificationToasts/NotificationToasts';
 
 const AppContent = () => {
   return (
@@ -35,6 +36,7 @@ const AppContent = () => {
           </Routes>
         </main>
         <Sidebar />
+        <NotificationToasts />
       </div>
     </ProtectedRoute>
   );

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   BsThreeDotsVertical,
   BsXCircle,
@@ -19,6 +19,9 @@ import { FaUserGroup } from 'react-icons/fa6';
 import { uploadImage, deleteImage } from '../../services/storage.service.ts';
 import { changeChannelImage } from '../../services/channel.service.ts';
 import ManageChannelModal from '../ManageChannelModal/ManageChannelModal.tsx';
+import NotificationBadge from '../NotificationBadge/NotificationBadge.tsx';
+import { NotificationType } from '../../enums/NotificationType.ts';
+import { useParams } from 'react-router-dom';
 
 interface ChannelCardProps {
   channel: Channel;
@@ -32,6 +35,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
   isTeamChannel = false,
 }) => {
   const { currentUser } = useAuth();
+  const { id: channelIdFromUrl } = useParams<{ id: string }>();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isEditingImage, setIsEditingImage] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -39,7 +43,6 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
   const [isImageRemoved, setIsImageRemoved] = useState(false);
   const [isManageChannelModalOpen, setIsManageChannelModalOpen] =
     useState(false);
-  console.log(channel.participants);
   const threeDotsButtonRef = useRef<HTMLButtonElement>(null);
   const channelCardMenuRef = useRef<HTMLDivElement>(null);
   const currentUsername = currentUser.userData!.username;
@@ -103,15 +106,18 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
   const isParticipant = channel.participants?.[currentUsername];
   const isPrivateChannel = channel.isPrivate;
 
+  // Determine if the current channel is the one being viewed
+  const isViewActive = channelIdFromUrl === channel.id;
+
   return (
     <div
       className={`flex relative items-center p-6 border-b-2 border-base-100 justify-between 
-    ${
-      isPrivateChannel && !isParticipant
-        ? 'cursor-not-allowed'
-        : 'cursor-pointer'
-    } 
-    hover:bg-base-300 hover:bg-opacity-50 active:bg-opacity-0 transition-colors`}
+      ${
+        isPrivateChannel && !isParticipant
+          ? 'cursor-not-allowed'
+          : 'cursor-pointer'
+      } 
+      hover:bg-base-300 hover:bg-opacity-50 active:bg-opacity-0 transition-colors`}
       onClick={() => !isEditingImage && isParticipant && handleClick(channel)}
     >
       <div
@@ -120,7 +126,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
         }`}
       >
         {!isTeamChannel && !isEditingImage ? (
-          <div className="avatar placeholder">
+          <div className="avatar placeholder relative">
             <div className="bg-base-300 text-neutral-content w-14 rounded-full">
               {channelImage && !isImageRemoved ? (
                 channelImage.startsWith('http') ? (
@@ -134,6 +140,12 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
                 </span>
               )}
             </div>
+            {/* Notification Badge */}
+            <NotificationBadge
+              type={NotificationType.MESSAGE}
+              isViewActive={isViewActive} // Set this based on URL comparison
+              channelId={channel.id}
+            />
           </div>
         ) : (
           isEditingImage && (

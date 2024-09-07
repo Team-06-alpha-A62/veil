@@ -6,6 +6,7 @@ import {
   query,
   ref,
   set,
+  Unsubscribe,
   update,
 } from 'firebase/database';
 import { db } from '../config/firebase.config';
@@ -17,6 +18,7 @@ import {
 } from '../utils/TransformDataHelpers';
 import { Friend } from '../models/Friend';
 import { FriendType } from '../enums/FriendType';
+import { NotificationType } from '../enums/NotificationType';
 
 export const createUser = async (
   uid: string,
@@ -222,6 +224,127 @@ export const leaveChannel = async (
   const updateObject = {
     [`channels/${channelHandle}/participants/${userHandle}`]: null,
     [`users/${userHandle}/channels/${channelHandle}`]: null,
+  };
+
+  await update(ref(db), updateObject);
+};
+export const addUnreadNotification = async (
+  username: string,
+  notificationId: string,
+  type: NotificationType
+) => {
+  let updatedNotifications;
+  if (type === NotificationType.MESSAGE) {
+    const unreadMessagesRef = ref(
+      db,
+      `users/${username}/unreadNotifications/${type}/${notificationId}`
+    );
+    const unreadMessagesSnapshot = await get(unreadMessagesRef);
+    const unreadMessagesData = unreadMessagesSnapshot.val();
+    updatedNotifications = {
+      [`users/${username}/unreadNotifications/${type}/${notificationId}`]:
+        unreadMessagesData ? unreadMessagesData + 1 : 1,
+    };
+  } else {
+    updatedNotifications = {
+      [`users/${username}/unreadNotifications/${type}/${notificationId}`]: true,
+    };
+  }
+
+  await update(ref(db), updatedNotifications);
+};
+
+export const getUnreadNotificationsCount = async (
+  username: string,
+  type: NotificationType
+) => {
+  const notificationsRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${type}`
+  );
+  const notificationsSnapshot = await get(notificationsRef);
+  const notifications = notificationsSnapshot.val();
+
+  return notifications.length || 0;
+};
+
+export const clearUnreadNotifications = async (
+  username: string,
+  type: NotificationType
+) => {
+  const updateObject = {
+    [`users/${username}/unreadNotifications/${type}`]: null,
+  };
+
+  await update(ref(db), updateObject);
+};
+
+export const listenToUnreadNotifications = (
+  username: string,
+  type: NotificationType,
+  callback: (count: number) => void
+) => {
+  const unreadNotificationsRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${type}`
+  );
+
+  const unsubscribe = onValue(unreadNotificationsRef, snapshot => {
+    if (snapshot.exists()) {
+      const notifications = snapshot.val();
+      callback(Object.keys(notifications).length);
+    } else {
+      callback(0);
+    }
+  });
+
+  return unsubscribe;
+};
+
+export const getUnreadChannelMessagesCount = async (
+  username: string,
+  channelId: string
+): Promise<number> => {
+  const notificationsRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${NotificationType.MESSAGE}/${channelId}`
+  );
+  const notificationsSnapshot = await get(notificationsRef);
+  const notifications = notificationsSnapshot.val();
+
+  return notifications || 0;
+};
+
+export const listenToUnreadChannelMessages = (
+  username: string,
+  channelId: string,
+  callback: (count: number) => void
+): Unsubscribe => {
+  const unreadNotificationsRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${NotificationType.MESSAGE}/${channelId}`
+  );
+
+  const unsubscribe = onValue(unreadNotificationsRef, snapshot => {
+    if (snapshot.exists()) {
+      const notifications = snapshot.val();
+      callback(notifications);
+    } else {
+      callback(0);
+    }
+  });
+
+  return unsubscribe;
+};
+
+// Clear unread channel messages
+export const clearUnreadChannelMessages = async (
+  username: string,
+  channelId: string
+) => {
+  const updateObject = {
+    [`users/${username}/unreadNotifications/${NotificationType.MESSAGE}/${channelId}`]:
+      null,
   };
 
   await update(ref(db), updateObject);

@@ -64,8 +64,14 @@ const Message: React.FC<MessageProps> = ({
   return (
     <div className={`chat ${isCurrentUser ? 'chat-end' : 'chat-start'} py-4`}>
       <div className="chat-image avatar">
-        <div className="w-10 rounded-full">
-          <img alt="User Avatar" src={senderAvatar} />
+        <div className="w-10 h-10 rounded-full">
+          {senderAvatar ? (
+            <img src={senderAvatar} alt="User Avatar" />
+          ) : (
+            <span className="w-10 h-10 flex justify-center items-center bg-base-100 ">
+              {message.sender![0].toLocaleUpperCase()}
+            </span>
+          )}
         </div>
       </div>
       <div className="chat-header">{message.sender}</div>

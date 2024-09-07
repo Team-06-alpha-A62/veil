@@ -1,6 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { sendFriendRequest } from '../../services/user.service';
+import {
+  addUnreadNotification,
+  sendFriendRequest,
+} from '../../services/user.service';
 import { useAuth } from '../../providers/AuthProvider';
+import { NotificationType } from '../../enums/NotificationType';
+import { createNotification } from '../../services/notification.service';
+import { NotificationMessageType } from '../../enums/NotificationMessageType';
 interface AddFriendModalProps {
   onClose: () => void;
 }
@@ -12,16 +18,32 @@ const AddFriendModal: React.FC<AddFriendModalProps> = ({ onClose }) => {
 
   const handleSubmit = async () => {
     if (currentUser.userData!.username && username) {
-      try {
-        await sendFriendRequest(currentUser.userData!.username, username);
-        alert('Friend request sent successfully!');
-      } catch {
-        alert('Failed to send friend request.');
-      }
+      await sendFriendRequest(currentUser.userData!.username, username);
+
+      await createNotification(
+        currentUser.userData!.username,
+        username,
+        NotificationType.FRIEND,
+        `Friend request sent to ${username}`,
+        NotificationMessageType.ALERT_INFO
+      );
+
+      const requestedUserNotificationId = await createNotification(
+        username,
+        currentUser.userData!.username,
+        NotificationType.FRIEND,
+        `${currentUser.userData!.username} sent you a friend request`,
+        NotificationMessageType.ALERT_INFO
+      );
+
+      await addUnreadNotification(
+        username,
+        requestedUserNotificationId,
+        NotificationType.FRIEND
+      );
     }
     onClose();
   };
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (

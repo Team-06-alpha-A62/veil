@@ -10,6 +10,9 @@ import {
 } from '../../services/channel.service.ts';
 import ChannelWindow from '../ChannelWindow/ChannelWindow.tsx';
 import { ChannelType } from '../../enums/ChannelType.ts';
+import NotificationBadge from '../NotificationBadge/NotificationBadge.tsx';
+import { NotificationType } from '../../enums/NotificationType.ts';
+import { clearUnreadNotifications } from '../../services/user.service.ts';
 
 const Channels: React.FC = () => {
   const { currentUser } = useAuth();
@@ -21,12 +24,6 @@ const Channels: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>(
     ChannelType.GROUP
   );
-
-  const handleOpenChannelClick = (channel: Channel): void => {
-    const channelTypePath =
-      channel.type === ChannelType.DIRECT ? 'direct' : 'group';
-    navigate(`/app/chats/${channelTypePath}/${channel.id}`);
-  };
 
   useEffect(() => {
     setOpenedChannel(id || null);
@@ -62,8 +59,20 @@ const Channels: React.FC = () => {
     };
   }, [currentUser]);
 
-  const handleCategoryClick = (category: string) => {
+  const handleOpenChannelClick = (channel: Channel): void => {
+    const channelTypePath =
+      channel.type === ChannelType.DIRECT ? 'direct' : 'group';
+    navigate(`/app/chats/${channelTypePath}/${channel.id}`);
+  };
+
+  const handleCategoryClick = async (category: string) => {
     setSelectedCategory(category);
+    if (category === 'group' && currentUser) {
+      await clearUnreadNotifications(
+        currentUser.userData!.username,
+        NotificationType.CHANNEL
+      );
+    }
   };
 
   const filteredChannels = useMemo(() => {
@@ -82,17 +91,25 @@ const Channels: React.FC = () => {
         <header className="flex justify-between mb-6">
           <div className="flex space-x-2 text-white">
             {['Group', 'Direct'].map(category => (
-              <button
-                key={category}
-                onClick={() => handleCategoryClick(category.toLowerCase())}
-                className={`text-sm font-semibold px-3 py-1 rounded-full ${
-                  selectedCategory === category.toLowerCase()
-                    ? 'bg-primary'
-                    : 'bg-gray-700 bg-opacity-50'
-                } hover:bg-gray-600 transition-colors`}
-              >
-                {category}
-              </button>
+              <div key={category} className="relative">
+                <button
+                  key={category}
+                  onClick={() => handleCategoryClick(category.toLowerCase())}
+                  className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                    selectedCategory === category.toLowerCase()
+                      ? 'bg-primary'
+                      : 'bg-gray-700 bg-opacity-50'
+                  } hover:bg-gray-600 transition-colors`}
+                >
+                  {category}
+                </button>
+                {category === 'group' && (
+                  <NotificationBadge
+                    type={NotificationType.CHANNEL}
+                    isViewActive={selectedCategory === 'Group'}
+                  />
+                )}
+              </div>
             ))}
           </div>
           {selectedCategory !== ChannelType.DIRECT && <CreateChannelModal />}

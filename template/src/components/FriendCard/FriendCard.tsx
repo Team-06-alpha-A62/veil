@@ -55,7 +55,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, commonChannel }) => {
         ChannelType.DIRECT,
         true
       );
-      navigate(`/app/chats/${channelId}`);
+      navigate(`/app/chats/direct/${channelId}`);
     }
   };
 

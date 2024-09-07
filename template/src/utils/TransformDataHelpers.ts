@@ -1,11 +1,14 @@
 import { ChannelType } from '../enums/ChannelType';
 import { FriendType } from '../enums/FriendType';
+import { NotificationMessageType } from '../enums/NotificationMessageType.ts';
+import { NotificationType } from '../enums/NotificationType.ts';
 import { UserRole } from '../enums/UserRole';
 import { UserStatus } from '../enums/UserStatus';
 import { Channel } from '../models/Channel';
 import { Friend } from '../models/Friend';
 import { Message } from '../models/Message';
 import { Note } from '../models/Note.ts';
+import { Notification } from '../models/Notification.ts';
 import { Participant } from '../models/Participant';
 import { Team } from '../models/Team';
 import { UserData } from '../models/UserData';
@@ -91,6 +94,20 @@ export const transformUserToFriend = (
     avatarUrl: userData.avatarUrl || '',
     friendshipStatus,
     status: userData.status || UserStatus.OFFLINE,
+  };
+};
+
+export const transformNotificationData = (
+  data: Partial<Notification>
+): Notification => {
+  return {
+    id: data.id || '',
+    type: data.type || NotificationType.FRIEND,
+    message: data.message || '',
+    createdAt: data.createdAt || Date.now(),
+    sender: data.sender || 'Unknown',
+    receiver: data.receiver || 'Unknown',
+    messageType: data.messageType || NotificationMessageType.ALERT_INFO,
   };
 };
 
