@@ -4,5 +4,5 @@ export interface Participant {
   avatarUrl: string;
   username: string;
   role: UserRole;
-  active: boolean;
+  active?: boolean;
 }

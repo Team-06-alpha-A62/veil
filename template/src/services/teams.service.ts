@@ -1,4 +1,4 @@
-import { get, off, onValue, ref, set, update } from 'firebase/database';
+import { get, off, onValue, ref, remove, set, update } from 'firebase/database';
 import { db } from '../config/firebase.config';
 import { Team } from '../models/Team';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,6 +12,7 @@ import { getUserByHandle } from './user.service';
 import { Participant } from '../models/Participant';
 import { Channel } from '../models/Channel';
 import { ChannelCategory } from '../enums/ChannelCategory';
+import { UserRole } from '../enums/UserRole';
 
 export const createTeam = async (
   name: string,
@@ -168,4 +169,156 @@ export const addChannelsToTeam = async (
   });
 
   await update(ref(db), updates);
+};
+
+export const changeTeamImage = async (
+  teamId: string,
+  imageUrl: string
+): Promise<void> => {
+  const updateObject = {
+    [`teams/${teamId}/imageUrl`]: imageUrl,
+  };
+
+  await update(ref(db), updateObject);
+};
+
+export const updateTeamName = async (
+  teamId: string,
+  newName: string
+): Promise<void> => {
+  const teamRef = ref(db, `teams/${teamId}`);
+  await update(teamRef, { name: newName });
+};
+
+export const updateTeamMemberRole = async (
+  teamId: string,
+  username: string,
+  newRole: UserRole
+): Promise<void> => {
+  const updateObject = {
+    [`teams/${teamId}/members/${username}/role`]: newRole,
+  };
+
+  await update(ref(db), updateObject);
+};
+
+export const deleteTeam = async (teamId: string): Promise<void> => {
+  const teamRef = ref(db, `teams/${teamId}`);
+  const teamSnapshot = await get(teamRef);
+
+  if (!teamSnapshot.exists()) {
+    throw new Error('Team not found.');
+  }
+
+  const teamData = teamSnapshot.val();
+  const channels = teamData.channels || {};
+
+  const updateObject: Record<string, null> = {
+    [`teams/${teamId}`]: null,
+  };
+
+  for (const category of Object.keys(channels)) {
+    for (const channelId of Object.keys(channels[category])) {
+      const channelRef = ref(db, `channels/${channelId}`);
+      const channelSnapshot = await get(channelRef);
+
+      if (channelSnapshot.exists()) {
+        const channelData = channelSnapshot.val();
+
+        for (const participant in channelData.participants) {
+          updateObject[`users/${participant}/channels/${channelId}`] = null;
+        }
+
+        updateObject[`channels/${channelId}`] = null;
+
+        updateObject[`teams/${teamData.id}/channels/${category}/${channelId}`] =
+          null;
+      }
+    }
+  }
+
+  await update(ref(db), updateObject);
+};
+
+export const addMemberToTeam = async (
+  teamId: string,
+  newMemberHandle: string,
+  owner: string
+): Promise<void> => {
+  const userData = await getUserByHandle(newMemberHandle);
+  if (!userData) {
+    throw new Error(`User with handle ${newMemberHandle} not found.`);
+  }
+
+  const newParticipant: Participant = transformTeamMemberData(userData, owner);
+
+  const updateObject: Record<string, unknown> = {
+    [`teams/${teamId}/members/${newMemberHandle}`]: newParticipant,
+  };
+
+  const channelsSnapshot = await get(ref(db, `teams/${teamId}/channels`));
+  const channelsData = channelsSnapshot.val() || {};
+
+  Object.values(channelsData).forEach(category => {
+    Object.keys(category as Record<string, boolean>).forEach(channelId => {
+      updateObject[`channels/${channelId}/participants/${newMemberHandle}`] =
+        true;
+      updateObject[`users/${newMemberHandle}/channels/${channelId}`] =
+        UserRole.MEMBER;
+    });
+  });
+
+  await update(ref(db), updateObject);
+};
+export const createJoinRequest = async (
+  teamId: string,
+  username: string
+): Promise<void> => {
+  const userData = await getUserByHandle(username);
+  const newParticipant: Participant = {
+    username: userData.username,
+    avatarUrl: userData.avatarUrl || '',
+    role: UserRole.MEMBER,
+  };
+
+  const updateObject = {
+    [`teams/${teamId}/joinRequests/${username}`]: newParticipant,
+  };
+
+  await update(ref(db), updateObject);
+};
+export const acceptJoinRequest = async (
+  teamId: string,
+  username: string
+): Promise<void> => {
+  const joinRequestRef = ref(db, `teams/${teamId}/joinRequests/${username}`);
+  const snapshot = await get(joinRequestRef);
+
+  if (snapshot.exists()) {
+    const participantData = snapshot.val();
+
+    await addMemberToTeam(teamId, username, participantData.username);
+
+    await remove(joinRequestRef);
+  }
+};
+export const declineJoinRequest = async (
+  teamId: string,
+  username: string
+): Promise<void> => {
+  const joinRequestRef = ref(db, `teams/${teamId}/joinRequests/${username}`);
+  await remove(joinRequestRef);
+};
+export const getJoinRequests = async (
+  teamId: string
+): Promise<Participant[]> => {
+  const joinRequestsRef = ref(db, `teams/${teamId}/joinRequests`);
+  const snapshot = await get(joinRequestsRef);
+
+  if (!snapshot.exists()) {
+    return [];
+  }
+
+  const requestsData = snapshot.val();
+  return Object.values(requestsData) as Participant[];
 };

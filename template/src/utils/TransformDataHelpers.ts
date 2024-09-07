@@ -67,6 +67,8 @@ export const transformTeamData = async (data: Partial<Team>): Promise<Team> => {
     membersObject[member] = transformTeamMemberData(userData, data.owner || '');
   }
 
+  const teamImageUrl = getTeamImage(data as Team);
+
   return {
     id: data.id || '',
     name: data.name || 'Untitled Team',
@@ -76,10 +78,9 @@ export const transformTeamData = async (data: Partial<Team>): Promise<Team> => {
     meetings: data.meetings || [],
     createdOn: data.createdOn || Date.now(),
     isPrivate: data.isPrivate || false,
-    imageUrl: data.imageUrl || '',
+    imageUrl: teamImageUrl,
   };
 };
-
 export const transformUserToFriend = (
   userData: UserData,
   friendshipStatus: FriendType
@@ -188,4 +189,10 @@ export const getChannelImage = (
     );
   }
   return null;
+};
+
+export const getTeamImage = (team: Team): string => {
+  const DEFAULT_TEAM_IMAGE_URL =
+    'https://firebasestorage.googleapis.com/v0/b/veil-35640.appspot.com/o/images%2Fdefault.png?alt=media&token=04df62b9-eb09-4aef-bfc6-2a4088d467cd';
+  return team.imageUrl || DEFAULT_TEAM_IMAGE_URL;
 };

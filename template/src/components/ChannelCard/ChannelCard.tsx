@@ -39,7 +39,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
   const [isImageRemoved, setIsImageRemoved] = useState(false);
   const [isManageChannelModalOpen, setIsManageChannelModalOpen] =
     useState(false);
-
+  console.log(channel.participants);
   const threeDotsButtonRef = useRef<HTMLButtonElement>(null);
   const channelCardMenuRef = useRef<HTMLDivElement>(null);
   const currentUsername = currentUser.userData!.username;
