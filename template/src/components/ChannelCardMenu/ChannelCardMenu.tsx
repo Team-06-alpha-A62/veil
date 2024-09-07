@@ -23,12 +23,16 @@ const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
       'Mute Conversation': () => console.log('Mute Conversation clicked'),
     };
 
-    if (userRole === 'owner') {
+    if (userRole === UserRole.OWNER) {
       actions['Change Icon'] = onChangeIcon;
+
       actions['Manage Channel'] = onManageChannel;
+
       actions['Leave Group'] = onLeaveChannel;
     }
-
+    if (userRole === UserRole.MODERATOR) {
+      actions['Manage Channel'] = onManageChannel;
+    }
     if (isGroup && !isTeamChannel) {
       actions['Leave Group'] = onLeaveChannel;
     }

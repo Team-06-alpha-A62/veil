@@ -23,7 +23,9 @@ const Channels: React.FC = () => {
   );
 
   const handleOpenChannelClick = (channel: Channel): void => {
-    navigate(`/app/chats/${channel.id}`);
+    const channelTypePath =
+      channel.type === ChannelType.DIRECT ? 'direct' : 'group';
+    navigate(`/app/chats/${channelTypePath}/${channel.id}`);
   };
 
   useEffect(() => {
@@ -77,8 +79,7 @@ const Channels: React.FC = () => {
   return (
     <div className="flex gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full z-0">
       <div className="flex flex-col basis-1/4 h-full">
-        <header className="flex flex-row-reverse justify-between mb-6">
-          <CreateChannelModal />
+        <header className="flex justify-between mb-6">
           <div className="flex space-x-2 text-white">
             {['Group', 'Direct'].map(category => (
               <button
@@ -94,8 +95,9 @@ const Channels: React.FC = () => {
               </button>
             ))}
           </div>
+          {selectedCategory !== ChannelType.DIRECT && <CreateChannelModal />}
         </header>
-        <div className="flex-grow overflow-y-scroll  overflow-x-clip max-h-[calc(100vh-120px)] scrollbar-thin scrollbar-thumb-gray-600">
+        <div className="flex-grow overflow-y-auto overflow-x-clip max-h-[calc(100vh-120px)] scrollbar-thin scrollbar-thumb-gray-600">
           {filteredChannels.length ? (
             filteredChannels.map(channel => (
               <ChannelCard

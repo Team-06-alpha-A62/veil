@@ -44,7 +44,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, commonChannel }) => {
 
   const handleOpenChannelClick = async (friendUsername: string) => {
     if (commonChannel) {
-      navigate(`/app/chats/${commonChannel}`);
+      navigate(`/app/chats/direct/${commonChannel}`);
     } else {
       const myUsername = currentUser.userData!.username;
 

@@ -123,27 +123,6 @@ export const updateChannelName = async (
   await update(ref(db), updateObject);
 };
 
-export const deleteChannel = async (channelHandle: string): Promise<void> => {
-  const participantsSnapshot = await get(
-    ref(db, `channels/${channelHandle}/participants`)
-  );
-  const participantsData = Object.keys(participantsSnapshot.val());
-
-  const updateObject = {
-    [`channels/${channelHandle}`]: null,
-    ...participantsData.reduce(
-      (acc: Record<string, null>, participant: string) => {
-        acc[`users/${participant}/channels/${channelHandle}`] = null;
-        return acc;
-      },
-      {}
-    ),
-    //REMOVE CHANNEL FROM TEAM IN FUTURE !!!!!!!!!!!!!!!!!!!!!!!!
-  };
-
-  await update(ref(db), updateObject);
-};
-
 export const getUserChannels = async (
   userHandle: string
 ): Promise<Channel[]> => {
@@ -231,4 +210,40 @@ export const removeParticipant = async (
   };
 
   await update(ref(db), updateObject);
+};
+
+export const deleteChannel = async (channelHandle: string): Promise<void> => {
+  try {
+    const participantsSnapshot = await get(
+      ref(db, `channels/${channelHandle}/participants`)
+    );
+
+    if (!participantsSnapshot.exists()) {
+      throw new Error('Channel participants not found.');
+    }
+
+    const participantsData = participantsSnapshot.val();
+
+    const updateObject: Record<string, null> = {
+      [`channels/${channelHandle}`]: null,
+    };
+
+    for (const participant in participantsData) {
+      updateObject[`users/${participant}/channels/${channelHandle}`] = null;
+    }
+
+    const channelSnapshot = await get(ref(db, `channels/${channelHandle}`));
+    const channelData = channelSnapshot.val();
+
+    if (channelData.teamId && channelData.category) {
+      updateObject[
+        `teams/${channelData.teamId}/channels/${channelData.category}/${channelHandle}`
+      ] = null;
+    }
+
+    await update(ref(db), updateObject);
+  } catch (error) {
+    console.error('Error deleting channel:', error);
+    throw new Error('Failed to delete channel.');
+  }
 };

@@ -25,7 +25,11 @@ const AppContent = () => {
               path="teams/:teamId/channels/:channelId"
               element={<Team />}
             />
-            <Route path="chats/:id" element={<Chats />} />
+            <Route path="chats" element={<Chats />}>
+              <Route path="" element={<Chats />} />
+              <Route path="group/:id" element={<Chats />} />
+              <Route path="direct/:id" element={<Chats />} />
+            </Route>
             <Route path="notes" element={<Notes />} />
             <Route path="meetings" element={<Meetings />} />
           </Routes>

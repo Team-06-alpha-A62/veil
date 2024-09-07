@@ -31,10 +31,13 @@ export const NoteModalProvider: React.FC<{ children: ReactNode }> = ({
     localStorage.getItem('openedModalId') || ''
   );
   const [isOpen, setIsOpen] = useState<boolean>(
-    JSON.parse(localStorage.getItem('isNoteOpen') || '')
+    JSON.parse(localStorage.getItem('isNoteOpen') || 'false')
   );
+
   const [modalPosition, setModalPosition] = useState<{ x: number; y: number }>(
-    JSON.parse(localStorage.getItem('modalPosition') || '')
+    localStorage.getItem('modalPosition')
+      ? JSON.parse(localStorage.getItem('modalPosition') || '{"x":0,"y":0}')
+      : { x: 0, y: 0 }
   );
   useEffect(() => {
     const fetchNote = async () => {
