@@ -24,12 +24,14 @@ const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
     };
 
     if (userRole === UserRole.OWNER) {
-      actions['Change Icon'] = onChangeIcon;
-
       actions['Manage Channel'] = onManageChannel;
 
       actions['Leave Group'] = onLeaveChannel;
     }
+    if (!isTeamChannel) {
+      actions['Change Icon'] = onChangeIcon;
+    }
+
     if (userRole === UserRole.MODERATOR) {
       actions['Manage Channel'] = onManageChannel;
     }

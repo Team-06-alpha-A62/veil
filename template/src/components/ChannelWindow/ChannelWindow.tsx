@@ -4,6 +4,7 @@ import { BsArrowReturnLeft } from 'react-icons/bs';
 import { useAuth } from '../../providers/AuthProvider.tsx';
 import {
   createMessage,
+  editMessage,
   updateMessageReactions,
 } from '../../services/message.service.ts';
 import ParticipantsInput from '../ParticipantInput/ParticipantsInput.tsx';
@@ -21,6 +22,10 @@ import GiphySearch from '../GiphySearch/GiphySearch.tsx';
 import DragZone from '../DragZone/DragZone.tsx';
 import { uploadImage } from '../../services/storage.service.ts';
 import { UserRole } from '../../enums/UserRole.ts';
+import { createNotification } from '../../services/notification.service.ts';
+import { NotificationType } from '../../enums/NotificationType.ts';
+import { NotificationMessageType } from '../../enums/NotificationMessageType.ts';
+import { addUnreadNotification } from '../../services/user.service.ts';
 
 interface ChannelWindowProps {
   channel: Channel;
@@ -64,6 +69,15 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
           newMessage,
           finalImageUrl
         );
+
+        Object.keys(channel.participants).forEach(async participant => {
+          await addUnreadNotification(
+            participant,
+            channel.id,
+            NotificationType.MESSAGE
+          );
+        });
+
         setNewMessage('');
         setNewMessageImage('');
         setUploadedFile(null);
@@ -83,6 +97,14 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [newMessage, newMessageImage, currentUser, channel?.id]);
+
+  const handleEditMessage = async (
+    channelId: string,
+    messageId: string,
+    newContent: string
+  ) => {
+    await editMessage(channelId, messageId, newContent);
+  };
 
   useEffect(() => {
     if (isEmojiPickerOpen) {
@@ -145,6 +167,21 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
         addChannelParticipant(channel.id, participant)
       );
     }
+    participants.forEach(async participant => {
+      const newNotificationId = await createNotification(
+        currentUser.userData!.username,
+        participant,
+        NotificationType.CHANNEL,
+        `${currentUser.userData!.username} added you to a channel`,
+        NotificationMessageType.ALERT_INFO
+      );
+
+      await addUnreadNotification(
+        participant,
+        newNotificationId,
+        NotificationType.CHANNEL
+      );
+    });
 
     setParticipants([]);
   };
@@ -260,6 +297,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
                 onReactionClick={emojiData =>
                   handleReactionClick(message.id, emojiData)
                 }
+                onEditMessage={handleEditMessage}
               />
             ))}
         </main>

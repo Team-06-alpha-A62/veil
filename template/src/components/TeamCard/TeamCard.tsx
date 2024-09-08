@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Team } from '../../models/Team';
 import { useAuth } from '../../providers/AuthProvider';
+import ManageTeamModal from '../ManageTeamModal/ManageTeamModal';
+import { createJoinRequest } from '../../services/teams.service';
 
 interface TeamCardProps {
   team: Team;
@@ -9,6 +12,7 @@ interface TeamCardProps {
 
 const TeamCard: React.FC<TeamCardProps> = ({ team, onlineMembersCount }) => {
   const { currentUser } = useAuth();
+  const [isManageTeamModalOpen, setIsManageTeamModalOpen] = useState(false);
   const isOwner = team.owner === currentUser.userData!.username;
   const isModerator =
     team.members[currentUser.userData!.username]?.role === 'moderator';
@@ -21,8 +25,11 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onlineMembersCount }) => {
     navigate(`/app/teams/${team.id}`);
   };
 
-  const handleRequestJoinClick = () => {
-    console.log(`Request to join team: ${team.name}`);
+  const handleRequestJoinClick = async () => {
+    await createJoinRequest(team.id, currentUser.userData!.username);
+  };
+  const handleManageTeamClick = () => {
+    setIsManageTeamModalOpen(true);
   };
 
   const totalChannels = Object.values(team.channels || {}).reduce(
@@ -70,11 +77,22 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onlineMembersCount }) => {
           </button>
         )}
         {(isOwner || isModerator) && hasJoined && (
-          <button className="px-4 py-2 w-1/2 bg-orange-500 hover:bg-orange-400 text-white rounded-lg">
+          <button
+            className="px-4 py-2 w-1/2 bg-orange-500 hover:bg-orange-400 text-white rounded-lg"
+            onClick={handleManageTeamClick}
+          >
             Manage Team
           </button>
         )}
       </div>
+
+      {isManageTeamModalOpen && (
+        <ManageTeamModal
+          team={team}
+          onClose={() => setIsManageTeamModalOpen(false)}
+          currentUsername={currentUser.userData!.username}
+        />
+      )}
     </div>
   );
 };

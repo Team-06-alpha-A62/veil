@@ -5,6 +5,7 @@ import {
   declineFriendRequest,
   userStatusListener,
   listenToFriendsChange,
+  clearUnreadNotifications,
 } from '../../services/user.service';
 import { UserStatus } from '../../enums/UserStatus';
 import PendingFriendCard from '../PendingFriendCard/PendingFriendCard';
@@ -14,6 +15,10 @@ import AddFriendModal from '../AddFriendModal/AddFriendModal';
 import { Channel } from '../../models/Channel';
 import { listenToChannelChange } from '../../services/channel.service';
 import { ChannelType } from '../../enums/ChannelType';
+import NotificationBadge from '../NotificationBadge/NotificationBadge';
+import { createNotification } from '../../services/notification.service';
+import { NotificationType } from '../../enums/NotificationType';
+import { NotificationMessageType } from '../../enums/NotificationMessageType';
 
 const Sidebar: React.FC = () => {
   const { currentUser } = useAuth();
@@ -96,6 +101,14 @@ const Sidebar: React.FC = () => {
         friend => friend.username === username
       );
 
+      await createNotification(
+        currentUser.userData!.username,
+        username,
+        NotificationType.FRIEND,
+        `${currentUser.userData!.username} accepted your friend request`,
+        NotificationMessageType.ALERT_SUCCESS
+      );
+
       if (acceptedFriend) {
         setFriendsData(prevFriends => [...prevFriends, acceptedFriend]);
         setPendingFriendsData(prevPending =>
@@ -111,6 +124,14 @@ const Sidebar: React.FC = () => {
     try {
       await declineFriendRequest(currentUser.userData!.username, username);
 
+      await createNotification(
+        currentUser.userData!.username,
+        username,
+        NotificationType.FRIEND,
+        `${currentUser.userData!.username} declined your friend request`,
+        NotificationMessageType.ALERT_WARNING
+      );
+
       setPendingFriendsData(prevPending =>
         prevPending.filter(friend => friend.username !== username)
       );
@@ -119,8 +140,22 @@ const Sidebar: React.FC = () => {
     }
   };
 
-  const handleCategoryClick = (category: string) => {
+  const handleCategoryClick = async (category: string) => {
     setSelectedCategory(category);
+
+    if (category === 'Pending' && currentUser) {
+      await clearUnreadNotifications(
+        currentUser.userData!.username,
+        NotificationType.FRIEND
+      );
+
+      setPendingFriendsData(prevPending => {
+        return prevPending.map(friend => ({
+          ...friend,
+          isRead: true,
+        }));
+      });
+    }
   };
 
   const filteredFriends = useMemo(() => {
@@ -138,26 +173,30 @@ const Sidebar: React.FC = () => {
           return matchesCategory && matchesSearch;
         });
   }, [selectedCategory, pendingFriendsData, friendsData, searchQuery]);
-  // if (isLoading) {
-  //   return <div className="text-center text-white">Loading...</div>;
-  // }
 
   return (
     <div className="basis-1/5 rounded-3xl p-6 bg-base-300 bg-opacity-50 flex-shrink-0 text-white">
       <div className="flex justify-between items-center mb-6">
         <div className="flex space-x-2">
           {['Online', 'All', 'Pending'].map(category => (
-            <button
-              key={category}
-              onClick={() => handleCategoryClick(category)}
-              className={`text-sm font-semibold px-3 py-1 rounded-full ${
-                selectedCategory === category
-                  ? 'bg-primary'
-                  : 'bg-gray-700 bg-opacity-50'
-              } hover:bg-gray-600 transition-colors`}
-            >
-              {category}
-            </button>
+            <div key={category} className="relative">
+              <button
+                onClick={() => handleCategoryClick(category)}
+                className={`text-sm relative font-semibold px-3 py-1 rounded-full ${
+                  selectedCategory === category
+                    ? 'bg-primary'
+                    : 'bg-gray-700 bg-opacity-50'
+                } hover:bg-gray-600 transition-colors`}
+              >
+                {category}
+              </button>
+              {category === 'Pending' && (
+                <NotificationBadge
+                  type={NotificationType.FRIEND}
+                  isViewActive={selectedCategory === 'Pending'}
+                />
+              )}
+            </div>
           ))}
         </div>
         <button
@@ -178,7 +217,7 @@ const Sidebar: React.FC = () => {
         />
       </div>
 
-      <div className="max-h-[65vh]  scrollbar-thin scrollbar-thumb-gray-600">
+      <div className="max-h-[65vh] scrollbar-thin scrollbar-thumb-gray-600">
         {filteredFriends.length ? (
           filteredFriends.map(friend =>
             selectedCategory === 'Pending' ? (

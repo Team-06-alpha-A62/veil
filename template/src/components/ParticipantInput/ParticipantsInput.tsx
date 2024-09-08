@@ -7,6 +7,7 @@ interface ParticipantsInputProps {
   channelParticipants?: string[] | undefined;
   teamMembers?: string[];
   disabled?: boolean;
+  showText?: boolean;
 }
 
 const ParticipantsInput: React.FC<ParticipantsInputProps> = ({
@@ -15,6 +16,7 @@ const ParticipantsInput: React.FC<ParticipantsInputProps> = ({
   channelParticipants,
   teamMembers = [],
   disabled = false,
+  showText = true,
 }) => {
   const { currentUser } = useAuth();
   const [participantsInput, setParticipantsInput] = useState<string>('');
@@ -66,9 +68,11 @@ const ParticipantsInput: React.FC<ParticipantsInputProps> = ({
 
   return (
     <div className="form-control w-full gap-2 dropdown dropdown-bottom">
-      <label htmlFor="participants" className="label">
-        <span className="label-text">Add Participants</span>
-      </label>
+      {showText && (
+        <label htmlFor="participants" className="label">
+          <span className="label-text">Add Participants</span>
+        </label>
+      )}
 
       <div className="p-2 flex items-center gap-2 flex-wrap rounded-3xl bg-base-200 bg-opacity-50">
         {participants.map((participant, index) => (

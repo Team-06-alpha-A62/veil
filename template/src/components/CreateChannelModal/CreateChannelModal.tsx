@@ -6,6 +6,9 @@ import { ChannelType } from '../../enums/ChannelType.ts';
 import ParticipantsInput from '../ParticipantInput/ParticipantsInput.tsx';
 import { uploadImage } from '../../services/storage.service.ts';
 import DragZone from '../DragZone/DragZone.tsx';
+import { NotificationType } from '../../enums/NotificationType.ts';
+import { NotificationMessageType } from '../../enums/NotificationMessageType.ts';
+import { createNotification } from '../../services/notification.service.ts';
 
 interface Channel {
   title: string;
@@ -42,6 +45,16 @@ const CreateChannelModal: React.FC = () => {
       undefined,
       imageUrl
     );
+
+    participants.forEach(async participant => {
+      await createNotification(
+        currentUser.userData!.username,
+        participant,
+        NotificationType.CHANNEL,
+        `${currentUser.userData!.username} added you to a channel`,
+        NotificationMessageType.ALERT_INFO
+      );
+    });
 
     setChannelData(initialChannelData);
     setParticipants([]);
