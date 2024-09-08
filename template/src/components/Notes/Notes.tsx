@@ -43,6 +43,7 @@ const Notes: React.FC = () => {
 
       return () => unsubscribe();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser.userData!.username]);
   // fetching pinned notes from localStorage
   useEffect(() => {

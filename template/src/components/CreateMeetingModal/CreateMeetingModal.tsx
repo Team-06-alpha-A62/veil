@@ -3,6 +3,8 @@ import CreateMeetingButton from '../CreateMeetingButton/CreateMeetingButton.tsx'
 import dayjs from 'dayjs';
 import { FaCheck } from 'react-icons/fa';
 import TimeSelector from '../TimeSelector/TimeSelector.tsx';
+import { createMeeting } from '../../services/meetings.service.ts';
+import { useAuth } from '../../providers/AuthProvider.tsx';
 
 interface MeetingProps {
   selectedDay: dayjs.Dayjs;
@@ -12,15 +14,16 @@ interface Meeting {
   title: string;
   description?: string;
   label: string;
-  participantsInput: string;
   date: number;
   startTime: number;
   endTime: number;
 }
 
 const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
+  const { currentUser } = useAuth();
   const [showMeetingModal, setShowMeetingModal] = useState<boolean>(false);
   const [participants, setParticipants] = useState<string[]>([]);
+  const [participantsInput, setParticipantsInput] = useState<string>('');
 
   const labelColors: Record<string, string> = {
     indigo: 'bg-indigo-500',
@@ -35,15 +38,30 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
   const [selectedLabel, setSelectedLabel] = useState<string>(
     labelColors.indigo
   );
-  const [meetingData, setMeetingData] = useState<Meeting>({
+
+  const initialMeetingData = {
     title: '',
     description: '',
     label: selectedLabel,
-    participantsInput: '',
     date: selectedDay?.valueOf() ?? 0,
-    startTime: 0,
-    endTime: 0,
-  });
+    startTime: selectedDay.startOf('day').valueOf(), // Initialize startTime to the start of selectedDay
+    endTime: selectedDay.startOf('day').valueOf() + 3600000, // Initialize endTime to 1 hour later
+  };
+  const [meetingData, setMeetingData] = useState<Meeting>(initialMeetingData);
+
+  useEffect(() => {
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowMeetingModal(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeydown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+    };
+  }, []);
 
   const handleModalToggle = (): void => {
     setShowMeetingModal(prevValue => !prevValue);
@@ -60,21 +78,19 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
   ): void => {
     if (
       (event.key === 'Enter' || event.key === ' ') &&
-      meetingData.participantsInput.trim()
+      participantsInput.trim()
     ) {
       event.preventDefault();
-      if (!participants.includes(meetingData.participantsInput.trim())) {
-        setParticipants([
-          ...participants,
-          meetingData.participantsInput.trim(),
-        ]);
-        setMeetingData({ ...meetingData, participantsInput: '' });
+      if (!participants.includes(participantsInput.trim())) {
+        setParticipants([...participants, participantsInput.trim()]);
+        setParticipantsInput('');
       }
     }
   };
 
   const handleInputChange =
-    (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    (key: string) =>
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setMeetingData({
         ...meetingData,
         [key]: event.target.value,
@@ -82,6 +98,8 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
     };
 
   const handleStartTimeChange = (time: number) => {
+    console.log(dayjs(time).format('YYYY-MM-DD HH:mm:ss'));
+
     setMeetingData(prevData => ({
       ...prevData,
       startTime: time,
@@ -90,25 +108,29 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
   };
 
   const handleEndTimeChange = (time: number) => {
+    console.log(dayjs(time).format('YYYY-MM-DD HH:mm:ss'));
     setMeetingData(prevData => ({
       ...prevData,
       endTime: time,
     }));
   };
+  const handleScheduleMeetingClick = async (): Promise<void> => {
+    await createMeeting(
+      meetingData.title,
+      selectedLabel,
+      currentUser.userData!.username,
+      meetingData.startTime,
+      meetingData.endTime,
+      participants,
+      meetingData.description
+    );
 
-  useEffect(() => {
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setShowMeetingModal(false);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeydown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeydown);
-    };
-  }, []);
+    setMeetingData(initialMeetingData);
+    setParticipants([]);
+    setParticipantsInput('');
+    setSelectedLabel(labelColors.indigo);
+    setShowMeetingModal(false);
+  };
 
   return (
     <>
@@ -134,6 +156,8 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
                 <input
                   autoFocus
                   type="text"
+                  value={meetingData.title}
+                  onChange={handleInputChange('title')}
                   className="input input-sm w-full rounded-3xl bg-base-200 bg-opacity-50 focus:border-transparent focus:outline-accent"
                 />
               </label>
@@ -144,7 +168,11 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
                     Optional
                   </span>
                 </div>
-                <textarea className="textarea h-24 rounded-3xl bg-base-200 bg-opacity-50 focus:border-transparent focus:outline-accent"></textarea>
+                <textarea
+                  className="textarea h-24 rounded-3xl bg-base-200 bg-opacity-50 focus:border-transparent focus:outline-accent"
+                  value={meetingData.description}
+                  onChange={handleInputChange('description')}
+                ></textarea>
               </label>
               <div className="form-control w-full gap-2">
                 <label htmlFor="participants" className="label">
@@ -171,8 +199,8 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
 
                   <input
                     type="text"
-                    value={meetingData.participantsInput}
-                    onChange={handleInputChange('participantsInput')}
+                    value={participantsInput}
+                    onChange={event => setParticipantsInput(event.target.value)}
                     onKeyDown={handleParticipantKeydown}
                     className="input bg-transparent input-sm flex-grow rounded-3xl border-none focus:outline-none"
                   />
@@ -199,6 +227,7 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
                   <span className="label-text">Starts At</span>
                 </div>
                 <TimeSelector
+                  selectedDay={selectedDay}
                   selectedTime={meetingData.startTime}
                   onTimeChange={handleStartTimeChange}
                 />
@@ -208,12 +237,19 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
                   <span className="label-text">Ends At</span>
                 </div>
                 <TimeSelector
+                  selectedDay={selectedDay}
                   selectedTime={meetingData.endTime}
                   onTimeChange={handleEndTimeChange}
                   startTime={meetingData.startTime}
                 />
               </label>
             </div>
+            <button
+              className="text-sm font-semibold px-3 py-1 rounded-full bg-success hover:bg-accent-focus transition-colors text-white"
+              onClick={handleScheduleMeetingClick}
+            >
+              Schedule Meeting
+            </button>
           </div>
         </div>
       )}

@@ -3,17 +3,22 @@ import dayjs from 'dayjs';
 import { generateTimeOptions } from '../../utils/dateUtils.ts';
 
 interface TimeSelectorProps {
-  selectedTime: number; // Expecting timestamp in milliseconds
+  selectedDay: dayjs.Dayjs;
+  selectedTime: number; // Time in milliseconds from the start of the day
   onTimeChange: (time: number) => void;
-  startTime?: number; // Optional startTime prop
+  startTime?: number; // Optional startTime prop for filtering
 }
 
 const TimeSelector: React.FC<TimeSelectorProps> = ({
+  selectedDay,
   selectedTime,
   onTimeChange,
-  startTime = 0, // Default startTime to 0 if not provided
+  startTime = 0,
 }) => {
-  const times = generateTimeOptions().filter(time => time >= startTime);
+  // Generate time options as milliseconds from the start of the day
+  const times = generateTimeOptions(selectedDay).filter(
+    time => time >= startTime
+  );
 
   return (
     <select

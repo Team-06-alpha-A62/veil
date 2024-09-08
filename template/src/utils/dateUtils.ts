@@ -19,12 +19,12 @@ export const getMonth = (month = dayjs().month()) => {
   return daysMatrix;
 };
 
-export const generateTimeOptions = (): number[] => {
+export const generateTimeOptions = (selectedDay: dayjs.Dayjs): number[] => {
   const times: number[] = [];
-  const startOfDay = dayjs().startOf('day');
+  const startOfDay = selectedDay?.startOf('day'); // Get the start of the selected day
 
   for (let i = 0; i < 48; i++) {
-    const time = startOfDay.add(i * 30, 'minute').valueOf(); // Get timestamp in milliseconds
+    const time = startOfDay.add(i * 30, 'minute').valueOf(); // Increment by 30 minutes
     times.push(time);
   }
 

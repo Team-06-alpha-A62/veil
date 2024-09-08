@@ -1,7 +1,7 @@
 import { ChannelCategory } from '../enums/ChannelCategory.ts';
 import { ChannelType } from '../enums/ChannelType';
 import { Message } from './Message.ts';
-import { TeamMember as Participant } from './Participant.ts';
+import { Participant } from './Participant.ts';
 
 export interface Channel {
   id: string;
