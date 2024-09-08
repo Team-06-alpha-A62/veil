@@ -197,6 +197,24 @@ export const subscribeToUserMeetings = (
   });
 };
 
+export const getPendingUserMeetings = async (
+  userHandle: string
+): Promise<Meeting[]> => {
+  const snapshot = await get(ref(db, 'meetings'));
+  const pendingMeetings: Meeting[] = [];
+
+  if (snapshot.exists()) {
+    const meetings = snapshot.val();
+    Object.keys(meetings).forEach(meetingId => {
+      const participants = meetings[meetingId].participants;
+      if (participants[userHandle] === 'pending') {
+        pendingMeetings.push({ ...meetings[meetingId] });
+      }
+    });
+  }
+  return pendingMeetings;
+};
+
 export const updateMeetingTitle = async (
   meetingHandle: string,
   newTitle: string

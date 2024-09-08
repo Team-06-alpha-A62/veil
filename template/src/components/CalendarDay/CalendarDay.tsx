@@ -35,7 +35,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
     const filteredMeetings = meetings?.filter(meeting => {
       const meetingDate = dayjs(meeting.startTime).startOf('day');
       const selectedDay = day!.startOf('day');
-      console.log(dayjs(meeting.startTime).format('D MMMM HH:mm'));
+
       return meetingDate.isSame(selectedDay);
     });
 

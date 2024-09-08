@@ -228,6 +228,7 @@ export const leaveChannel = async (
 
   await update(ref(db), updateObject);
 };
+
 export const addUnreadNotification = async (
   username: string,
   notificationId: string,

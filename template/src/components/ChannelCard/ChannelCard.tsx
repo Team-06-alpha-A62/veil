@@ -140,10 +140,9 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
                 </span>
               )}
             </div>
-            {/* Notification Badge */}
             <NotificationBadge
               type={NotificationType.MESSAGE}
-              isViewActive={isViewActive} // Set this based on URL comparison
+              isViewActive={isViewActive}
               channelId={channel.id}
             />
           </div>

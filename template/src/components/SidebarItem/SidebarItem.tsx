@@ -1,4 +1,7 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import NotificationBadge from '../NotificationBadge/NotificationBadge';
+import { NotificationType } from '../../enums/NotificationType';
 
 interface SidebarItemProps {
   icon: React.ReactNode;
@@ -13,12 +16,21 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   isExpanded,
   to,
 }) => {
+  const location = useLocation();
+  const [isLabelInUrl, setIsLabelInUrl] = useState(false);
+
+  useEffect(() => {
+    const lowerCaseLabel = label.toLowerCase();
+    const lowerCasePathname = location.pathname.toLowerCase();
+    setIsLabelInUrl(lowerCasePathname.includes(lowerCaseLabel));
+  }, [location.pathname, label]);
+
   return (
     <NavLink
       to={to}
       className={({ isActive }) =>
         `flex rounded-full items-center justify-start h-[30px] px-[28px] py-[30px] transition-colors ${
-          isActive
+          isActive || isLabelInUrl
             ? isExpanded
               ? 'bg-primary text-neutral'
               : 'text-primary'
@@ -31,14 +43,25 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       {({ isActive }) => (
         <>
           <div
-            className={`text-[24px] pr-[20px] ${isExpanded ? 'expanded' : ''}`}
+            className={`relative text-[24px] pr-[20px] ${
+              isExpanded ? 'expanded' : ''
+            }`}
           >
             {icon}
+
+            {label === 'Meetings' && (
+              <span className="absolute right-4 top-0">
+                <NotificationBadge
+                  type={NotificationType.MEETING}
+                  isViewActive={isLabelInUrl}
+                />
+              </span>
+            )}
           </div>
           {isExpanded && (
             <span
               className={`overflow-hidden ${
-                isActive ? 'text-primary-content' : 'text-white'
+                isActive || isLabelInUrl ? 'text-primary-content' : 'text-white'
               } ${isExpanded ? 'expanded' : ''}`}
             >
               {label}

@@ -5,6 +5,10 @@ import { FaCheck } from 'react-icons/fa';
 import TimeSelector from '../TimeSelector/TimeSelector.tsx';
 import { createMeeting } from '../../services/meetings.service.ts';
 import { useAuth } from '../../providers/AuthProvider.tsx';
+import { createNotification } from '../../services/notification.service.ts';
+import { NotificationType } from '../../enums/NotificationType.ts';
+import { NotificationMessageType } from '../../enums/NotificationMessageType.ts';
+import { addUnreadNotification } from '../../services/user.service.ts';
 
 interface MeetingProps {
   selectedDay: dayjs.Dayjs;
@@ -44,8 +48,8 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
     description: '',
     label: selectedLabel,
     date: selectedDay?.valueOf() ?? 0,
-    startTime: selectedDay.startOf('day').valueOf(), // Initialize startTime to the start of selectedDay
-    endTime: selectedDay.startOf('day').valueOf() + 3600000, // Initialize endTime to 1 hour later
+    startTime: selectedDay.startOf('day').valueOf(),
+    endTime: selectedDay.startOf('day').valueOf() + 3600000,
   };
   const [meetingData, setMeetingData] = useState<Meeting>(initialMeetingData);
 
@@ -67,9 +71,24 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
     setShowMeetingModal(prevValue => !prevValue);
   };
 
-  const handleRemoveParticipant = (participantIndex: number): void => {
+  const handleRemoveParticipant = async (
+    participantIndex: number
+  ): Promise<void> => {
     setParticipants(
       participants.filter((_, index) => index !== participantIndex)
+    );
+    const newNotificationId = await createNotification(
+      currentUser.userData!.username,
+      participants[participantIndex],
+      NotificationType.MEETING,
+      `${currentUser.userData!.username} removed you from meeting`,
+      NotificationMessageType.ALERT_WARNING
+    );
+
+    await addUnreadNotification(
+      participants[participantIndex],
+      newNotificationId,
+      NotificationType.MEETING
     );
   };
 
@@ -124,6 +143,22 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
       participants,
       meetingData.description
     );
+
+    participants.forEach(async participants => {
+      const newNotificationId = await createNotification(
+        currentUser.userData!.username,
+        participants,
+        NotificationType.MEETING,
+        `${currentUser.userData!.username} invited you to a meeting`,
+        NotificationMessageType.ALERT_INFO
+      );
+
+      await addUnreadNotification(
+        participants,
+        newNotificationId,
+        NotificationType.MEETING
+      );
+    });
 
     setMeetingData(initialMeetingData);
     setParticipants([]);
