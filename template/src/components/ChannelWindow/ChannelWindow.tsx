@@ -4,6 +4,7 @@ import { BsArrowReturnLeft } from 'react-icons/bs';
 import { useAuth } from '../../providers/AuthProvider.tsx';
 import {
   createMessage,
+  editMessage,
   updateMessageReactions,
 } from '../../services/message.service.ts';
 import ParticipantsInput from '../ParticipantInput/ParticipantsInput.tsx';
@@ -96,6 +97,14 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [newMessage, newMessageImage, currentUser, channel?.id]);
+
+  const handleEditMessage = async (
+    channelId: string,
+    messageId: string,
+    newContent: string
+  ) => {
+    await editMessage(channelId, messageId, newContent);
+  };
 
   useEffect(() => {
     if (isEmojiPickerOpen) {
@@ -288,6 +297,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
                 onReactionClick={emojiData =>
                   handleReactionClick(message.id, emojiData)
                 }
+                onEditMessage={handleEditMessage}
               />
             ))}
         </main>
