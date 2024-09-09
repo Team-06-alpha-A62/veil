@@ -26,6 +26,37 @@ const Channels: React.FC = () => {
   );
 
   useEffect(() => {
+    const handleChannelsChange = (channels: Channel[]) => {
+      setChannelsData([...channels]);
+      const newListeners: Array<() => void> = channels.map(channel => {
+        const cleanupListener = listenToIndividualChannel(
+          channel.id,
+          updatedChannel => {
+            setChannelsData(prevChannels =>
+              prevChannels.map(ch =>
+                ch.id === updatedChannel.id ? updatedChannel : ch
+              )
+            );
+          }
+        );
+        return cleanupListener;
+      });
+
+      setListeners(newListeners);
+    };
+
+    const cleanupChannelsListener = listenToChannelChange(
+      currentUser.userData!.username,
+      handleChannelsChange
+    );
+
+    return () => {
+      cleanupChannelsListener();
+      listeners.forEach(cleanup => cleanup());
+    };
+  }, [currentUser]); // Ensure meeting is in the dependency array
+
+  useEffect(() => {
     setOpenedChannel(id || null);
   }, [id]);
 

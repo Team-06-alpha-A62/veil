@@ -11,6 +11,8 @@ import ParticipantsInput from '../ParticipantInput/ParticipantsInput.tsx';
 import {
   addChannelParticipant,
   createChannel,
+  incrementChannelParticipantsCount,
+  toggleChannelMeeting,
 } from '../../services/channel.service.ts';
 import { ChannelType } from '../../enums/ChannelType.ts';
 import { getChannelName } from '../../utils/TransformDataHelpers.ts';
@@ -26,6 +28,14 @@ import { createNotification } from '../../services/notification.service.ts';
 import { NotificationType } from '../../enums/NotificationType.ts';
 import { NotificationMessageType } from '../../enums/NotificationMessageType.ts';
 import { addUnreadNotification } from '../../services/user.service.ts';
+
+import { DyteProvider, useDyteClient } from '@dytesdk/react-web-core';
+
+import { addDyteMeetingParticipant } from '../../services/dyte.service.ts';
+import { DyteParticipantType } from '../../enums/DyteParticipantType.ts';
+import DyteMeetingUI from '../DyteMeetingUI/DyteMeetingUI.tsx';
+
+import { FaPhoneAlt } from 'react-icons/fa';
 
 interface ChannelWindowProps {
   channel: Channel;
@@ -48,11 +58,62 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
   const emojiesIconRef = useRef<HTMLDivElement>(null);
   const gifPickerRef = useRef<HTMLDivElement>(null);
 
+  const [call, setCall] = useState<boolean>(false);
+
+  const [meeting, initMeeting] = useDyteClient();
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [isDyteMeetingReady, setIsDyteMeetingReady] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!channel.activeMeetingId) return;
+    const preset =
+      currentUser.userData!.username === channel.owner
+        ? DyteParticipantType.HOST
+        : DyteParticipantType.PARTICIPANT;
+
+    const getTokenAndInitMeeting = async () => {
+      try {
+        const token = await addDyteMeetingParticipant(
+          channel.activeMeetingId!,
+          preset,
+          currentUser.userData!.username,
+          currentUser.userData!.avatarUrl!
+        );
+        setAuthToken(token);
+
+        // Initialize the Dyte meeting
+        await initDyteMeeting(token);
+      } catch (error) {
+        console.error('Error initializing Dyte meeting:', error);
+      }
+    };
+
+    getTokenAndInitMeeting();
+    // setCall(false);
+  }, [channel.activeMeetingId, call]);
+
+  const initDyteMeeting = async (token: string) => {
+    try {
+      await initMeeting({
+        authToken: token,
+        defaults: {
+          audio: false,
+          video: false,
+        },
+      });
+
+      // Set Dyte meeting ready state after successful initialization
+      setIsDyteMeetingReady(true);
+    } catch (error) {
+      console.error('Failed to initialize Dyte meeting:', error);
+    }
+  };
+
   useEffect(() => {
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
     }
-  }, [channel?.messages]);
+  }, [channel?.messages, channel]);
 
   useEffect(() => {
     const handleKeyDown = async (e: KeyboardEvent) => {
@@ -96,7 +157,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
     window.addEventListener('keydown', handleKeyDown);
 
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [newMessage, newMessageImage, currentUser, channel?.id]);
+  }, [newMessage, newMessageImage, currentUser, channel?.id, channel]);
 
   const handleEditMessage = async (
     channelId: string,
@@ -115,7 +176,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
 
     return () =>
       document.removeEventListener('mousedown', handleClickOutsideEmojiPicker);
-  });
+  }, [isEmojiPickerOpen]);
 
   const getParticipantAvatar = (sender: string): string => {
     return (
@@ -221,7 +282,6 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
     messageId: string,
     emojiData: EmojiClickData
   ) => {
-    console.log(emojiData);
     try {
       await updateMessageReactions(
         channel.id,
@@ -236,138 +296,167 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full z-0">
-      <header className="basis-2/10 h-auto flex flex-shrink-0 flex-row-reverse justify-between pb-6">
-        {canAddParticipants() && (
-          <div className="dropdown dropdown-bottom dropdown-end">
-            <button
-              tabIndex={0}
-              className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
-            >
-              Add Participant
-            </button>
-            <div
-              tabIndex={0}
-              className="inline-block dropdown-content menu bg-base-100 rounded-box z-[1] w-96 p-6 shadow"
-            >
-              <ParticipantsInput
-                participants={participants}
-                setParticipants={setParticipants}
-                {...(teamMembers.length > 0
-                  ? { teamMembers }
-                  : {
-                      channelParticipants: Object.keys(
-                        channel?.participants || {}
-                      ),
-                    })}
-              />
+    <DyteProvider value={meeting}>
+      <div className="flex flex-col h-full z-0">
+        <header className="basis-2/10 h-auto flex flex-shrink-0 flex-row-reverse justify-between pb-6">
+          <div className="flex gap-4">
+            {!call && (
               <button
-                className="mt-6 text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
-                onClick={handleAddClick}
+                className="flex items-center gap-2 text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
+                onClick={async () => {
+                  setCall(prev => !prev);
+                  await incrementChannelParticipantsCount(channel.id);
+                }}
               >
-                Add
+                <FaPhoneAlt />
+                {channel.meetingParticipants !== 0 ? (
+                  <span>Join</span>
+                ) : (
+                  <span>Call</span>
+                )}
               </button>
-            </div>
+            )}
+            {canAddParticipants() && (
+              <div className="dropdown dropdown-bottom dropdown-end">
+                <button
+                  tabIndex={0}
+                  className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
+                >
+                  Add Participant
+                </button>
+                <div
+                  tabIndex={0}
+                  className="inline-block dropdown-content menu bg-base-100 rounded-box z-[1] w-96 p-6 shadow"
+                >
+                  <ParticipantsInput
+                    participants={participants}
+                    setParticipants={setParticipants}
+                    {...(teamMembers.length > 0
+                      ? { teamMembers }
+                      : {
+                          channelParticipants: Object.keys(
+                            channel?.participants || {}
+                          ),
+                        })}
+                  />
+                  <button
+                    className="mt-6 text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
+                    onClick={handleAddClick}
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-        <div
-          className="tooltip tooltip-bottom"
-          data-tip={`Channel participants: ${Object.keys(
-            channel?.participants || {}
-          )
-            .filter(p => p !== currentUser.userData!.username)
-            .join(', ')
-            .concat(` and ${currentUser.userData!.username}`)}`}
-        >
-          <h2 className="font-semibold">
-            {getChannelName(currentUser.userData!.username, channel)}
-          </h2>
-        </div>
-      </header>
-      <div className=" relative flex flex-col rounded-3xl border border-gray-700 bg-base-300 bg-opacity-50 min-h-full">
-        <main ref={chatWindowRef} className="flex-1 overflow-y-auto px-6">
-          {Object.values(channel?.messages || {})
-            .sort((a, b) => a.sentAt - b.sentAt)
-            .map(message => (
-              <Message
-                key={message.id}
-                message={message}
-                senderAvatar={getParticipantAvatar(message.sender)}
-                currentUserUsername={currentUser.userData!.username}
-                onReactionClick={emojiData =>
-                  handleReactionClick(message.id, emojiData)
-                }
-                onEditMessage={handleEditMessage}
-              />
-            ))}
-        </main>
-        <div className="sticky flex flex-col gap-3 bottom-0 p-5 border-t border-gray-700">
-          {newMessageImage && (
-            <div className="relative ml-6 w-36">
-              <span
-                className="absolute top-2 right-2 cursor-pointer bg-white bg-opacity-90 w-6 h-6 flex justify-center items-center rounded-full text-primary-content"
-                onClick={() => setNewMessageImage('')}
-              >
-                &times;
-              </span>
-              <img
-                src={newMessageImage}
-                alt="Selected image"
-                className="rounded-3xl w-36"
-              />
+          <div
+            className="tooltip tooltip-bottom"
+            data-tip={`Channel participants: ${Object.keys(
+              channel?.participants || {}
+            )
+              .filter(p => p !== currentUser.userData!.username)
+              .join(', ')
+              .concat(` and ${currentUser.userData!.username}`)}`}
+          >
+            <h2 className="font-semibold">
+              {getChannelName(currentUser.userData!.username, channel)}
+            </h2>
+          </div>
+        </header>
+        <div className=" relative flex flex-col rounded-3xl border border-gray-700 bg-base-300 bg-opacity-50 min-h-full">
+          {authToken && isDyteMeetingReady && call && (
+            <div className="w-full h-auto rounded-t-3xl">
+              <DyteMeetingUI setCall={setCall} channelId={channel.id} />
             </div>
           )}
-          <div className="flex items-center w-full">
-            <div ref={emojiPickerRef}>
-              <EmojiPicker
-                onEmojiClick={emojiData => handleEmojiClick(emojiData)}
-                autoFocusSearch={true}
-                theme={Theme.AUTO}
-                lazyLoadEmojis={true}
-                style={{ position: 'absolute', right: '100px', bottom: '70px' }}
-                open={isEmojiPickerOpen}
-              />
-            </div>
-            {isGifPickerOpen && (
-              <div ref={gifPickerRef}>
-                <GiphySearch
-                  styleProps={{
-                    right: '60px',
-                    bottom: '70px',
-                  }}
-                  setNewMessageImage={setNewMessageImage}
+          <main ref={chatWindowRef} className="flex-1 overflow-y-auto px-6">
+            {Object.values(channel?.messages || {})
+              .sort((a, b) => a.sentAt - b.sentAt)
+              .map(message => (
+                <Message
+                  key={message.id}
+                  message={message}
+                  senderAvatar={getParticipantAvatar(message.sender)}
+                  currentUserUsername={currentUser.userData!.username}
+                  onReactionClick={emojiData =>
+                    handleReactionClick(message.id, emojiData)
+                  }
+                  onEditMessage={handleEditMessage}
+                />
+              ))}
+          </main>
+          <div className="sticky flex flex-col gap-3 bottom-0 p-5 border-t border-gray-700">
+            {newMessageImage && (
+              <div className="relative ml-6 w-36">
+                <span
+                  className="absolute top-2 right-2 cursor-pointer bg-white bg-opacity-90 w-6 h-6 flex justify-center items-center rounded-full text-primary-content"
+                  onClick={() => setNewMessageImage('')}
+                >
+                  &times;
+                </span>
+                <img
+                  src={newMessageImage}
+                  alt="Selected image"
+                  className="rounded-3xl w-36"
                 />
               </div>
             )}
-            <label className="mr-4 input flex-1 px-4 py-2 rounded-full bg-gray-700 focus:outline-none flex items-center gap-2">
-              <input
-                value={newMessage}
-                type="text"
-                className="grow"
-                placeholder="Type here"
-                onChange={e => setNewMessage(e.target.value)}
+            <div className="flex items-center w-full">
+              <div ref={emojiPickerRef}>
+                <EmojiPicker
+                  onEmojiClick={emojiData => handleEmojiClick(emojiData)}
+                  autoFocusSearch={true}
+                  theme={Theme.AUTO}
+                  lazyLoadEmojis={true}
+                  style={{
+                    position: 'absolute',
+                    right: '100px',
+                    bottom: '70px',
+                  }}
+                  open={isEmojiPickerOpen}
+                />
+              </div>
+              {isGifPickerOpen && (
+                <div ref={gifPickerRef}>
+                  <GiphySearch
+                    styleProps={{
+                      right: '60px',
+                      bottom: '70px',
+                    }}
+                    setNewMessageImage={setNewMessageImage}
+                  />
+                </div>
+              )}
+              <label className="mr-4 input flex-1 px-4 py-2 rounded-full bg-gray-700 focus:outline-none flex items-center gap-2">
+                <input
+                  value={newMessage}
+                  type="text"
+                  className="grow"
+                  placeholder="Type here"
+                  onChange={e => setNewMessage(e.target.value)}
+                />
+                <BsArrowReturnLeft />
+              </label>
+              <MdEmojiEmotions
+                size={30}
+                onClick={handleEmojiPickerOpenToggle}
+                className="mr-4"
               />
-              <BsArrowReturnLeft />
-            </label>
-            <MdEmojiEmotions
-              size={30}
-              onClick={handleEmojiPickerOpenToggle}
-              className="mr-4"
-            />
-            <SiGiphy
-              style={{ fontSize: '25px', marginRight: '16px' }}
-              onClick={handleGifPickerOpenToggle}
-            />
-            <DragZone
-              handleFileChange={handleFileChange}
-              width={25}
-              height={25}
-              round={true}
-            />
+              <SiGiphy
+                style={{ fontSize: '25px', marginRight: '16px' }}
+                onClick={handleGifPickerOpenToggle}
+              />
+              <DragZone
+                handleFileChange={handleFileChange}
+                width={25}
+                height={25}
+                round={true}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </DyteProvider>
   );
 };
 
