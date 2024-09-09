@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { UserStatus } from '../../enums/UserStatus';
 import { FaChevronRight, FaPencilAlt } from 'react-icons/fa';
 import UserStatusIndicator from '../UserStatusIndicator/UserStatusIndicator';
-
 import { IoLogOutOutline } from 'react-icons/io5';
 import { useAuth } from '../../providers/AuthProvider';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +11,7 @@ interface UserProfilePopupProps {
   currentStatus: UserStatus | undefined;
   onClose: () => void;
   onStatusChange: (status: UserStatus) => void;
+  onEditProfile: () => void; // New prop to trigger edit profile modal
 }
 
 const statusOptions = [
@@ -46,6 +46,7 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
   currentStatus,
   onClose,
   onStatusChange,
+  onEditProfile,
 }) => {
   const { logout } = useAuth();
   const [isStatusPopupVisible, setIsStatusPopupVisible] = useState(false);
@@ -107,17 +108,23 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
         )}
       </div>
 
-      <button className="w-full mb-3 flex items-center justify-between p-3 bg-base-200 rounded-lg hover:bg-base-100 transition-colors">
+      <button
+        className="w-full mb-3 flex items-center justify-between p-3 bg-base-200 rounded-lg hover:bg-base-100 transition-colors"
+        onClick={onEditProfile}
+      >
         <div className="flex items-center space-x-3">
           <FaPencilAlt className="text-gray-400" />
           <span>Edit Profile</span>
         </div>
       </button>
 
-      <button className="w-full flex items-center justify-between p-3 bg-base-200 rounded-lg hover:bg-base-100 transition-colors">
+      <button
+        className="w-full flex items-center justify-between p-3 bg-base-200 rounded-lg hover:bg-base-100 transition-colors"
+        onClick={handleLogOut}
+      >
         <div className="flex items-center space-x-3">
           <IoLogOutOutline style={{ fontSize: '20px' }} />
-          <span onClick={() => handleLogOut()}>Logout</span>
+          <span>Logout</span>
         </div>
       </button>
     </div>

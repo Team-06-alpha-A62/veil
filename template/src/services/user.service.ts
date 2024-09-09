@@ -96,7 +96,35 @@ export const updateUserStatus = async (
     throw new Error('Failed to update user status.');
   }
 };
+export const updateUserProfile = async (
+  username: string,
+  updatedProfile: Partial<UserData>
+): Promise<void> => {
+  try {
+    const updateObject: Record<string, string> = {};
 
+    if (updatedProfile.firstName) {
+      updateObject[`users/${username}/firstName`] = updatedProfile.firstName;
+    }
+    if (updatedProfile.lastName) {
+      updateObject[`users/${username}/lastName`] = updatedProfile.lastName;
+    }
+    if (updatedProfile.phoneNumber) {
+      updateObject[`users/${username}/phoneNumber`] =
+        updatedProfile.phoneNumber;
+    }
+    if (updatedProfile.avatarUrl) {
+      updateObject[`users/${username}/avatarUrl`] = updatedProfile.avatarUrl;
+    }
+    if (updatedProfile.status) {
+      updateObject[`users/${username}/status`] = updatedProfile.status;
+    }
+
+    await update(ref(db), updateObject);
+  } catch {
+    throw new Error('Failed to update user profile.');
+  }
+};
 export const userStatusListener = (
   username: string,
   onStatusChange: (newStatus: string) => void

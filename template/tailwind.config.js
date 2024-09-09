@@ -52,7 +52,7 @@ export default {
       'cupcake',
       'retro',
     ],
-    darkTheme: 'dark',
+    darkTheme: 'light',
     base: true,
     styled: true,
     utils: true,

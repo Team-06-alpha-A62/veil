@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { UserStatus } from '../../enums/UserStatus';
 import UserStatusIndicator from '../UserStatusIndicator/UserStatusIndicator';
 import { updateUserStatus } from '../../services/user.service';
 import UserProfilePopup from '../UserProfilePopup/UserProfilePopup';
+import { UserData } from '../../models/UserData';
+import EditProfileModal from '../EditProfileModal/EditProfileModal';
 
 interface UserProfileCardProps {
   avatarUrl: string | undefined;
@@ -12,19 +14,34 @@ interface UserProfileCardProps {
 }
 
 const UserProfileCard: React.FC<UserProfileCardProps> = ({
-  avatarUrl,
+  avatarUrl: initialAvatarUrl,
   username,
   status,
   isExpanded,
 }) => {
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(
+    initialAvatarUrl
+  );
   const [shouldRenderContent, setShouldRenderContent] =
     useState<boolean>(false);
   const [isPopupVisible, setIsPopupVisible] = useState<boolean>(false);
+  const [isEditProfileModalVisible, setIsEditProfileModalVisible] =
+    useState<boolean>(false);
   const [currentStatus, setCurrentStatus] = useState<UserStatus | undefined>(
     status
   );
 
   const popupRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isPopupVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isPopupVisible]);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -45,9 +62,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
 
     try {
       await updateUserStatus(username, newStatus);
-
       setCurrentStatus(newStatus);
-
       setIsPopupVisible(false);
     } catch (error) {
       console.error('Failed to update status:', error);
@@ -60,15 +75,14 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
     }
   };
 
-  useEffect(() => {
-    if (isPopupVisible) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+  const handleProfileUpdate = (updatedProfile: Partial<UserData>) => {
+    if (updatedProfile.avatarUrl) {
+      setAvatarUrl(updatedProfile.avatarUrl);
     }
-
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  });
+    if (updatedProfile.status) {
+      setCurrentStatus(updatedProfile.status);
+    }
+  };
 
   return (
     <div>
@@ -81,7 +95,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
             {avatarUrl ? (
               <img src={avatarUrl} alt="User Avatar" />
             ) : (
-              <span>{username![0].toLocaleUpperCase()}</span>
+              <span>{username?.[0].toUpperCase()}</span>
             )}
           </div>
           {!shouldRenderContent && (
@@ -98,7 +112,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
                 absolute={false}
               />
               <p className="text-sm text-gray-400 capitalize">
-                {currentStatus}
+                {currentStatus?.toLowerCase()}
               </p>
             </div>
           </div>
@@ -111,8 +125,19 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
             currentStatus={currentStatus}
             onClose={() => setIsPopupVisible(false)}
             onStatusChange={handleStatusChange}
+            onEditProfile={() => {
+              setIsEditProfileModalVisible(true);
+              setIsPopupVisible(false);
+            }}
           />
         </div>
+      )}
+      {isEditProfileModalVisible && (
+        <EditProfileModal
+          username={username!}
+          onClose={() => setIsEditProfileModalVisible(false)}
+          onSave={handleProfileUpdate}
+        />
       )}
     </div>
   );
