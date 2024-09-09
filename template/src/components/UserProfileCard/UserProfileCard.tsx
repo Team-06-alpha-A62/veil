@@ -91,11 +91,13 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
         onClick={() => setIsPopupVisible(true)}
       >
         <div className="avatar placeholder">
-          <div className="bg-base-300 text-neutral-content w-14 rounded-full">
+          <div className="bg-neutral text-neutral-content w-14 rounded-full">
             {avatarUrl ? (
               <img src={avatarUrl} alt="User Avatar" />
             ) : (
-              <span>{username?.[0].toUpperCase()}</span>
+              <span className="text-neutral-content">
+                {username?.[0].toUpperCase()}
+              </span>
             )}
           </div>
           {!shouldRenderContent && (

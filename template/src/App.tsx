@@ -8,30 +8,33 @@ import { AuthProvider } from './providers/AuthProvider';
 import { NoteModalProvider } from './providers/NoteModalProvider.tsx';
 import SingleNoteDetailsModal from './components/SingleNoteDetailsModal/SingleNoteDetailsModal.tsx';
 import { NotificationProvider } from './providers/NotificationProvider.tsx';
+import { ThemeProvider } from './providers/ThemeProvider';
 
 const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route path="/" element={<Home />} />
+        <ThemeProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
 
-          <Route
-            index
-            path="/app/*"
-            element={
-              <NotificationProvider>
-                <NoteModalProvider>
-                  <AppContent />
-                  <SingleNoteDetailsModal />
-                </NoteModalProvider>
-              </NotificationProvider>
-            }
-          />
+            <Route
+              index
+              path="/app/*"
+              element={
+                <NotificationProvider>
+                  <NoteModalProvider>
+                    <AppContent />
+                    <SingleNoteDetailsModal />
+                  </NoteModalProvider>
+                </NotificationProvider>
+              }
+            />
 
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>
   );

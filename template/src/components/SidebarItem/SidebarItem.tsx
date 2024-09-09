@@ -32,11 +32,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         `flex rounded-full items-center justify-start h-[30px] px-[28px] py-[30px] transition-colors ${
           isActive || isLabelInUrl
             ? isExpanded
-              ? 'bg-primary text-neutral'
+              ? 'bg-neutral text-neutral-content'
               : 'text-primary'
             : isExpanded
-            ? 'hover:bg-base-300'
-            : 'hover:text-primary'
+            ? 'hover:bg-base-100'
+            : 'hover:text-base-content'
         }`
       }
     >
@@ -61,7 +61,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           {isExpanded && (
             <span
               className={`overflow-hidden ${
-                isActive || isLabelInUrl ? 'text-primary-content' : 'text-white'
+                isActive || isLabelInUrl ? 'text-white' : 'text-base-content'
               } ${isExpanded ? 'expanded' : ''}`}
             >
               {label}

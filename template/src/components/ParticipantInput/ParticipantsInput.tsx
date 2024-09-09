@@ -74,7 +74,7 @@ const ParticipantsInput: React.FC<ParticipantsInputProps> = ({
         </label>
       )}
 
-      <div className="p-2 flex items-center gap-2 flex-wrap rounded-3xl bg-base-200 bg-opacity-50">
+      <div className="p-2 flex items-center gap-2 flex-wrap rounded-3xl bg-base-300 opacity-70">
         {participants.map((participant, index) => (
           <div key={participant} className="flex items-center gap-1">
             <span className="badge badge-primary text-primary-content gap-1">

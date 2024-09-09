@@ -217,7 +217,7 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
               ) : (
                 <div className="flex relative justify-between items-center w-1/2 space-x-3">
                   <div className="flex-1 avatar placeholder">
-                    <div className="bg-base-300 text-neutral-content w-36 rounded-lg h-24  flex items-center justify-center">
+                    <div className="bg-base-300 text-base-content w-36 rounded-lg h-24  flex items-center justify-center">
                       {teamState.imageUrl ? (
                         <img
                           src={teamState.imageUrl}
@@ -225,7 +225,7 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <FaUserGroup className="text-3xl text-neutral-content" />
+                        <FaUserGroup className="text-3xl text-base-content" />
                       )}
                     </div>
                   </div>
@@ -233,14 +233,14 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
                     onClick={() => setIsEditingImage(true)}
                     className="flex-1"
                   >
-                    <BiSolidEditAlt className="size-6 opacity-50" />
+                    <BiSolidEditAlt className="text-base-content size-6 opacity-50" />
                   </button>
                 </div>
               )}
               <div className="flex gap-3 mt-6 w-1/2">
                 <input
                   type="text"
-                  className={`w-24 text-xl font-semibold bg-transparent border-none focus:ring-0 ${
+                  className={`w-24 text-3xl text-base-content font-semibold bg-transparent border-none focus:ring-0 ${
                     isEditingTitle ? 'bg-gray-700' : ''
                   }`}
                   value={teamState.title || ''}
@@ -252,7 +252,7 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
                     onClick={() => setIsEditingTitle(true)}
                     className="flex-1"
                   >
-                    <BiSolidEditAlt className="size-6 opacity-50" />
+                    <BiSolidEditAlt className="text-base-content size-6 opacity-50" />
                   </button>
                 )}
                 {isEditingTitle && (
@@ -272,8 +272,10 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
               </div>
             </div>
             <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">Members</h3>
-              <div className="flex flex-col relative gap-3 bg-base-200 p-3 rounded-xl h-[300px] overflow-y-auto">
+              <h3 className="text-lg text-base-content font-semibold mb-2">
+                Members
+              </h3>
+              <div className="flex flex-col relative gap-3 bg-base-300 p-3 rounded-xl h-[300px] overflow-y-auto">
                 {Object.entries(teamState.participants)
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   .sort(([_A, participantA], [_B, participantB]) =>
@@ -286,7 +288,7 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
                   .map(([username, participant]) => (
                     <div
                       key={username}
-                      className="flex items-center justify-between bg-base-300 rounded-xl px-4 py-2 hover:bg-base-300 transition"
+                      className="flex items-center bg-base-100 justify-between  rounded-xl px-4 py-2 hover:bg-base-200 transition"
                     >
                       <div className="flex items-center gap-2">
                         <div className="avatar">
@@ -305,11 +307,11 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
                           </div>
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-base text-white font-semibold">
+                          <span className="text-base-content  font-semibold">
                             {username}
                           </span>
                           {participant.role === UserRole.OWNER && (
-                            <span className="text-xs text-gray-400">Owner</span>
+                            <span className="text-xs text-accent">Owner</span>
                           )}
                         </div>
                       </div>
@@ -317,7 +319,7 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
                         {participant.role !== UserRole.OWNER &&
                           username !== currentUsername && (
                             <button
-                              className="text-sm text-blue-500 hover:underline"
+                              className="text-sm text-info hover:underline"
                               onClick={() =>
                                 handleRoleChange(
                                   username,
@@ -340,7 +342,9 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
           </div>
           <div className="mt-4 pl-4 w-[400px]">
             <label htmlFor="participants" className="label">
-              <span className="label-text">Add Participants</span>
+              <span className="label-text text-lg text-base-content">
+                Add Participants
+              </span>
             </label>
             <div className="flex items-center gap-4 justify-center">
               <ParticipantsInput
@@ -357,12 +361,14 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
               </button>
             </div>
             <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-2">Join Requests</h3>
-              <div className="flex flex-col relative gap-3 bg-base-200 p-3 rounded-xl h-[350px] overflow-y-auto">
+              <h3 className="text-lg font-semibold mb-2 text-base-content">
+                Join Requests
+              </h3>
+              <div className="flex flex-col relative gap-3 bg-base-300 p-3 rounded-xl h-[350px] overflow-y-auto">
                 {joinRequests.map(request => (
                   <div
                     key={request.username}
-                    className="flex items-center justify-between bg-base-300 rounded-xl px-4 py-2 hover:bg-base-300 transition"
+                    className="flex items-center justify-between bg-base-100 rounded-xl px-4 py-2 hover:bg-base-200 transition"
                   >
                     <div className="flex items-center gap-2">
                       <div className="avatar">
@@ -374,14 +380,14 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
                               className="rounded-full"
                             />
                           ) : (
-                            <div className="bg-gray-500 w-9 h-9 flex items-center justify-center rounded-full text-white">
+                            <div className="bg-base-content w-9 h-9 flex items-center justify-center rounded-full text-white">
                               {request.username[0].toUpperCase()}
                             </div>
                           )}
                         </div>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-base text-white font-semibold">
+                        <span className="text-base text-base-content font-semibold">
                           {request.username}
                         </span>
                       </div>

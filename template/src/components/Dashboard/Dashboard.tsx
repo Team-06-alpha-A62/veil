@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Muuri from 'muuri';
-import './Dashboard.scss'; // Custom SCSS
+import './Dashboard.scss';
 import { FaPen } from 'react-icons/fa';
-import Widget from '../Widget/Widget.tsx';
-import Modal from '../Modal/Modal.tsx';
 import CalendarWidget from '../CalendarWidget/CalendarWidget.tsx';
+import Widget from '../Widget/Widget.tsx';
 
 const Dashboard: React.FC = () => {
   const [isInEditMode, setIsInEditMode] = useState(false);
@@ -34,7 +33,6 @@ const Dashboard: React.FC = () => {
     if (savedLayout) {
       const { muuriGrid: savedmuuriGrid } = JSON.parse(savedLayout);
 
-      // Apply saved layout to muuriGrid
       if (savedmuuriGrid) {
         const muuriGridItems = savedmuuriGrid.map((id: string) =>
           muuriGrid.getItems().find(item => item.getElement().dataset.id === id)
@@ -65,7 +63,7 @@ const Dashboard: React.FC = () => {
   }, [isInEditMode]);
 
   return (
-    <>
+    <div className=" rounded-3xl p-6 bg-base-300 h-full z-0">
       <div className="flex flex-row-reverse gap-4">
         {!isInEditMode ? (
           <button
@@ -131,7 +129,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

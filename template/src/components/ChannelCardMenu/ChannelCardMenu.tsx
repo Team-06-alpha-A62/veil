@@ -25,17 +25,15 @@ const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
 
     if (userRole === UserRole.OWNER) {
       actions['Manage Channel'] = onManageChannel;
-
-      actions['Leave Group'] = onLeaveChannel;
     }
     if (!isTeamChannel) {
       actions['Change Icon'] = onChangeIcon;
     }
 
-    if (userRole === UserRole.MODERATOR) {
+    if (userRole === UserRole.MODERATOR || userRole === UserRole.OWNER) {
       actions['Manage Channel'] = onManageChannel;
     }
-    if (isGroup && !isTeamChannel) {
+    if (isGroup && !isTeamChannel && userRole !== UserRole.OWNER) {
       actions['Leave Group'] = onLeaveChannel;
     }
 
@@ -44,11 +42,15 @@ const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
 
   return (
     <>
-      <div className="absolute right-8 top-0 mt-2 bg-base-100 text-white shadow-lg rounded-lg w-48 z-[1000] list-none">
-        {Object.entries(popupItems).map(([itemName, action]) => (
+      <div className="absolute right-8 top-0 mt-2 bg-primary text-primary-content shadow-lg rounded-lg w-48 z-[1000] list-none">
+        {Object.entries(popupItems).map(([itemName, action], index) => (
           <li
             key={itemName}
-            className="p-2 hover:bg-base-200 cursor-pointer rounded-lg"
+            className={`p-2 hover:opacity-60 cursor-pointer  ${
+              index !== Object.entries(popupItems).length - 1
+                ? 'border-b border-gray-200'
+                : ''
+            }`}
             onClick={action}
           >
             {itemName}

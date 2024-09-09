@@ -52,21 +52,21 @@ const Teams: React.FC = () => {
   });
 
   return (
-    <div className="flex flex-col gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full">
+    <div className="flex flex-col gap-10 rounded-3xl p-6 bg-base-300 h-full">
       <div className="flex gap-10 items-center mb-4">
         <CreateTeamModal />
         <input
           type="text"
           placeholder="Search"
-          className="w-2/4 px-4 py-2 rounded-full bg-gray-700 bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-primary text-white"
+          className="w-2/4 px-4 py-2 rounded-full bg-base-100 focus:outline-none focus:ring-2 focus:ring-primary text-white"
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
         />
         <label className="flex self-end space-x-2 ml-auto">
-          <span>Joined Teams</span>
+          <span className="text-base-content">Joined Teams</span>
           <input
             type="checkbox"
-            className="toggle"
+            className="toggle toggle-primary"
             checked={joinedTeamsOnly}
             onChange={() => setJoinedTeamsOnly(prev => !prev)}
           />

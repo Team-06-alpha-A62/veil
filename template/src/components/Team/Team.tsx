@@ -136,11 +136,11 @@ const Team: React.FC = () => {
   }
 
   return (
-    <div className="flex gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full">
+    <div className="flex gap-10 rounded-3xl p-6 bg-base-300  h-full">
       <div className="w-1/4 rounded-lg">
         <header className="flex justify-between items-center mb-4">
           <button
-            className="text-gray-400 hover:text-primary rounded-full p-2"
+            className="text-base-content hover:text-primary rounded-full p-2"
             onClick={() => navigate('/app/teams')}
           >
             <BsArrowLeftCircle size={30} />
@@ -160,8 +160,10 @@ const Team: React.FC = () => {
               className="category-header flex justify-between items-center cursor-pointer p-2"
               onClick={() => handleCategoryToggle(category as ChannelCategory)}
             >
-              <h4 className="font-bold text-md">{category}</h4>
-              <span>
+              <h4 className="font-bold text-md text-base-content">
+                {category}
+              </h4>
+              <span className="text-base-content">
                 {collapsedCategories[category as ChannelCategory] ? '+' : '-'}
               </span>
             </div>

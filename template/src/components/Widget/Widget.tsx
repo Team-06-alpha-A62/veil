@@ -17,8 +17,7 @@ const Widget: React.FC<WidgetProps> = ({
   return (
     <div
       className={`${
-        isInEditMode &&
-        'cursor-pointer bg-base-300 hover:bg-base-300 bg-opacity-50 shadow-l'
+        isInEditMode && 'cursor-pointer bg-base-100 hover:bg-base-200  shadow-l'
       } rounded-3xl`}
       style={{
         width: `${18.75 * width + (width - 1) * 1.25}rem`,
@@ -27,7 +26,7 @@ const Widget: React.FC<WidgetProps> = ({
     >
       {isInEditMode ? (
         <div className="flex items-center justify-center h-full">
-          <div className="rounded-full bg-base-200 p-4">
+          <div className="rounded-full bg-base-100 p-4">
             <FaPlus />
           </div>
         </div>
