@@ -5,6 +5,7 @@ import { Channel } from '../models/Channel';
 import { transformChannelData } from '../utils/TransformDataHelpers';
 import { ChannelCategory } from '../enums/ChannelCategory';
 import { UserRole } from '../enums/UserRole';
+import { createDyteMeeting } from './dyte.service.ts';
 
 export const createChannel = async (
   name: string | null,
@@ -24,6 +25,8 @@ export const createChannel = async (
     {}
   );
 
+  const meetingId = await createDyteMeeting();
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const newChannel: Record<string, any> = {
     name,
@@ -32,6 +35,7 @@ export const createChannel = async (
     participants,
     isPrivate,
     teamId,
+    activeMeetingId: meetingId,
     createdOn: Date.now(),
   };
 
@@ -246,4 +250,49 @@ export const deleteChannel = async (channelHandle: string): Promise<void> => {
     console.error('Error deleting channel:', error);
     throw new Error('Failed to delete channel.');
   }
+};
+
+// export const toggleChannelMeeting = async (
+//   channelHandle: string,
+//   state: boolean
+// ): Promise<void> => {
+//   const updateObject = {
+//     [`channels/${channelHandle}/isMeetingActive`]: state,
+//   };
+
+//   await update(ref(db), updateObject);
+// };
+
+export const incrementChannelParticipantsCount = async (
+  channelHandle: string
+): Promise<void> => {
+  const currentCountSnapshot = await get(
+    ref(db, `channels/${channelHandle}/meetingParticipants`)
+  );
+
+  const currentCount = currentCountSnapshot.val();
+
+  const updateObject = {
+    [`channels/${channelHandle}/meetingParticipants`]: currentCount + 1,
+  };
+
+  await update(ref(db), updateObject);
+};
+
+export const decrementChannelParticipantsCount = async (
+  channelHandle: string
+): Promise<void> => {
+  const currentCountSnapshot = await get(
+    ref(db, `channels/${channelHandle}/meetingParticipants`)
+  );
+
+  const currentCount = currentCountSnapshot.val();
+
+  const newCount = currentCount > 0 ? currentCount - 1 : 0;
+
+  const updateObject = {
+    [`channels/${channelHandle}/meetingParticipants`]: newCount,
+  };
+
+  await update(ref(db), updateObject);
 };

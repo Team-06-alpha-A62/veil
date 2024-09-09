@@ -16,5 +16,6 @@ export interface Channel {
   createdOn: number;
   lastMessageAt?: number;
   activeMeetingId?: string;
+  meetingParticipants: number;
   category?: ChannelCategory;
 }

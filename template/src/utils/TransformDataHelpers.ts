@@ -144,6 +144,7 @@ export const transformChannelData = async (
     activeMeetingId: data.activeMeetingId || '',
     category: data.category,
     imageUrl: data.imageUrl,
+    meetingParticipants: data.meetingParticipants || 0,
   };
 };
 
