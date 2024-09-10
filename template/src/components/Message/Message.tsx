@@ -116,9 +116,9 @@ const Message: React.FC<MessageProps> = ({
           </button>
         )}
         <div
-          className={`chat-bubble relative my-2 break-words text-primary-content ${
-            isCurrentUser ? 'bg-primary text-primary-content' : 'bg-secondary'
-          }`}
+          className={`chat-bubble relative my-2 text-primary-content  ${
+            isCurrentUser ? 'bg-primary' : 'bg-secondary'
+          } `}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -128,12 +128,20 @@ const Message: React.FC<MessageProps> = ({
               value={editedContent}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
-              className="bg-transparent text-white focus:outline-none"
+              className="bg-transparent text-white focus:outline-none "
               style={{ width: `${editedContent.length + 1}ch` }}
               autoFocus
             />
           ) : (
-            <p>{message.content}</p>
+            <span
+              className={`${
+                isCurrentUser
+                  ? 'text-primary-content'
+                  : 'text-secondary-content'
+              } }`}
+            >
+              {message.content}
+            </span>
           )}
           {message.media && (
             <img className="mt-2 rounded-xl" src={message.media} />

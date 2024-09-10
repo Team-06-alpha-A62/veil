@@ -22,6 +22,7 @@ import ManageChannelModal from '../ManageChannelModal/ManageChannelModal.tsx';
 import NotificationBadge from '../NotificationBadge/NotificationBadge.tsx';
 import { NotificationType } from '../../enums/NotificationType.ts';
 import { useParams } from 'react-router-dom';
+import { ChannelCategory } from '../../enums/ChannelCategory.ts';
 
 interface ChannelCardProps {
   channel: Channel;
@@ -207,16 +208,21 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
             {isPrivateChannel && !isParticipant ? (
               <BsLock size={20} className="text-gray-400" />
             ) : (
-              <button
-                className="text-gray-400 hover:text-primary-content"
-                onClick={event => {
-                  event.stopPropagation();
-                  setIsMenuVisible(prev => !prev);
-                }}
-                ref={threeDotsButtonRef}
-              >
-                <BsThreeDotsVertical className="text-base-content" size={20} />
-              </button>
+              channel.type !== ChannelType.DIRECT && (
+                <button
+                  className="text-base-content hover:text-primary-content"
+                  onClick={event => {
+                    event.stopPropagation();
+                    setIsMenuVisible(prev => !prev);
+                  }}
+                  ref={threeDotsButtonRef}
+                >
+                  <BsThreeDotsVertical
+                    className="text-base-content"
+                    size={20}
+                  />
+                </button>
+              )
             )}
             <div ref={channelCardMenuRef}>
               {isMenuVisible && (

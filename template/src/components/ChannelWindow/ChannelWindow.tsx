@@ -12,7 +12,6 @@ import {
   addChannelParticipant,
   createChannel,
   incrementChannelParticipantsCount,
-  toggleChannelMeeting,
 } from '../../services/channel.service.ts';
 import { ChannelType } from '../../enums/ChannelType.ts';
 import { getChannelName } from '../../utils/TransformDataHelpers.ts';
@@ -28,7 +27,9 @@ import { createNotification } from '../../services/notification.service.ts';
 import { NotificationType } from '../../enums/NotificationType.ts';
 import { NotificationMessageType } from '../../enums/NotificationMessageType.ts';
 import { addUnreadNotification } from '../../services/user.service.ts';
+import animationData from '../../assets/loading-animation.json';
 
+import Lottie from 'lottie-react';
 import { DyteProvider, useDyteClient } from '@dytesdk/react-web-core';
 
 import { addDyteMeetingParticipant } from '../../services/dyte.service.ts';
@@ -57,6 +58,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const emojiesIconRef = useRef<HTMLDivElement>(null);
   const gifPickerRef = useRef<HTMLDivElement>(null);
+  const [channelIsLoading, setChannelIsLoading] = useState<boolean>(true);
 
   const [call, setCall] = useState<boolean>(false);
 
@@ -91,6 +93,12 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
     getTokenAndInitMeeting();
     // setCall(false);
   }, [channel.activeMeetingId, call]);
+
+  useEffect(() => {
+    if (authToken && channel.activeMeetingId) {
+      setTimeout(() => setChannelIsLoading(false), 800);
+    }
+  }, [authToken, channel.activeMeetingId]);
 
   const initDyteMeeting = async (token: string) => {
     try {
@@ -295,6 +303,10 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
     }
   };
 
+  if (channelIsLoading) {
+    return <Lottie animationData={animationData} />;
+  }
+
   return (
     <DyteProvider value={meeting}>
       <div className="flex flex-col h-full z-0">
@@ -363,7 +375,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
             </h2>
           </div>
         </header>
-        <div className=" relative flex flex-col rounded-3xl border border-gray-700 bg-base-300 bg-opacity-50 min-h-full">
+        <div className=" relative flex flex-col rounded-3xl border border-base-content bg-base-200 min-h-full">
           {authToken && isDyteMeetingReady && call && (
             <div className="w-full h-auto rounded-t-3xl">
               <DyteMeetingUI setCall={setCall} channelId={channel.id} />
@@ -385,7 +397,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
                 />
               ))}
           </main>
-          <div className="sticky flex flex-col gap-3 bottom-0 p-5 border-t border-gray-700">
+          <div className="sticky flex flex-col gap-3 bottom-0 p-5 border-t border-base-content">
             {newMessageImage && (
               <div className="relative ml-6 w-36">
                 <span
@@ -427,7 +439,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
                   />
                 </div>
               )}
-              <label className="mr-4 input flex-1 px-4 py-2 rounded-full bg-gray-700 focus:outline-none flex items-center gap-2">
+              <label className="mr-4 input flex-1 px-4 py-2 rounded-full bg-base-300 focus:outline-none  flex items-center gap-2">
                 <input
                   value={newMessage}
                   type="text"
@@ -435,16 +447,17 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
                   placeholder="Type here"
                   onChange={e => setNewMessage(e.target.value)}
                 />
-                <BsArrowReturnLeft />
+                <BsArrowReturnLeft className="text-base-content" />
               </label>
               <MdEmojiEmotions
                 size={30}
                 onClick={handleEmojiPickerOpenToggle}
-                className="mr-4"
+                className="mr-4 text-base-content"
               />
               <SiGiphy
                 style={{ fontSize: '25px', marginRight: '16px' }}
                 onClick={handleGifPickerOpenToggle}
+                className="text-base-content"
               />
               <DragZone
                 handleFileChange={handleFileChange}

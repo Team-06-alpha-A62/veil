@@ -13,6 +13,7 @@ import { BsArrowLeftCircle } from 'react-icons/bs';
 import CreateTeamChannelModal from '../CreateTeamChannelModal/CreateTeamChannelModal';
 import { Team as TeamData } from '../../models/Team';
 import { useAuth } from '../../providers/AuthProvider';
+import { UserRole } from '../../enums/UserRole';
 
 const Team: React.FC = () => {
   const { currentUser } = useAuth();
@@ -134,7 +135,7 @@ const Team: React.FC = () => {
       </div>
     );
   }
-
+  console.log(team?.members);
   return (
     <div className="flex gap-10 rounded-3xl p-6 bg-base-300  h-full">
       <div className="w-1/4 rounded-lg">
@@ -145,14 +146,16 @@ const Team: React.FC = () => {
           >
             <BsArrowLeftCircle size={30} />
           </button>
-          {team?.owner === currentUser.userData?.username && (
-            <button
-              className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Add Channel
-            </button>
-          )}
+          {team?.owner === currentUser.userData?.username ||
+            (team?.members[currentUser.userData?.username].role ===
+              UserRole.MODERATOR && (
+              <button
+                className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Add Channel
+              </button>
+            ))}
         </header>
         {Object.entries(categorizedChannels).map(([category, channels]) => (
           <div key={category} className="mb-4">

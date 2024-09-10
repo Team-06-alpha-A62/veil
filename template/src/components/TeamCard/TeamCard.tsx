@@ -40,12 +40,11 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onlineMembersCount }) => {
   return (
     <div className="relative bg-base-100 text-white rounded-3xl p-3 w-full shadow-lg flex flex-col items-center group">
       <h3 className="text-xl text-base-content font-bold pb-2">{team.name}</h3>
-      <div
-        className="w-full h-36 bg-cover bg-center mb-4 skeleton"
-        style={{
-          backgroundImage: `url(${team.imageUrl || '/default-avatar.png'})`,
-        }}
-      ></div>
+      <img
+        className="w-full h-36 object-cover object-center mb-4 skeleton"
+        src={team.imageUrl || '/default-avatar.png'}
+        alt="Team Avatar"
+      />
       <div className="flex justify-around w-full p-4">
         <div className="text-center">
           <p className="font-semibold text-base-content">{totalChannels}</p>

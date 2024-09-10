@@ -5,11 +5,11 @@ import {
   updateUserProfile,
   getUserByHandle,
 } from '../../services/user.service';
-import { FaPencilAlt } from 'react-icons/fa';
+import { FaPencilAlt, FaLock } from 'react-icons/fa';
 import { UserData } from '../../models/UserData';
 import { uploadImage } from '../../services/storage.service';
 import UserStatusIndicator from '../UserStatusIndicator/UserStatusIndicator';
-import { useTheme } from '../../providers/ThemeProvider'; // Import the theme context
+import { useTheme } from '../../providers/ThemeProvider';
 
 interface EditProfileModalProps {
   username: string;
@@ -44,12 +44,72 @@ const statusOptions = [
   },
 ];
 
+// Define locked themes
+const lockedThemes = [
+  'cyberpunk',
+  'retro',
+  'bumblebee',
+  'emerald',
+  'corporate',
+  'synthwave',
+  'valentine',
+  'halloween',
+  'garden',
+  'forest',
+  'aqua',
+  'lofi',
+  'pastel',
+  'fantasy',
+  'wireframe',
+  'black',
+  'luxury',
+  'dracula',
+  'cmyk',
+  'autumn',
+  'business',
+  'acid',
+  'lemonade',
+  'coffee',
+  'winter',
+  'dim',
+  'nord',
+  'sunset',
+];
+
 const themeOptions = [
   { label: 'Default', value: 'default' },
   { label: 'Light', value: 'light' },
   { label: 'Dark', value: 'dark' },
-  { label: 'Cyberpunk', value: 'cyberpunk' },
+  { label: 'Cupcake', value: 'cupcake' },
+  { label: 'Night', value: 'night' },
+  { label: 'Bumblebee', value: 'bumblebee' },
+  { label: 'Emerald', value: 'emerald' },
+  { label: 'Corporate', value: 'corporate' },
+  { label: 'Synthwave', value: 'synthwave' },
   { label: 'Retro', value: 'retro' },
+  { label: 'Cyberpunk', value: 'cyberpunk' },
+  { label: 'Valentine', value: 'valentine' },
+  { label: 'Halloween', value: 'halloween' },
+  { label: 'Garden', value: 'garden' },
+  { label: 'Forest', value: 'forest' },
+  { label: 'Aqua', value: 'aqua' },
+  { label: 'Lofi', value: 'lofi' },
+  { label: 'Pastel', value: 'pastel' },
+  { label: 'Fantasy', value: 'fantasy' },
+  { label: 'Wireframe', value: 'wireframe' },
+  { label: 'Black', value: 'black' },
+  { label: 'Luxury', value: 'luxury' },
+  { label: 'Dracula', value: 'dracula' },
+  { label: 'CMYK', value: 'cmyk' },
+  { label: 'Autumn', value: 'autumn' },
+  { label: 'Business', value: 'business' },
+  { label: 'Acid', value: 'acid' },
+  { label: 'Lemonade', value: 'lemonade' },
+  { label: 'Coffee', value: 'coffee' },
+  { label: 'Winter', value: 'winter' },
+  { label: 'Dim', value: 'dim' },
+  { label: 'Nord', value: 'nord' },
+  { label: 'Sunset', value: 'sunset' },
 ];
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({
@@ -63,6 +123,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isEditingAvatar, setIsEditingAvatar] = useState<boolean>(false);
 
+  console.log(theme);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -110,27 +171,33 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-base-200 bg-opacity-75 flex justify-center items-center z-10">
-      <div className="relative bg-base-100 flex flex-col gap-5 rounded-3xl p-6 shadow-lg w-[700px] max-w-4xl">
+    <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center bg-base-300 bg-opacity-75 z-10">
+      <div className="relative bg-base-100 flex flex-col gap-5 rounded-3xl p-6 shadow-lg  max-w-4xl">
         <button onClick={onClose} className="absolute top-4 right-4 text-xl">
           &times;
         </button>
 
-        <div className="flex gap-10">
-          <div className="flex flex-col space-y-4 w-1/2">
+        <div className="flex p-4">
+          <div className="flex border-r pr-5 border-opacity-40 flex-col space-y-4 w-1/2">
             <div className="relative mb-4 flex flex-col items-start">
               {!isEditingAvatar ? (
                 <div className="relative">
-                  <img
-                    src={newAvatarUrl || userData.avatarUrl || ''}
-                    alt="Avatar"
-                    className="w-36 h-36 rounded-full object-cover"
-                  />
+                  {userData.avatarUrl ? (
+                    <img
+                      src={userData.avatarUrl}
+                      alt="User Avatar"
+                      className="w-36 h-36 rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-neutral-content bg-neutral flex items-center justify-center w-36 h-36 rounded-full  text-2xl">
+                      {userData.username?.[0].toUpperCase()}
+                    </span>
+                  )}
                   <button
                     onClick={() => setIsEditingAvatar(true)}
                     className="absolute bottom-2 right-2 bg-base-300 p-2 rounded-full"
                   >
-                    <FaPencilAlt className="text-white" />
+                    <FaPencilAlt className="text-primary" />
                   </button>
                 </div>
               ) : (
@@ -158,7 +225,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
             <input
               type="text"
-              className="input input-bordered w-full"
+              className="input input-bordered bg-base-200 rounded-full w-full"
               value={userData.firstName || ''}
               onChange={e =>
                 setUserData(prev => ({ ...prev, firstName: e.target.value }))
@@ -167,7 +234,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             />
             <input
               type="text"
-              className="input input-bordered w-full"
+              className="input input-bordered  bg-base-200 rounded-full w-full"
               value={userData.lastName || ''}
               onChange={e =>
                 setUserData(prev => ({ ...prev, lastName: e.target.value }))
@@ -176,7 +243,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             />
             <input
               type="text"
-              className="input input-bordered w-full"
+              className="input input-bordered  bg-base-200 rounded-full w-full"
               value={userData.phoneNumber || ''}
               onChange={e =>
                 setUserData(prev => ({
@@ -188,16 +255,14 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             />
           </div>
 
-          {/* Right Column - Change Status, Change Theme */}
-          <div className="flex flex-col space-y-4 w-1/3">
-            {/* Change Status Section */}
+          <div className="flex flex-col pl-5 space-y-4 w-1/3">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Change Status</h3>
               <div className="space-y-3">
                 {statusOptions.map(option => (
                   <div
                     key={option.value}
-                    className="relative flex items-center justify-between p-3 bg-base-200 rounded-lg cursor-pointer"
+                    className="relative flex w-48 items-center justify-between p-3 bg-base-200 rounded-full cursor-pointer"
                     onClick={() =>
                       setUserData(prev => ({ ...prev, status: option.value }))
                     }
@@ -210,14 +275,14 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                       <span>{option.label}</span>
                     </div>
                     {userData.status === option.value && (
-                      <FaPencilAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-success" />
+                      <FaPencilAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary" />
                     )}
                   </div>
                 ))}
               </div>
             </div>
             <div className="dropdown">
-              <div tabIndex={0} role="button" className="btn">
+              <div tabIndex={0} role="button" className="btn rounded-full ">
                 Theme
                 <svg
                   width="12px"
@@ -231,19 +296,34 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
               </div>
               <ul
                 tabIndex={0}
-                className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl"
+                className="dropdown-content bg-base-300 overflow-y-scroll h-64 rounded-box z-[1] w-52 p-2 shadow-2xl"
               >
                 {themeOptions.map(option => (
-                  <li key={option.value}>
+                  <li
+                    key={option.value}
+                    className={`flex items-center px-2 py-1 bg-base-300 text-base-content rounded-lg ${
+                      lockedThemes.includes(option.value)
+                        ? 'cursor-not-allowed  justify-between'
+                        : 'cursor-pointer justify-between'
+                    }`}
+                  >
                     <input
                       type="radio"
                       name="theme-dropdown"
-                      className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                      className="theme-controller btn btn-sm btn-block disabled:bg-base-300 btn-ghost justify-start"
                       aria-label={option.label}
                       value={option.value}
                       checked={theme === option.value}
-                      onChange={() => changeTheme(option.value)}
+                      onChange={() =>
+                        !lockedThemes.includes(option.value) &&
+                        changeTheme(option.value)
+                      }
+                      disabled={lockedThemes.includes(option.value)}
                     />
+
+                    {lockedThemes.includes(option.value) && (
+                      <FaLock className="ml-2 text-gray-500" />
+                    )}
                   </li>
                 ))}
               </ul>

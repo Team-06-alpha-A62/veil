@@ -26,6 +26,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
   }, [theme]);
 
   const changeTheme = (newTheme: string) => {
+    console.log(theme);
     setTheme(newTheme);
   };
 

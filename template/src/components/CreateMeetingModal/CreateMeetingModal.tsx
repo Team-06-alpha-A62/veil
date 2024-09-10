@@ -171,11 +171,11 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
     <>
       <CreateMeetingButton handleClick={handleModalToggle} />
       {showMeetingModal && (
-        <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center bg-base-200 bg-opacity-75 z-10">
-          <div className="w-96 h-auto relative bg-base-300 rounded-3xl flex flex-col gap-5 p-4">
+        <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center bg-base-300 bg-opacity-75 z-10">
+          <div className="w-96 h-auto relative bg-base-100 rounded-3xl flex flex-col gap-5 p-4 text-base-content">
             <button
               onClick={handleModalToggle}
-              className="absolute top-5 right-5"
+              className="absolute top-5 right-5 text-base-content"
             >
               &times;
             </button>
@@ -186,25 +186,25 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
             <div className="flex flex-col gap-4">
               <label className="form-control w-full gap-1">
                 <div className="label">
-                  <span className="label-text">Title</span>
+                  <span className="label-text text-base-content">Title</span>
                 </div>
                 <input
                   autoFocus
                   type="text"
                   value={meetingData.title}
                   onChange={handleInputChange('title')}
-                  className="input input-sm w-full rounded-3xl bg-base-200 bg-opacity-50 focus:border-transparent focus:outline-accent"
+                  className="input input-sm w-full rounded-3xl bg-base-200 focus:border-transparent focus:outline-primary caret-primary"
                 />
               </label>
               <label className="form-control gap-1">
                 <div className="label">
                   <span className="label-text">Description</span>
-                  <span className="badge badge-accent badge-outline text-accent">
+                  <span className="badge badge-outline text-primary">
                     Optional
                   </span>
                 </div>
                 <textarea
-                  className="textarea h-24 rounded-3xl bg-base-200 bg-opacity-50 focus:border-transparent focus:outline-accent"
+                  className="textarea h-24 rounded-3xl bg-base-200  focus:border-transparent focus:outline-primary caret-primary"
                   value={meetingData.description}
                   onChange={handleInputChange('description')}
                 ></textarea>
@@ -212,12 +212,12 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
               <div className="form-control w-full gap-2">
                 <label htmlFor="participants" className="label">
                   <span className="label-text">Participants</span>
-                  <span className="badge badge-accent badge-outline text-accent">
+                  <span className="badge badge-outline text-primary">
                     Optional
                   </span>
                 </label>
 
-                <div className="flex items-center gap-2 flex-wrap rounded-3xl bg-base-200 bg-opacity-50">
+                <div className="flex items-center gap-2 flex-wrap rounded-3xl bg-base-200 ">
                   {participants.map((participant, index) => (
                     <div key={participant} className="flex items-center gap-1">
                       <span className="badge badge-primary text-primary-content gap-1">

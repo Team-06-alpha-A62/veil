@@ -54,7 +54,7 @@ const Channels: React.FC = () => {
       cleanupChannelsListener();
       listeners.forEach(cleanup => cleanup());
     };
-  }, [currentUser]); // Ensure meeting is in the dependency array
+  }, [currentUser]);
 
   useEffect(() => {
     setOpenedChannel(id || null);
@@ -166,7 +166,7 @@ const Channels: React.FC = () => {
         {activeChannel ? (
           <ChannelWindow channel={activeChannel} />
         ) : (
-          <div className="h-full w-full flex items-center justify-center text-xl text-bg-content mt-4">
+          <div className="h-full w-full flex items-center justify-center text-xl text-base-content mt-4">
             <span>Please select a channel to view.</span>
           </div>
         )}

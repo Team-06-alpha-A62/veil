@@ -1,22 +1,23 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import SidebarItem from '../SidebarItem/SidebarItem';
 import {
   FaTachometerAlt,
-  FaBell,
   FaUsers,
   FaComments,
   FaStickyNote,
   FaCalendarAlt,
 } from 'react-icons/fa';
 import { useAuth } from '../../providers/AuthProvider';
+import { useTheme } from '../../providers/ThemeProvider'; // Assuming you have a theme provider
 import UserProfileCard from '../UserProfileCard/UserProfileCard';
-import animationData from '../../assets/hamburger-menu-button.json';
+import animationDataRetro from '../../assets/hamburger-menu-button-retro-theme.json';
+import animationDataDark from '../../assets/hamburger-menu-button-dark-theme.json';
+import animationDataLight from '../../assets/hamburger-menu-button-light-theme.json';
 import Lottie, { LottieRefCurrentProps } from 'lottie-react';
-import { useTheme } from '../../providers/ThemeProvider'; // Assuming you have a useTheme hook
 
 const SidebarNavigation: React.FC = () => {
   const { currentUser } = useAuth();
-  const { theme } = useTheme(); // Get the current theme from the ThemeProvider
+  const { theme } = useTheme(); // Assuming the hook returns the current theme
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const hamburgerRef = useRef<LottieRefCurrentProps>(null);
 
@@ -32,40 +33,39 @@ const SidebarNavigation: React.FC = () => {
     }
   };
 
-  const themeFilterMap: Record<string, string> = {
+  // Select the appropriate animation data based on the current theme
+  let animationData;
+
+  switch (theme) {
+    case 'dark':
+      animationData = animationDataDark;
+      break;
+    case 'retro':
+      animationData = animationDataRetro;
+      break;
     default:
-      'invert(70%) sepia(50%) saturate(500%) hue-rotate(180deg) contrast(100%)',
-    light:
-      'invert(0%) sepia(100%) saturate(500%) hue-rotate(180deg) contrast(100%)',
-    dark: 'invert(100%) sepia(100%) saturate(500%) hue-rotate(180deg) contrast(100%)',
-    cyberpunk:
-      'invert(80%) sepia(100%) saturate(200%) hue-rotate(300deg) contrast(150%)',
-    retro:
-      'invert(40%) sepia(80%) saturate(600%) hue-rotate(90deg) contrast(100%)',
-  };
-  const themeFilter = themeFilterMap[theme] || themeFilterMap['default'];
+      animationData = animationDataLight;
+  }
 
   return (
     <div
       className={`${
         isExpanded ? 'w-[300px] px-8' : 'w-[80px]'
-      } flex flex-col items-center bg-base-300  transition-all duration-300 relative rounded-3xl cursor-pointer`}
+      } flex flex-col items-center bg-base-300 transition-all duration-300 relative rounded-3xl cursor-pointer`}
     >
       <div
-        className={`w-24  absolute top-0 left-1/2 transform -translate-x-1/2 transition-all duration-300 z-10 ${
+        className={`w-24 absolute top-0 left-1/2 transform -translate-x-1/2 transition-all duration-300 z-10 ${
           isExpanded ? 'left-[calc(100%-85px)] translate-x-0' : ''
         }`}
         onClick={toggleSidebar}
       >
-        <Lottie
-          style={{
-            filter: themeFilter,
-            width: '100%',
-          }}
-          lottieRef={hamburgerRef}
-          animationData={animationData}
-          loop={false}
-        />
+        <div className="relative">
+          <Lottie
+            lottieRef={hamburgerRef}
+            animationData={animationData}
+            loop={false}
+          />
+        </div>
       </div>
 
       <div className="flex flex-col mt-[75px] flex-grow w-full gap-3">
@@ -74,12 +74,6 @@ const SidebarNavigation: React.FC = () => {
           label="Dashboard"
           isExpanded={isExpanded}
           to="dashboard"
-        />
-        <SidebarItem
-          icon={<FaBell />}
-          label="Notifications"
-          isExpanded={isExpanded}
-          to="notifications"
         />
         <SidebarItem
           icon={<FaUsers />}

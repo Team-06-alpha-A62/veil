@@ -1,5 +1,4 @@
 import {
-  DyteClock,
   DyteRecordingIndicator,
   DyteParticipantCount,
   DyteGrid,
@@ -35,9 +34,7 @@ const DyteMeetingUI: React.FC<DyteMeetingProps> = ({ setCall, channelId }) => {
     console.log(roomState);
     if (roomState === 'left' || roomState === 'ended') {
       setTimeout(() => {
-        if (roomState === 'ended') {
-          updateChannelMeetingState();
-        }
+        updateChannelMeetingState();
         setCall(prev => !prev);
       }, 1000);
     }

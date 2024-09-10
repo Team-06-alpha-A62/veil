@@ -88,13 +88,15 @@ const NewNoteModal: React.FC = () => {
               &times;
             </button>
             <div>
-              <h2 className="text-xl font-semibold">Create New Note</h2>
+              <h2 className="text-xl text-base-content font-semibold">
+                Create New Note
+              </h2>
             </div>
             <div className="flex flex-col gap-4">
               <label className="form-control w-full gap-1">
                 <div className="label">
-                  <span className="label-text">Title</span>
-                  <span className="badge badge-accent badge-outline text-accent">
+                  <span className="label-text text-base-content">Title</span>
+                  <span className="badge badge-primary badge-outline text-base-content ">
                     Optional
                   </span>
                 </div>
@@ -103,11 +105,11 @@ const NewNoteModal: React.FC = () => {
                   type="text"
                   value={newNoteData.title}
                   onChange={handleInputChange('title')}
-                  className="input input-sm w-full rounded-3xl bg-base-200 bg-opacity-50 focus:border-transparent focus:outline-accent"
+                  className="input input-sm w-full rounded-3xl bg-base-200 focus:border-transparent focus:outline-primary"
                 />
               </label>
               <div className="flex gap-3 flex-col">
-                <span className="label-text">Label</span>
+                <span className="label-text text-base-content">Label</span>
                 <div className="flex gap-2">
                   {Object.keys(labelColors).map((label, index) => (
                     <span

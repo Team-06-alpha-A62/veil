@@ -259,7 +259,7 @@ export const leaveChannel = async (
 
 export const addUnreadNotification = async (
   username: string,
-  notificationId: string,
+  notificationId: string | null,
   type: NotificationType
 ) => {
   let updatedNotifications;
@@ -366,7 +366,6 @@ export const listenToUnreadChannelMessages = (
   return unsubscribe;
 };
 
-// Clear unread channel messages
 export const clearUnreadChannelMessages = async (
   username: string,
   channelId: string

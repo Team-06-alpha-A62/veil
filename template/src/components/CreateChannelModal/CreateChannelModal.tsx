@@ -100,8 +100,8 @@ const CreateChannelModal: React.FC = () => {
     <>
       <CreateChannelButton handleClick={handleModalToggle} />
       {showChannelModal && (
-        <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center bg-base-200 bg-opacity-75 z-10">
-          <div className="w-96 h-auto relative bg-base-300 rounded-3xl flex flex-col gap-5 p-4">
+        <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center bg-base-300 bg-opacity-75 z-10">
+          <div className="w-96 h-auto relative bg-base-100 rounded-3xl flex flex-col gap-5 p-4">
             <button
               onClick={handleModalToggle}
               className="absolute top-5 right-5"
@@ -109,13 +109,15 @@ const CreateChannelModal: React.FC = () => {
               &times;
             </button>
             <div>
-              <h2 className="text-xl font-semibold">Create Channel</h2>
+              <h2 className="text-xl font-semibold text-base-content">
+                Create Channel
+              </h2>
             </div>
             <div className="flex flex-col gap-4">
               <label className="form-control w-full gap-1">
                 <div className="label">
-                  <span className="label-text">Title</span>
-                  <span className="badge badge-accent badge-outline text-accent">
+                  <span className="label-text text-base-content">Title</span>
+                  <span className="badge badge-primary badge-outline text-primary">
                     Optional
                   </span>
                 </div>
@@ -131,7 +133,7 @@ const CreateChannelModal: React.FC = () => {
                   value={channelData.title}
                   onChange={handleInputChange('title')}
                   type="text"
-                  className="input input-sm w-full rounded-3xl bg-base-200 bg-opacity-50 focus:border-transparent focus:outline-accent"
+                  className="flex-1 px-4 py-2 rounded-3xl bg-base-200 input-sm placeholder-base-content focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-0 focus:ring-dashed caret-primary"
                 />
               </label>
               <ParticipantsInput
@@ -140,7 +142,7 @@ const CreateChannelModal: React.FC = () => {
               />
               <div className="form-control items-start">
                 <label className="label cursor-pointer flex gap-4">
-                  <span className="label-text">Private</span>
+                  <span className="label-text text-base-content">Private</span>
                   <input
                     type="checkbox"
                     className="toggle toggle-primary"
@@ -156,7 +158,9 @@ const CreateChannelModal: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between px-1">
-                <span className="label-text">Upload Channel Image</span>
+                <span className="label-text text-base-content">
+                  Upload Channel Image
+                </span>
                 <DragZone
                   handleFileChange={handleFileChange}
                   width={100}

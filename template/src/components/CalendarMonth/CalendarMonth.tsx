@@ -37,7 +37,9 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
 
   return (
     <>
-      <div className={`flex-1 grid grid-cols-7 grid-rows-${month.length}`}>
+      <div
+        className={`flex-1 grid grid-cols-7 bg-base-200 grid-rows-${month.length}`}
+      >
         {month?.map((row, index) => (
           <React.Fragment key={index}>
             {row.map((day, dayIndex) => (

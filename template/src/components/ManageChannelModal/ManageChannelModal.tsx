@@ -50,7 +50,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
 
   const isOwner = channel.owner === currentUsername;
 
-  const location = useLocation(); // Use the useLocation hook
+  const location = useLocation();
 
   const handleFileChange = (file: File) => {
     setImageFile(file);
@@ -149,7 +149,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
   const isTeamChannel = location.pathname.includes('teams');
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-base-200 bg-opacity-75 flex justify-center items-center z-10">
+    <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center bg-base-300 bg-opacity-75 z-10">
       <div className="relative w-[400px] bg-base-100 flex flex-col gap-5 rounded-3xl p-6 shadow-lg">
         <button onClick={onClose} className="absolute top-4 right-4 text-xl">
           &times;
@@ -167,7 +167,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
                 />
                 <div className="flex flex-col mt-2 space-x-2">
                   <button
-                    className="text-orange-500 text-sm"
+                    className="text-primary text-sm"
                     onClick={handleRemoveImage}
                   >
                     Remove Image
@@ -201,7 +201,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
                 </div>
                 <button
                   onClick={() => setIsEditingImage(true)}
-                  className="flex-1"
+                  className="flex-1 text-base-content"
                 >
                   edit
                 </button>
@@ -210,12 +210,15 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
           <div className="flex gap-3 mt-6 w-1/2">
             <input
               type="text"
-              className={`w-24 text-xl font-semibold bg-transparent border-none focus:ring-0 ${
-                isEditingTitle ? 'bg-gray-700' : ''
-              }`}
+              className={`text-l font-semibold rounded-full  focus:outline-none px-2 py-1 border-none ${
+                isEditingTitle
+                  ? 'bg-base-200 focus:outline-none focus:ring-2 focus:ring-primary'
+                  : 'bg-base-100'
+              } `}
               value={channelState.title || ''}
               onChange={handleTitleChange}
               readOnly={!isEditingTitle}
+              style={{ width: `${channelState.title!.length + 1}ch` }}
             />
             {!isEditingTitle && (
               <button
@@ -265,7 +268,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
               .map(([username, participant]) => (
                 <div
                   key={username}
-                  className="flex items-center justify-between bg-base-300 rounded-xl px-4 py-2 hover:bg-base-300 transition"
+                  className="flex items-center justify-between bg-base-300 rounded-full px-4 py-2 hover:bg-base-100 transition"
                 >
                   <div className="flex items-center gap-2">
                     <div className="avatar">

@@ -105,7 +105,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
           )}
         </div>
         {shouldRenderContent && (
-          <div className="overflow-hidden text-white">
+          <div className="overflow-hidden text-base-content">
             <p className="font-semibold">{username}</p>
             <div className="flex items-center space-x-1">
               <UserStatusIndicator
@@ -113,7 +113,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
                 size={12}
                 absolute={false}
               />
-              <p className="text-sm text-gray-400 capitalize">
+              <p className="text-sm text-base-content capitalize">
                 {currentStatus?.toLowerCase()}
               </p>
             </div>

@@ -69,13 +69,14 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
   return (
     <div
       className={` ${
-        !isDayInCurrentMonth(day) ? 'bg-base-300 opacity-50' : ''
-      } ${
-        selectedDay === day && 'bg-base-300 bg-opacity-50'
-      } border border-gray-700 border-opacity-50 flex flex-col cursor-pointer hover:bg-base-300 bg-opacity-50 active:bg-opacity-0`}
+        !isDayInCurrentMonth(day) ? 'bg-base-100 text-primary-content' : ''
+      }  border border-base-content border-opacity-20 flex flex-col cursor-pointer hover:bg-base-300 ${
+        selectedDay === day &&
+        'bg-primary bg-opacity-50 hover:bg-primary hover:bg-opacity-50'
+      }`}
       onClick={handleDayToggle}
     >
-      <header className="flex flex-col items-center">
+      <header className="flex flex-col items-center text-base-content">
         <p className="text-sm mt-2">{day?.format('ddd')}</p>
         <p className={`text-sm p-1 my-1 ${getCurrentDayClass()}`}>
           {day?.format('DD')}
@@ -100,9 +101,11 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
                 tabIndex={0}
                 className="flex flex-col gap-2 dropdown-content rounded-box z-[1] w-56 bg-base-300 shadow-md mt-1 py-2"
               >
-                <div className=" px-4">
-                  <h3 className="text-md font-semibold">{meeting.title}</h3>
-                  <p className="text-sm opacity-50 mb-1">
+                <div className="text-base-content px-4">
+                  <h3 className="text-md text-base-content font-semibold">
+                    {meeting.title}
+                  </h3>
+                  <p className="text-sm   mb-1">
                     {dayjs(meeting.startTime).format('D MMM YYYY - HH:mm')} to{' '}
                     {dayjs(meeting.endTime).format('HH:mm')}
                   </p>
@@ -134,7 +137,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
                   {currentUser.userData!.username === meeting.organizer && (
                     <>
                       <button
-                        className="text-sm font-semibold px-3 py-1 rounded-3xl bg-error hover:bg-opacity-75 transition-colors text-white"
+                        className="text-sm text-white font-semibold px-3 py-1 rounded-3xl bg-error hover:bg-opacity-75 transition-colors "
                         onClick={() => handleCancelMeetingClick(meeting.id)}
                       >
                         Cancel
