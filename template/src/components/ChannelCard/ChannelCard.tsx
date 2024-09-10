@@ -99,7 +99,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
     setIsImageRemoved(true);
   };
 
-  const userRole = channel.participants[currentUser.userData!.username].role;
+  const userRole = channel.participants[currentUser.userData!.username]?.role;
 
   const isGroup = channel.type === ChannelType.GROUP;
   const channelImage = getChannelImage(channel, currentUsername);
