@@ -8,11 +8,14 @@ import {
   FaCalendarAlt,
 } from 'react-icons/fa';
 import { useAuth } from '../../providers/AuthProvider';
-import { useTheme } from '../../providers/ThemeProvider'; // Assuming you have a theme provider
+import { useTheme } from '../../providers/ThemeProvider';
 import UserProfileCard from '../UserProfileCard/UserProfileCard';
 import animationDataRetro from '../../assets/hamburger-menu-button-retro-theme.json';
 import animationDataDark from '../../assets/hamburger-menu-button-dark-theme.json';
 import animationDataLight from '../../assets/hamburger-menu-button-light-theme.json';
+import animationDataCupcake from '../../assets/hamburger-menu-button-cupcake-theme.json';
+import animationDataNight from '../../assets/hamburger-menu-button-night-theme.json';
+import animationDataHalloween from '../../assets/hamburger-menu-button-halloween-theme.json';
 import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 
 const SidebarNavigation: React.FC = () => {
@@ -37,11 +40,23 @@ const SidebarNavigation: React.FC = () => {
   let animationData;
 
   switch (theme) {
+    case 'default':
+      animationData = animationDataDark;
+      break;
     case 'dark':
       animationData = animationDataDark;
       break;
+    case 'cupcake':
+      animationData = animationDataCupcake;
+      break;
     case 'retro':
       animationData = animationDataRetro;
+      break;
+    case 'night':
+      animationData = animationDataNight;
+      break;
+    case 'halloween':
+      animationData = animationDataHalloween;
       break;
     default:
       animationData = animationDataLight;

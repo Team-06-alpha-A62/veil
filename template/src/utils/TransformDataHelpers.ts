@@ -46,6 +46,7 @@ export const transformUserData = (data: Partial<UserData>): UserData => {
     activeDyteMeetingId: data.activeDyteMeetingId || '',
     dyteParticipantId: data.dyteParticipantId || '',
     lastSeenMessages: data.lastSeenMessages || {},
+    lockedThemes: Object.keys(data.lockedThemes || []),
   };
 };
 

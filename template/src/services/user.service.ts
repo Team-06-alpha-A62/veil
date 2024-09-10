@@ -21,7 +21,7 @@ import { FriendType } from '../enums/FriendType';
 import { NotificationType } from '../enums/NotificationType';
 import { ChannelCategory } from '../enums/ChannelCategory';
 import { ChannelType } from '../enums/ChannelType';
-
+import { lockedThemes } from '../data/themeData.ts';
 export const createUser = async (
   uid: string,
   username: string,
@@ -31,6 +31,14 @@ export const createUser = async (
   phoneNumber: string | null,
   avatarUrl: string | null
 ): Promise<void> => {
+  const lockedThemesObject = lockedThemes.reduce(
+    (obj: { [key: string]: boolean }, theme: string) => {
+      obj[theme] = true;
+      return obj;
+    },
+    {} as { [key: string]: boolean }
+  );
+
   const userData = {
     id: uid,
     username,
@@ -45,6 +53,7 @@ export const createUser = async (
     userSince: Date.now(),
     notes: {},
     avatarUrl: avatarUrl || '',
+    lockedThemes: lockedThemesObject,
   };
 
   await set(ref(db, `users/${username}`), userData);

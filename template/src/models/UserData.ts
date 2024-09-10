@@ -22,4 +22,5 @@ export interface UserData {
     string,
     { messageId: string; messagesAfterThat: number }
   >;
+  lockedThemes: string[];
 }

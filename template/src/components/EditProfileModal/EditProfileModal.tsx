@@ -10,6 +10,7 @@ import { UserData } from '../../models/UserData';
 import { uploadImage } from '../../services/storage.service';
 import UserStatusIndicator from '../UserStatusIndicator/UserStatusIndicator';
 import { useTheme } from '../../providers/ThemeProvider';
+import { themeOptions } from '../../data/themeData.ts';
 
 interface EditProfileModalProps {
   username: string;
@@ -44,74 +45,6 @@ const statusOptions = [
   },
 ];
 
-// Define locked themes
-const lockedThemes = [
-  'cyberpunk',
-  'retro',
-  'bumblebee',
-  'emerald',
-  'corporate',
-  'synthwave',
-  'valentine',
-  'halloween',
-  'garden',
-  'forest',
-  'aqua',
-  'lofi',
-  'pastel',
-  'fantasy',
-  'wireframe',
-  'black',
-  'luxury',
-  'dracula',
-  'cmyk',
-  'autumn',
-  'business',
-  'acid',
-  'lemonade',
-  'coffee',
-  'winter',
-  'dim',
-  'nord',
-  'sunset',
-];
-
-const themeOptions = [
-  { label: 'Default', value: 'default' },
-  { label: 'Light', value: 'light' },
-  { label: 'Dark', value: 'dark' },
-  { label: 'Cupcake', value: 'cupcake' },
-  { label: 'Night', value: 'night' },
-  { label: 'Bumblebee', value: 'bumblebee' },
-  { label: 'Emerald', value: 'emerald' },
-  { label: 'Corporate', value: 'corporate' },
-  { label: 'Synthwave', value: 'synthwave' },
-  { label: 'Retro', value: 'retro' },
-  { label: 'Cyberpunk', value: 'cyberpunk' },
-  { label: 'Valentine', value: 'valentine' },
-  { label: 'Halloween', value: 'halloween' },
-  { label: 'Garden', value: 'garden' },
-  { label: 'Forest', value: 'forest' },
-  { label: 'Aqua', value: 'aqua' },
-  { label: 'Lofi', value: 'lofi' },
-  { label: 'Pastel', value: 'pastel' },
-  { label: 'Fantasy', value: 'fantasy' },
-  { label: 'Wireframe', value: 'wireframe' },
-  { label: 'Black', value: 'black' },
-  { label: 'Luxury', value: 'luxury' },
-  { label: 'Dracula', value: 'dracula' },
-  { label: 'CMYK', value: 'cmyk' },
-  { label: 'Autumn', value: 'autumn' },
-  { label: 'Business', value: 'business' },
-  { label: 'Acid', value: 'acid' },
-  { label: 'Lemonade', value: 'lemonade' },
-  { label: 'Coffee', value: 'coffee' },
-  { label: 'Winter', value: 'winter' },
-  { label: 'Dim', value: 'dim' },
-  { label: 'Nord', value: 'nord' },
-  { label: 'Sunset', value: 'sunset' },
-];
-
 const EditProfileModal: React.FC<EditProfileModalProps> = ({
   username,
   onClose,
@@ -122,8 +55,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const [newAvatarUrl, setNewAvatarUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isEditingAvatar, setIsEditingAvatar] = useState<boolean>(false);
-
-  console.log(theme);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -155,10 +86,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         status: userData.status,
       };
 
-      // Update the user profile
       await updateUserProfile(username, updatedProfile);
       onSave(updatedProfile);
-      onClose(); // Close the modal after saving
+      onClose();
     } catch (error) {
       console.error('Failed to save changes:', error);
     }
@@ -169,7 +99,11 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     const previewUrl = URL.createObjectURL(file);
     setNewAvatarUrl(previewUrl);
   };
-
+  const sortedThemeOptions = themeOptions.sort((a, b) => {
+    const aLocked = userData.lockedThemes?.includes(a.value);
+    const bLocked = userData.lockedThemes?.includes(b.value);
+    return (aLocked ? 1 : 0) - (bLocked ? 1 : 0);
+  });
   return (
     <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center bg-base-300 bg-opacity-75 z-10">
       <div className="relative bg-base-100 flex flex-col gap-5 rounded-3xl p-6 shadow-lg  max-w-4xl">
@@ -298,11 +232,11 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 tabIndex={0}
                 className="dropdown-content bg-base-300 overflow-y-scroll h-64 rounded-box z-[1] w-52 p-2 shadow-2xl"
               >
-                {themeOptions.map(option => (
+                {sortedThemeOptions.map(option => (
                   <li
                     key={option.value}
                     className={`flex items-center px-2 py-1 bg-base-300 text-base-content rounded-lg ${
-                      lockedThemes.includes(option.value)
+                      userData.lockedThemes?.includes(option.value)
                         ? 'cursor-not-allowed  justify-between'
                         : 'cursor-pointer justify-between'
                     }`}
@@ -315,13 +249,13 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                       value={option.value}
                       checked={theme === option.value}
                       onChange={() =>
-                        !lockedThemes.includes(option.value) &&
+                        !userData.lockedThemes?.includes(option.value) &&
                         changeTheme(option.value)
                       }
-                      disabled={lockedThemes.includes(option.value)}
+                      disabled={userData.lockedThemes?.includes(option.value)}
                     />
 
-                    {lockedThemes.includes(option.value) && (
+                    {userData.lockedThemes?.includes(option.value) && (
                       <FaLock className="ml-2 text-gray-500" />
                     )}
                   </li>

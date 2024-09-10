@@ -36,6 +36,7 @@ import { DyteParticipantType } from '../../enums/DyteParticipantType.ts';
 import DyteMeetingUI from '../DyteMeetingUI/DyteMeetingUI.tsx';
 
 import { FaPhoneAlt } from 'react-icons/fa';
+import { removeLockedThemeFromUser } from '../../services/theme.service.ts';
 
 interface ChannelWindowProps {
   channel: Channel;
@@ -137,6 +138,20 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
           newMessage,
           finalImageUrl
         );
+
+        if (newMessage === 'Dracula') {
+          await removeLockedThemeFromUser(
+            currentUser.userData!.username,
+            'halloween'
+          );
+          await createNotification(
+            currentUser.userData!.username,
+            currentUser.userData!.username,
+            NotificationType.NEW_THEME,
+            'Congratulations you unlocked new theme!',
+            NotificationMessageType.ALERT_SUCCESS
+          );
+        }
 
         Object.keys(channel.participants).forEach(async participant => {
           if (participant !== currentUser.userData?.username) {
