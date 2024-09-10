@@ -29,18 +29,18 @@ const PomodoroCircularTimer: React.FC<PomodoroCircularTimerProps> = ({
   );
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
+  const onTimeComplete = async () => {
+    await createNotification(
+      currentUser.userData!.username,
+      currentUser.userData!.username,
+      NotificationType.TIMER,
+      'Time is up.',
+      NotificationMessageType.ALERT_WARNING
+    );
+  };
   useEffect(() => {
     const savedStartTime = localStorage.getItem('pomodoroStartTime');
-    const onTimeComplete = async () => {
-      await createNotification(
-        currentUser.userData!.username,
-        currentUser.userData!.username,
-        NotificationType.TIMER,
-        'Time is up.',
-        NotificationMessageType.ALERT_WARNING
-      );
-    };
+
     if (savedStartTime && isActive) {
       const elapsed = Math.floor(
         (Date.now() - parseInt(savedStartTime)) / 1000
@@ -67,9 +67,6 @@ const PomodoroCircularTimer: React.FC<PomodoroCircularTimerProps> = ({
         if (newTimeLeft <= 0 && interval) {
           clearInterval(interval);
           setIsActive(false);
-          if (onTimeComplete) {
-            onTimeComplete();
-          }
         }
       }, 1000);
     }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa6';
 
 interface WeatherData {
   name: string;
@@ -85,17 +86,17 @@ const WeatherCarouselWidget: React.FC = () => {
             }}
             key={data.name}
           >
-            <div className="p-6 max-w-sm mx-auto bg-base-100 h-full w-full rounded-xl shadow-md flex items-center space-x-4">
-              <div className="shrink-0">
-                <img
-                  src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
-                  alt="Weather Icon"
-                  className="h-16 w-16"
-                />
-              </div>
-              <div>
+            <div className="p-6 justify-center bg-base-100 h-full w-full rounded-xl shadow-md flex items-center">
+              <div className="flex flex-col items-center">
                 <div className="text-3xl font-medium text-base-content mb-3">
                   {data.name}
+                </div>
+                <div className="shrink-0">
+                  <img
+                    src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
+                    alt="Weather Icon"
+                    className="h-16 w-16"
+                  />
                 </div>
                 <p className="text-base-content opacity-55">
                   {data.weather[0].description}
@@ -103,7 +104,7 @@ const WeatherCarouselWidget: React.FC = () => {
                 <p className="text-2xl font-bold text-primary">
                   {data.main.temp}°C
                 </p>
-                <div className="flex flex-col text-sm text-base-content opacity-55">
+                <div className="flex flex-col items-center text-sm text-base-content opacity-55">
                   <span>Humidity: {data.main.humidity}%</span>
                   <span>Wind Speed: {data.wind.speed} m/s</span>
                 </div>
@@ -113,18 +114,17 @@ const WeatherCarouselWidget: React.FC = () => {
         );
       })}
 
-      {/* Navigation arrows */}
       <button
+        className=" absolute left-0  z-30 flex justify-center p-2 border rounded-full btn-outline hover:bg-primary hover:border-primary"
         onClick={handlePrev}
-        className="absolute left-0 btn btn-circle z-30"
       >
-        ❮
+        <FaChevronLeft className="text-lg" />
       </button>
       <button
+        className="absolute right-0 z-30 flex justify-center p-2 border rounded-full btn-outline hover:bg-primary hover:border-primary"
         onClick={handleNext}
-        className="absolute right-0 btn btn-circle z-30"
       >
-        ❯
+        <FaChevronRight className="text-lg" />
       </button>
     </div>
   );

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import NoteComponent from '../NoteComponent/NoteComponent.tsx';
 import { Note } from '../../models/Note.ts';
 import { useNavigate } from 'react-router-dom';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa6';
 
 const PinnedNotesCarouselWidget: React.FC = () => {
   const navigate = useNavigate();
@@ -78,16 +79,16 @@ const PinnedNotesCarouselWidget: React.FC = () => {
 
       {/* Navigation arrows */}
       <button
+        className=" absolute left-0  z-30 flex justify-center p-2 border rounded-full btn-outline hover:bg-primary hover:border-primary"
         onClick={handlePrev}
-        className="absolute left-0 btn btn-circle z-30"
       >
-        ❮
+        <FaChevronLeft className="text-lg" />
       </button>
       <button
+        className="absolute right-0 z-30 flex justify-center p-2 border rounded-full btn-outline hover:bg-primary hover:border-primary"
         onClick={handleNext}
-        className="absolute right-0 btn btn-circle z-30"
       >
-        ❯
+        <FaChevronRight className="text-lg" />
       </button>
     </div>
   );
