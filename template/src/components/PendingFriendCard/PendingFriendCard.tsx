@@ -13,7 +13,7 @@ const PendingFriendCard: React.FC<PendingFriendCardProps> = ({
   onDecline,
 }) => {
   return (
-    <div className="flex items-center p-6 border-b-2 border-base-100 justify-between hover:bg-secondary-focus transition-colors">
+    <div className="flex items-center p-6 border-b border-opacity-25 border-base-content justify-between hover:bg-secondary-focus transition-colors">
       <div className="relative flex items-center space-x-4">
         <div className="avatar placeholder">
           <div className="bg-neutral w-14 rounded-full">

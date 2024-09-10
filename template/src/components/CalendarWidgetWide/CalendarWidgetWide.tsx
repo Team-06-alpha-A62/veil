@@ -140,7 +140,7 @@ const CalendarWidgetWide: React.FC = () => {
                   </div>
                   <div
                     tabIndex={1}
-                    className="dropdown-content rounded-box z-[1] w-52 p-4 bg-base-300 bg-opacity-90 shadow mt-1"
+                    className="dropdown-content rounded-box z-[1] w-52 p-4 bg-primary text-primary-content shadow mt-1"
                   >
                     <h3 className="text-m font-semibold mb-2">
                       Scheduled meetings:

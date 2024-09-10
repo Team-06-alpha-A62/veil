@@ -9,7 +9,18 @@ import {
 import { MeetingStatus } from '../../enums/MeetingStatus.ts';
 import { useAuth } from '../../providers/AuthProvider.tsx';
 import { BiSolidEditAlt } from 'react-icons/bi';
-import { cancelMeeting } from '../../services/meetings.service.ts';
+import {
+  cancelMeeting,
+  updateMeetingChannelId,
+} from '../../services/meetings.service.ts';
+import { isMeetingStartingSoon } from '../../utils/dateUtils.ts';
+import { useNavigate } from 'react-router-dom';
+import { ChannelType } from '../../enums/ChannelType.ts';
+import {
+  addChannelParticipant,
+  createChannel,
+  getChannelByHandle,
+} from '../../services/channel.service.ts';
 
 interface CalendarDayProps {
   day: dayjs.Dayjs | null;
@@ -30,6 +41,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
 }) => {
   const { currentUser } = useAuth();
   const [dayMeetings, setDayMeetings] = useState<Meeting[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const filteredMeetings = meetings?.filter(meeting => {
@@ -41,6 +53,37 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
 
     setDayMeetings(filteredMeetings);
   }, [meetings, day]);
+
+  const handleJoinMeetingClick = async (meeting: Meeting): Promise<void> => {
+    if (dayjs(meeting.startTime).diff(dayjs(), 'minute') <= 15) {
+      if (!meeting.meetingChannel) {
+        const channelId = await createChannel(
+          meeting.title,
+          currentUser.userData!.username,
+          [currentUser.userData!.username],
+          ChannelType.GROUP,
+          true
+        );
+
+        await updateMeetingChannelId(meeting.id, channelId);
+
+        navigate(`/app/chats/group/${channelId}`);
+      } else {
+        const channel = await getChannelByHandle(meeting.meetingChannel);
+        const isInChannel = Object.keys(channel.participants).includes(
+          currentUser.userData!.username
+        );
+
+        if (!isInChannel) {
+          await addChannelParticipant(
+            meeting.meetingChannel,
+            currentUser.userData!.username
+          );
+        }
+        navigate(`/app/chats/group/${meeting.meetingChannel}`);
+      }
+    }
+  };
 
   const handleDayToggle = () => {
     if (day && day.isBefore(dayjs(), 'day')) {
@@ -70,7 +113,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
     <div
       className={` ${
         !isDayInCurrentMonth(day) ? 'bg-base-100 text-primary-content' : ''
-      }  border border-base-content border-opacity-20 flex flex-col cursor-pointer hover:bg-base-300 ${
+      }  border border-opacity-25 border-base-content flex flex-col cursor-pointer hover:bg-base-300 ${
         selectedDay === day &&
         'bg-primary bg-opacity-50 hover:bg-primary hover:bg-opacity-50'
       }`}
@@ -99,7 +142,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
               </div>
               <div
                 tabIndex={0}
-                className="flex flex-col gap-2 dropdown-content rounded-box z-[1] w-56 bg-base-300 shadow-md mt-1 py-2"
+                className="flex flex-col gap-2 dropdown-content rounded-box z-[1] bg-base-300 shadow-md mt-1 py-2"
               >
                 <div className="text-base-content px-4">
                   <h3 className="text-md text-base-content font-semibold">
@@ -150,6 +193,14 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
                         <BiSolidEditAlt />
                       </button>
                     </>
+                  )}
+                  {isMeetingStartingSoon(meeting.startTime) && (
+                    <button
+                      className="flex items-center gap-2 text-sm font-semibold px-3 py-1 rounded-3xl bg-primary hover:bg-opacity-75 transition-colors text-white"
+                      onClick={() => handleJoinMeetingClick(meeting)}
+                    >
+                      Join
+                    </button>
                   )}
                 </div>
               </div>

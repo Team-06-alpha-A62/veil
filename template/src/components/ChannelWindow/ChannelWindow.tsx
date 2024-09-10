@@ -384,7 +384,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
             </h2>
           </div>
         </header>
-        <div className=" relative flex flex-col rounded-3xl border border-base-content bg-base-200 min-h-full">
+        <div className=" relative flex flex-col rounded-3xl border border-opacity-25 border-base-content bg-base-200 min-h-full">
           {authToken && isDyteMeetingReady && call && (
             <div className="w-full h-auto rounded-t-3xl">
               <DyteMeetingUI setCall={setCall} channelId={channel.id} />
@@ -409,7 +409,7 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
                 />
               ))}
           </main>
-          <div className="sticky flex flex-col gap-3 bottom-0 p-5 border-t border-base-content">
+          <div className="sticky flex flex-col gap-3 bottom-0 p-5 border-t border-opacity-25 border-base-content">
             {newMessageImage && (
               <div className="relative ml-6 w-36">
                 <span

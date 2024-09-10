@@ -189,7 +189,7 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
           &times;
         </button>
         <div className="flex">
-          <div className="border-r border-opacity-40 border-base-content pr-4 w-[400px]">
+          <div className="border-r border-opacity-25 border-base-content pr-4 w-[400px]">
             <div className="flex flex-col mb-6">
               {isEditingImage ? (
                 <div className="flex gap-3 items-center">

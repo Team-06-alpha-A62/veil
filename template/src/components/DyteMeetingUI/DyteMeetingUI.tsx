@@ -1,5 +1,6 @@
 import {
   DyteRecordingToggle,
+  DyteAvatar,
   DyteRecordingIndicator,
   DyteParticipantCount,
   DyteGrid,
@@ -11,9 +12,9 @@ import {
   DyteDialogManager,
   DyteSettingsToggle,
   DyteLeaveButton,
+  DyteParticipants,
 } from '@dytesdk/react-ui-kit';
 import { useDyteMeeting, useDyteSelector } from '@dytesdk/react-web-core';
-import { useAuth } from '../../providers/AuthProvider.tsx';
 import { useEffect } from 'react';
 import {
   decrementChannelParticipantsCount,
@@ -26,7 +27,6 @@ interface DyteMeetingProps {
 }
 
 const DyteMeetingUI: React.FC<DyteMeetingProps> = ({ setCall, channelId }) => {
-  const { currentUser } = useAuth();
   const { meeting } = useDyteMeeting();
 
   const roomState = useDyteSelector(m => m.self.roomState);
@@ -49,31 +49,18 @@ const DyteMeetingUI: React.FC<DyteMeetingProps> = ({ setCall, channelId }) => {
   }, [roomState, channelId, setCall]);
 
   return (
-    <div className="flex w-full h-56">
+    <div className="flex w-full h-auto">
       {roomState === 'init' && (
-        <div className="h-full w-full flex flex-col items-center justify-center">
+        <div className="h-auto w-full justify-center border-b border-opacity-25 border-base-content">
           <DyteDialogManager meeting={meeting} />
-          <div className="flex w-full h-full items-center justify-around p-[10%]">
+          <div className="flex w-full justify-center py-4">
             <div className="relative">
               <DyteParticipantTile
                 meeting={meeting}
                 participant={meeting.self}
-                className="rounded-3xl h-44 bg-base-300"
+                className="rounded-3xl h-44 mb-4 bg-base-300"
               >
-                <div className="avatar placeholder">
-                  <div className="bg-base-300 text-neutral-content w-14 rounded-full">
-                    {currentUser.userData!.avatarUrl ? (
-                      <img
-                        src={currentUser.userData!.avatarUrl}
-                        alt="User Avatar"
-                      />
-                    ) : (
-                      <span>
-                        {currentUser.userData!.username[0].toLocaleUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                </div>
+                <DyteAvatar size="md" participant={meeting.self} />
                 <div
                   className="absolute flex"
                   style={{
@@ -111,8 +98,24 @@ const DyteMeetingUI: React.FC<DyteMeetingProps> = ({ setCall, channelId }) => {
       )}
       {roomState === 'joined' && (
         <>
-          <center className="flex flex-col rounded-t-3xl w-full h-64 border-b border-gray-700 ">
+          <div className="border-r border-b border-opacity-25 border-base-content overflow-y-auto">
+            <DyteParticipants
+              meeting={meeting}
+              style={{
+                maxWidth: '350px',
+                padding: '16px',
+              }}
+            />
+          </div>
+          <center className="flex flex-col rounded-t-3xl w-full h-auto border-b border-opacity-25 border-base-content py-4">
             <DyteDialogManager meeting={meeting} />
+            <div className="justify-center w-full h-full">
+              <DyteGrid
+                meeting={meeting}
+                gap={10}
+                style={{ height: '200px' }}
+              />
+            </div>
             <div className="flex justify-between w-full pt-4 text-white">
               <div
                 id="header-left"
@@ -139,9 +142,6 @@ const DyteMeetingUI: React.FC<DyteMeetingProps> = ({ setCall, channelId }) => {
               >
                 <DyteParticipantCount meeting={meeting} />
               </div>
-            </div>
-            <div className="justify-center w-full h-full">
-              <DyteGrid meeting={meeting} className="w-1/4" />
             </div>
           </center>
         </>
