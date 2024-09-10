@@ -58,7 +58,7 @@ const Teams: React.FC = () => {
         <input
           type="text"
           placeholder="Search"
-          className="w-2/4 px-4 py-2 rounded-full bg-base-100 focus:outline-none focus:ring-2 focus:ring-primary text-white"
+          className="w-2/4 px-4 py-2 rounded-full bg-base-100 focus:outline-none focus:ring-2 focus:ring-primary text-base-content"
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
         />

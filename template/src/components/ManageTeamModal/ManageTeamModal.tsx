@@ -297,17 +297,17 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
                       key={username}
                       className="flex items-center bg-base-300 justify-between  rounded-full px-4 py-2 hover:bg-base-100 transition"
                     >
-                      <div className="flex items-center gap-2">
+                      <div className="flex justify-center items-center gap-2">
                         <div className="avatar">
-                          <div className="w-9 rounded-full">
+                          <div className="w-9 rounded-full ">
                             {participant.avatarUrl ? (
                               <img
                                 src={participant.avatarUrl}
                                 alt="User Avatar"
-                                className="rounded-full"
+                                className=""
                               />
                             ) : (
-                              <div className="bg-gray-500 w-9 h-9 flex items-center justify-center rounded-full text-white">
+                              <div className=" w-9 h-9 flex items-center justify-center rounded-full  bg-neutral text-neutral-content">
                                 {username[0].toUpperCase()}
                               </div>
                             )}

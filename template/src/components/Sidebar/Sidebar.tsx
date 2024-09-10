@@ -211,7 +211,7 @@ const Sidebar: React.FC = () => {
           placeholder="Search"
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          className="w-full px-4 py-2 rounded-full bg-base-100  focus:outline-none focus:ring-2 focus:ring-primary text-white"
+          className="w-full px-4 py-2 rounded-full bg-base-100  text-primary-content focus:outline-none focus:ring-2 focus:ring-primary"
         />
       </div>
 

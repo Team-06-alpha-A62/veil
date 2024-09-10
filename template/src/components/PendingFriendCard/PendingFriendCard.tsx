@@ -15,13 +15,13 @@ const PendingFriendCard: React.FC<PendingFriendCardProps> = ({
   return (
     <div className="flex items-center p-6 border-b-2 border-base-100 justify-between hover:bg-secondary-focus transition-colors">
       <div className="relative flex items-center space-x-4">
-        <div className="avatar relative">
-          <div className="bg-neutral text-neutral-content w-14 rounded-full">
+        <div className="avatar placeholder">
+          <div className="bg-neutral w-14 rounded-full">
             {pendingFriend.avatarUrl ? (
               <img src={pendingFriend.avatarUrl} alt="User Avatar" />
             ) : (
               <span className="text-neutral-content">
-                {pendingFriend.username?.[0].toUpperCase()}
+                {pendingFriend.username![0].toLocaleUpperCase()}
               </span>
             )}
           </div>

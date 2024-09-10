@@ -86,7 +86,7 @@ const AddFriendModal: React.FC<AddFriendModalProps> = ({ onClose }) => {
               placeholder="Username"
               value={username}
               onChange={e => setUsername(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-3xl bg-base-200 input-sm placeholder-base-content focus:border-transparent focus:outline-none caret-primary"
+              className="flex-1 px-4 py-2 rounded-3xl bg-base-200 text-primary-content input-sm placeholder-base-content focus:border-transparent focus:outline-none caret-primary"
             />
             <button
               onClick={handleSubmit}
