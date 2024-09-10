@@ -234,7 +234,9 @@ const Sidebar: React.FC = () => {
             )
           )
         ) : (
-          <div className="text-center text-base-content">No friends found.</div>
+          <div className="text-center text-base-content text-sm">
+            No new friend requests.
+          </div>
         )}
       </div>
 

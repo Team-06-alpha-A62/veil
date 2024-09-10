@@ -11,6 +11,7 @@ import { uploadImage } from '../../services/storage.service';
 import UserStatusIndicator from '../UserStatusIndicator/UserStatusIndicator';
 import { useTheme } from '../../providers/ThemeProvider';
 import { themeOptions } from '../../data/themeData.ts';
+import { FaCheck } from 'react-icons/fa6';
 
 interface EditProfileModalProps {
   username: string;
@@ -209,7 +210,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                       <span>{option.label}</span>
                     </div>
                     {userData.status === option.value && (
-                      <FaPencilAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary" />
+                      <FaCheck className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary" />
                     )}
                   </div>
                 ))}

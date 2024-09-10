@@ -129,9 +129,8 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
         {dayMeetings
           .sort((a, b) => a.startTime - b.startTime)
           .map((meeting: Meeting) => (
-            <div className="dropdown dropdown-bottom">
+            <div className="dropdown dropdown-bottom" key={meeting.id}>
               <div
-                key={meeting.id}
                 tabIndex={0}
                 role="button"
                 className={`${meeting.label} text-sm font-semibold px-3 py-1 rounded-3xl hover:bg-opacity-75 transition-colors text-white`}

@@ -65,7 +65,7 @@ const SingleNoteDetailsModal: React.FC = () => {
       onStop={handleDragStop}
     >
       <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center z-10 pointer-events-none">
-        <div className="relative w-1/5 h-auto bg-base-100 text-white rounded-3xl flex flex-col pointer-events-auto shadow-lg">
+        <div className="relative w-1/5 h-auto bg-base-100 rounded-3xl flex flex-col pointer-events-auto shadow-lg">
           <div
             className={`flex justify-between h-10 px-4 rounded-t-3xl ${note.label} handle`}
           >
@@ -74,7 +74,9 @@ const SingleNoteDetailsModal: React.FC = () => {
                 <span className="loading loading-ring loading-md"></span>
               )}
             </div>
-            <button onClick={closeModal}>&times;</button>
+            <button className="text-white" onClick={closeModal}>
+              &times;
+            </button>
           </div>
           <div className="px-4 pt-4">
             <input

@@ -136,7 +136,6 @@ const CalendarWidgetWide: React.FC = () => {
                     {day && hasMeetings(day) && (
                       <span className="absolute dot bg-warning rounded-full w-1 h-1 top-1 right-2"></span>
                     )}{' '}
-                    {/* Add a dot if there are meetings */}
                   </div>
                   <div
                     tabIndex={1}

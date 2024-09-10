@@ -120,7 +120,7 @@ const Channels: React.FC = () => {
     <div className="flex gap-10 rounded-3xl p-6 bg-base-300 h-full z-0">
       <div className="flex flex-col basis-1/4 h-full  border-base-content">
         <header className="flex justify-between mb-6">
-          <div className="flex space-x-2 text-white">
+          <div className="flex space-x-4 text-white">
             {['Group', 'Direct'].map(category => (
               <div key={category} className="relative">
                 <button

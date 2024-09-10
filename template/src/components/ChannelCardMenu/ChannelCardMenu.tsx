@@ -49,14 +49,10 @@ const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
   return (
     <>
       <div className="absolute right-8 top-0 mt-2 bg-primary text-primary-content shadow-lg rounded-lg w-48 z-[1000] list-none">
-        {Object.entries(popupItems).map(([itemName, action], index) => (
+        {Object.entries(popupItems).map(([itemName, action]) => (
           <li
             key={itemName}
-            className={`p-2 hover:opacity-60 cursor-pointer  ${
-              index !== Object.entries(popupItems).length - 1
-                ? 'border border-opacity-25 border-base-content'
-                : ''
-            }`}
+            className="p-2 hover:opacity-50 cursor-pointer"
             onClick={action}
           >
             {itemName}

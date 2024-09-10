@@ -255,7 +255,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
               placeholder="Search participants..."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="input input-sm  rounded-full w-full hover:outline-none focus:border-none  focus:outline-none hover:border-none bg-transparent"
+              className="input input-sm  rounded-full w-full hover:outline-none focus:border-transparent  focus:outline-none  bg-transparent"
             />
           </div>
 

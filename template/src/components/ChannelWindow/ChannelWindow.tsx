@@ -474,17 +474,17 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
                   placeholder="Type here"
                   onChange={e => setNewMessage(e.target.value)}
                 />
-                <BsArrowReturnLeft className="text-base-content" />
+                <BsArrowReturnLeft className="text-base-content cursor-pointer" />
               </label>
               <MdEmojiEmotions
                 size={30}
                 onClick={handleEmojiPickerOpenToggle}
-                className="mr-4 text-base-content"
+                className="mr-4 text-base-content cursor-pointer"
               />
               <SiGiphy
                 style={{ fontSize: '25px', marginRight: '16px' }}
                 onClick={handleGifPickerOpenToggle}
-                className="text-base-content"
+                className="text-base-content cursor-pointer"
               />
               <DragZone
                 handleFileChange={handleFileChange}

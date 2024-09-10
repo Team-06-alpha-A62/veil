@@ -2,7 +2,7 @@ import Chats from '../../components/Channels/Channels';
 import Dashboard from '../../components/Dashboard/Dashboard';
 import Meetings from '../../components/Meetings/Meetings';
 import Notes from '../../components/Notes/Notes';
-import SidebarNavigation from '../../components/SidebarNavigation/Sidebar';
+import SidebarNavigation from '../../components/SidebarNavigation/SidebarNavigation';
 import Teams from '../../components/Teams/Teams';
 import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from '../../hoc/ProtectedRoute';

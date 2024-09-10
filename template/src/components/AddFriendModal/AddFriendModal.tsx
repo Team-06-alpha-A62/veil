@@ -21,16 +21,16 @@ const AddFriendModal: React.FC<AddFriendModalProps> = ({ onClose }) => {
       await sendFriendRequest(currentUser.userData!.username, username);
 
       await createNotification(
-        currentUser.userData!.username,
         username,
+        currentUser.userData!.username,
         NotificationType.FRIEND,
         `Friend request sent to ${username}`,
         NotificationMessageType.ALERT_INFO
       );
 
       const requestedUserNotificationId = await createNotification(
-        username,
         currentUser.userData!.username,
+        username,
         NotificationType.FRIEND,
         `${currentUser.userData!.username} sent you a friend request`,
         NotificationMessageType.ALERT_INFO

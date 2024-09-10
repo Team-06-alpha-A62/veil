@@ -31,7 +31,7 @@ const PinnedNotesCarouselWidget: React.FC = () => {
 
   if (!pinnedNotes || pinnedNotes.length === 0) {
     return (
-      <div className="w-full h-full flex flex-col gap-3 justify-center items-center text-warning bg-base-300 rounded-3xl">
+      <div className="w-full h-full flex flex-col gap-3 justify-center items-center text-warning bg-base-200 rounded-3xl">
         <h1 className="font-semibold text-md">No pinned notes</h1>
         <button
           className="text-sm font-semibold px-3 py-1 rounded-3xl bg-primary hover:bg-opacity-75 text-white"

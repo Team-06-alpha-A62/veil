@@ -147,12 +147,14 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
                 </span>
               )}
             </div>
-            <NotificationBadge
-              type={NotificationType.MESSAGE}
-              isViewActive={isViewActive}
-              channelId={channel.id}
-              channelType={channel.type}
-            />
+            <span className="absolute right-1 top-1">
+              <NotificationBadge
+                type={NotificationType.MESSAGE}
+                isViewActive={isViewActive}
+                channelId={channel.id}
+                channelType={channel.type}
+              />
+            </span>
           </div>
         ) : (
           isEditingImage && (

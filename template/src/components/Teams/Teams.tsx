@@ -63,13 +63,13 @@ const Teams: React.FC = () => {
           onChange={e => setSearchTerm(e.target.value)}
         />
         <label className="flex self-end space-x-2 ml-auto">
-          <span className="text-base-content">Joined Teams</span>
           <input
             type="checkbox"
             className="toggle toggle-primary"
             checked={joinedTeamsOnly}
             onChange={() => setJoinedTeamsOnly(prev => !prev)}
           />
+          <span className="text-base-content text-sm">Joined Teams</span>
         </label>
       </div>
 

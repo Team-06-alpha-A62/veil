@@ -19,7 +19,6 @@ import {
 import { Friend } from '../models/Friend';
 import { FriendType } from '../enums/FriendType';
 import { NotificationType } from '../enums/NotificationType';
-import { ChannelCategory } from '../enums/ChannelCategory';
 import { ChannelType } from '../enums/ChannelType';
 import { lockedThemes } from '../data/themeData.ts';
 export const createUser = async (
@@ -272,7 +271,7 @@ export const addUnreadNotification = async (
   username: string,
   notificationId: string | null,
   type: NotificationType,
-  channelType: ChannelType
+  channelType?: ChannelType
 ) => {
   let updatedNotifications;
   if (type === NotificationType.MESSAGE) {

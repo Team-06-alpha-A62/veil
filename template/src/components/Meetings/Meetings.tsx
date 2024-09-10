@@ -91,7 +91,7 @@ const Meetings = () => {
               ))}
             </div>
           ) : (
-            <div className="flex justify-center text-xs text-base-content  h-full ">
+            <div className="flex justify-center text-sm text-base-content  h-full ">
               <p>No meeting invitations at the moment.</p>
             </div>
           )}

@@ -58,12 +58,12 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
   };
 
   return (
-    <div className="relative bg-base-200 p-4 rounded-lg shadow-lg w-[250px] z-20 text-white">
+    <div className="relative bg-base-200 p-4 rounded-3xl shadow-lg w-[250px] z-20 text-white">
       <button
-        className="absolute top-2 right-2 text-base-content"
+        className="absolute top-4 right-4 text-base-content"
         onClick={onClose}
       >
-        ✕
+        &times;
       </button>
       <div className="text-lg font-semibold text-base-content mb-4">
         {username}
@@ -89,7 +89,7 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
         <FaChevronRight className="text-gray-400" />
 
         {isStatusPopupVisible && (
-          <div className="absolute left-48  ml-6 p-3 bg-base-300 rounded-lg shadow-lg w-[300px] z-30">
+          <div className="absolute left-48  ml-6 p-4 bg-base-300 rounded-3xl shadow-lg w-[300px] z-30">
             {statusOptions.map(option => (
               <div
                 key={option.value}

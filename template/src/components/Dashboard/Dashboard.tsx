@@ -76,21 +76,27 @@ const Dashboard: React.FC = () => {
   // };
 
   return (
-    <>
+    <div className="bg-base-300 h-full rounded-3xl p-6">
       <div className="flex flex-row-reverse gap-4">
         {!isInEditMode ? (
           <button
-            className="btn btn-outline btn-primary"
+            className="flex items-center gap-2 px-3 py-1 rounded-3xl bg-primary text-white text-sm font-semibold  hover:bg-opacity-80"
             onClick={toggleEditDashboard}
           >
             <FaPen /> Edit Dashboard
           </button>
         ) : (
           <>
-            <button className="btn btn-outline" onClick={toggleEditDashboard}>
+            <button
+              className="px-3 py-1 rounded-3xl border border-error text-error text-sm font-semibold  hover:bg-error hover:text-white"
+              onClick={toggleEditDashboard}
+            >
               Cancel
             </button>
-            <button className="btn btn-success" onClick={handleSaveChanges}>
+            <button
+              className="px-3 py-1 rounded-3xl bg-success text-white text-sm font-semibold  hover:bg-opacity-80"
+              onClick={handleSaveChanges}
+            >
               Save Changes
             </button>
           </>
@@ -169,7 +175,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

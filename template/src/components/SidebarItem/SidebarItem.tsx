@@ -29,7 +29,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex rounded-full items-center justify-start h-[30px] px-[28px] py-[30px] transition-colors ${
+        `flex rounded-full items-center justify-start h-[30px] px-[28px] py-[30px] transition-colors text-xl ${
           isActive || isLabelInUrl
             ? isExpanded
               ? 'bg-neutral text-neutral-content'
@@ -43,14 +43,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       {({ isActive }) => (
         <>
           <div
-            className={`relative text-[24px] pr-[20px] ${
-              isExpanded ? 'expanded' : ''
-            }`}
+            className={`relative pr-[20px]  ${isExpanded ? 'expanded' : ''}`}
           >
             {icon}
 
             {label === 'Meetings' && (
-              <span className="absolute right-4 top-0">
+              <span className="absolute right-4 top-0 ">
                 <NotificationBadge
                   type={NotificationType.MEETING}
                   isViewActive={isLabelInUrl}
