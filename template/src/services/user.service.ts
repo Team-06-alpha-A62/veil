@@ -282,7 +282,9 @@ export const addUnreadNotification = async (
     } else if (channelType === ChannelType.GROUP) {
       await incrementUnreadGroupNotifications(username);
     }
-    await incrementUnreadGlobalMessagesNotifications(username);
+    if (channelType !== ChannelType.TEAM) {
+      await incrementUnreadGlobalMessagesNotifications(username);
+    }
   } else {
     updatedNotifications = {
       [`users/${username}/unreadNotifications/${type}/${notificationId}`]: true,
