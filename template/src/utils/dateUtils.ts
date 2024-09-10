@@ -30,3 +30,9 @@ export const generateTimeOptions = (selectedDay: dayjs.Dayjs): number[] => {
 
   return times;
 };
+
+export const isMeetingStartingSoon = (meetingStartTime: number): boolean => {
+  const currentTime = dayjs();
+  const startTime = dayjs(meetingStartTime);
+  return startTime.diff(currentTime, 'minute') <= 15;
+};

@@ -22,7 +22,6 @@ import ManageChannelModal from '../ManageChannelModal/ManageChannelModal.tsx';
 import NotificationBadge from '../NotificationBadge/NotificationBadge.tsx';
 import { NotificationType } from '../../enums/NotificationType.ts';
 import { useParams } from 'react-router-dom';
-import { ChannelCategory } from '../../enums/ChannelCategory.ts';
 
 interface ChannelCardProps {
   channel: Channel;
@@ -114,12 +113,12 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
 
   return (
     <div
-      className={`flex relative items-center p-6 border-b-2 border-base-content justify-between 
+      className={`flex relative items-center p-6 border-b border-opacity-25 border-base-content justify-between
       ${
         isPrivateChannel && !isParticipant && !isTeamOwner
           ? 'cursor-not-allowed'
           : 'cursor-pointer'
-      } 
+      }
       hover:bg-base-100  transition-colors`}
       onClick={() =>
         ((!isEditingImage && isParticipant) || isTeamOwner) &&

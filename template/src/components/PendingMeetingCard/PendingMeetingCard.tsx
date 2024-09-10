@@ -16,7 +16,7 @@ const PendingMeetingCard: React.FC<PendingMeetingCardProps> = ({
   handleMeetingInvitationResponse,
 }) => {
   return (
-    <div className="flex items-center p-6 border-b-2 border-base-content text-base-content justify-between hover:bg-secondary-focus transition-colors">
+    <div className="flex items-center p-6 border-b border-opacity-25 border-base-content text-base-content justify-between hover:bg-secondary-focus transition-colors">
       <div className="flex flex-col items-start justify-start">
         <h3>{pendingMeeting.title}</h3>
         <p className="text-xs">

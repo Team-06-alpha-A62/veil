@@ -118,7 +118,6 @@ export const removeMeetingParticipant = async (
       [`meetings/${meetingHandle}/participants/${participantHandle}`]: null,
       [`users/${participantHandle}/meetings/${meetingHandle}/participants`]:
         null,
-      // Add a notification for the user
     };
 
     await update(ref(db), updateObject);
@@ -313,5 +312,21 @@ export const updateMeetingEndTime = async (
   } catch (error) {
     console.error('Error updating meeting end time:', error);
     throw new Error('Could not update meeting end time.');
+  }
+};
+
+export const updateMeetingChannelId = async (
+  meetingHandle: string,
+  channelHandle: string
+): Promise<void> => {
+  try {
+    const updateObject = {
+      [`meetings/${meetingHandle}/meetingChannel`]: channelHandle,
+    };
+
+    await update(ref(db), updateObject);
+  } catch (error) {
+    console.error('Error updating meeting:', error);
+    throw new Error('Could not update meeting.');
   }
 };

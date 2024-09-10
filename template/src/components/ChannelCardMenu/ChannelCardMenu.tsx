@@ -54,7 +54,7 @@ const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
             key={itemName}
             className={`p-2 hover:opacity-60 cursor-pointer  ${
               index !== Object.entries(popupItems).length - 1
-                ? 'border-b border-gray-200'
+                ? 'border border-opacity-25 border-base-content'
                 : ''
             }`}
             onClick={action}
