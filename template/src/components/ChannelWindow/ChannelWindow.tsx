@@ -11,8 +11,6 @@ import ParticipantsInput from '../ParticipantInput/ParticipantsInput.tsx';
 import {
   addChannelParticipant,
   createChannel,
-  incrementChannelParticipantsCount,
-  toggleChannelMeeting,
 } from '../../services/channel.service.ts';
 import { ChannelType } from '../../enums/ChannelType.ts';
 import { getChannelName } from '../../utils/TransformDataHelpers.ts';
@@ -301,20 +299,26 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
         <header className="basis-2/10 h-auto flex flex-shrink-0 flex-row-reverse justify-between pb-6">
           <div className="flex gap-4">
             {!call && (
-              <button
-                className="flex items-center gap-2 text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
-                onClick={async () => {
-                  setCall(prev => !prev);
-                  await incrementChannelParticipantsCount(channel.id);
-                }}
-              >
-                <FaPhoneAlt />
-                {channel.meetingParticipants !== 0 ? (
-                  <span>Join</span>
-                ) : (
-                  <span>Call</span>
+              <>
+                {channel.meetingParticipants !== 0 && (
+                  <span>
+                    Current meeting participants: {channel.meetingParticipants}
+                  </span>
                 )}
-              </button>
+                <button
+                  className="flex items-center gap-2 text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
+                  onClick={async () => {
+                    setCall(prev => !prev);
+                  }}
+                >
+                  <FaPhoneAlt />
+                  {channel.meetingParticipants !== 0 ? (
+                    <span>Join</span>
+                  ) : (
+                    <span>Call</span>
+                  )}
+                </button>
+              </>
             )}
             {canAddParticipants() && (
               <div className="dropdown dropdown-bottom dropdown-end">
@@ -369,7 +373,10 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
               <DyteMeetingUI setCall={setCall} channelId={channel.id} />
             </div>
           )}
-          <main ref={chatWindowRef} className="flex-1 overflow-y-auto px-6">
+          <main
+            ref={chatWindowRef}
+            className="flex-1 overflow-y-auto px-6 pt-4"
+          >
             {Object.values(channel?.messages || {})
               .sort((a, b) => a.sentAt - b.sentAt)
               .map(message => (

@@ -1,4 +1,11 @@
-import { get, onValue, push, ref, update } from 'firebase/database';
+import {
+  get,
+  onChildChanged,
+  onValue,
+  push,
+  ref,
+  update,
+} from 'firebase/database';
 import { db } from '../config/firebase.config.ts';
 import { MeetingStatus } from '../enums/MeetingStatus.ts';
 import { Meeting } from '../models/Meeting.ts';
@@ -189,7 +196,21 @@ export const subscribeToUserMeetings = (
     const meetingsPromises = Object.keys(meetingIds).map(async meetingId => {
       const meetingRef = ref(db, `meetings/${meetingId}`);
       const meetingSnapshot = await get(meetingRef);
-      return { id: meetingId, ...meetingSnapshot.val() };
+      const meeting = { id: meetingId, ...meetingSnapshot.val() };
+
+      const participantsRef = ref(db, `meetings/${meetingId}/participants`);
+      onChildChanged(participantsRef, participantSnapshot => {
+        const participant = participantSnapshot.key;
+        const status = participantSnapshot.val();
+
+        meeting.participants[participant!] = status;
+
+        Promise.all(meetingsPromises).then(resolvedMeetings => {
+          callback(resolvedMeetings);
+        });
+      });
+
+      return meeting;
     });
 
     const meetings = await Promise.all(meetingsPromises);

@@ -1,5 +1,5 @@
 import {
-  DyteClock,
+  DyteRecordingToggle,
   DyteRecordingIndicator,
   DyteParticipantCount,
   DyteGrid,
@@ -15,7 +15,10 @@ import {
 import { useDyteMeeting, useDyteSelector } from '@dytesdk/react-web-core';
 import { useAuth } from '../../providers/AuthProvider.tsx';
 import { useEffect } from 'react';
-import { decrementChannelParticipantsCount } from '../../services/channel.service.ts';
+import {
+  decrementChannelParticipantsCount,
+  incrementChannelParticipantsCount,
+} from '../../services/channel.service.ts';
 
 interface DyteMeetingProps {
   setCall: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,19 +32,21 @@ const DyteMeetingUI: React.FC<DyteMeetingProps> = ({ setCall, channelId }) => {
   const roomState = useDyteSelector(m => m.self.roomState);
 
   useEffect(() => {
-    const updateChannelMeetingState = async () => {
+    const decrement = async () => {
       await decrementChannelParticipantsCount(channelId);
     };
+    const increment = async () => {
+      await incrementChannelParticipantsCount(channelId);
+    };
+    if (roomState === 'joined') {
+      increment();
+    }
     console.log(roomState);
     if (roomState === 'left' || roomState === 'ended') {
-      setTimeout(() => {
-        if (roomState === 'ended') {
-          updateChannelMeetingState();
-        }
-        setCall(prev => !prev);
-      }, 1000);
+      setCall(prev => !prev);
+      decrement();
     }
-  }, [roomState]);
+  }, [roomState, channelId, setCall]);
 
   return (
     <div className="flex w-full h-56">
@@ -105,43 +110,44 @@ const DyteMeetingUI: React.FC<DyteMeetingProps> = ({ setCall, channelId }) => {
         </div>
       )}
       {roomState === 'joined' && (
-        <center className="rounded-t-3xl w-full h-56 border-b border-gray-700">
-          <DyteDialogManager meeting={meeting} />
-          <div className="flex justify-between w-full text-white">
-            <div id="header-left" className="flex items-center h-[48px]">
-              <DyteRecordingIndicator meeting={meeting} />
+        <>
+          <center className="flex flex-col rounded-t-3xl w-full h-64 border-b border-gray-700 ">
+            <DyteDialogManager meeting={meeting} />
+            <div className="flex justify-between w-full pt-4 text-white">
+              <div
+                id="header-left"
+                className="flex w-1/3 justify-start items-center h-[48px] px-4"
+              >
+                <DyteRecordingIndicator meeting={meeting} />
+              </div>
+              <div
+                id="header-center"
+                className="flex gap-2 w-1/3 items-center justify-center h-[48px]"
+              >
+                <DyteRecordingToggle
+                  meeting={meeting}
+                  variant="button"
+                  size="sm"
+                />
+                <DyteMicToggle meeting={meeting} size="sm" />
+                <DyteCameraToggle meeting={meeting} size="sm" />
+                <DyteLeaveButton size="sm" />
+              </div>
+              <div
+                id="header-right"
+                className="flex w-1/3 items-center  justify-end h-[48px] px-4"
+              >
+                <DyteParticipantCount meeting={meeting} />
+              </div>
             </div>
-            <div id="header-right" className="flex items-center h-[48px] p-4">
-              <DyteParticipantCount meeting={meeting} />
+            <div className="justify-center w-full h-full">
+              <DyteGrid meeting={meeting} className="w-1/4" />
             </div>
-          </div>
-          <DyteGrid meeting={meeting} />
-          <div className="flex h-40 gap-2 justify-center items-end">
-            <DyteMicToggle meeting={meeting} size="md" />
-            <DyteCameraToggle meeting={meeting} size="md" />
-            <DyteLeaveButton size="md" />
-          </div>
-        </center>
-      )}
-      {roomState === 'ended' && (
-        <center className="w-full flex justify-center items-center h-40">
-          <h3>You have left the meeting</h3>
-        </center>
+          </center>
+        </>
       )}
     </div>
   );
-
-  // return (
-  //   <>
-  //     <div>
-  //       <DyteGrid className="rounded-t-3xl" meeting={meeting} />
-  //     </div>
-  //     <div>
-  //       <DyteCameraToggle meeting={meeting} size="sm" />
-  //       <DyteMicToggle meeting={meeting} size="sm" />
-  //     </div>
-  //   </>
-  // );
 };
 
 export default DyteMeetingUI;

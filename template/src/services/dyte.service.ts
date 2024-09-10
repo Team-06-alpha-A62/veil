@@ -31,7 +31,7 @@ export const addDyteMeetingParticipant = async (
       Authorization:
         'Basic YThhNTAxM2UtODFhYy00ZWRhLTlhYzctN2ZjMTNiNzIzYjc4OmFjNDY3MmIzMTVmNGU4ZjkwNzVi',
     },
-    body: `{"name":"${username}","picture":"${avatarUrl}","preset_name":"group_call_host","custom_participant_id":"string"}`,
+    body: `{"name":"${username}","picture":"${avatarUrl}","preset_name":"${preset}","custom_participant_id":"string"}`,
   };
 
   const response = await fetch(url, options);

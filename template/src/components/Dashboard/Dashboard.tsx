@@ -3,11 +3,15 @@ import Muuri from 'muuri';
 import './Dashboard.scss'; // Custom SCSS
 import { FaPen } from 'react-icons/fa';
 import Widget from '../Widget/Widget.tsx';
-import Modal from '../Modal/Modal.tsx';
-import CalendarWidget from '../CalendarWidget/CalendarWidget.tsx';
+import WidgetSelectorModal from '../WidgetSelectorModal/WidgetSelectorModal.tsx';
+import CalendarWidgetWide from '../CalendarWidgetWide/CalendarWidgetWide.tsx';
+import NewNoteWidget from '../NewNoteWidget/NewNoteWidget.tsx';
+import PinnedNotesCarouselWidget from '../PinnedNotesCarouselWidget/PinnedNotesCarouselWidget.tsx';
 
 const Dashboard: React.FC = () => {
   const [isInEditMode, setIsInEditMode] = useState(false);
+  const [showWidgetModal, setShowWidgetModal] = useState<boolean>(false);
+
   const muuriGridRef = useRef<HTMLDivElement | null>(null);
 
   const muuriGridInstanceRef = useRef<Muuri | null>(null);
@@ -23,6 +27,7 @@ const Dashboard: React.FC = () => {
   const handleSaveChanges = (): void => {
     const muuriGridState = muuriGridInstanceRef.current
       ?.getItems()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .map((item: any) => item.getElement().dataset.id);
     const layout = { muuriGrid: muuriGridState };
     localStorage.setItem('dashboardLayout', JSON.stringify(layout));
@@ -37,7 +42,9 @@ const Dashboard: React.FC = () => {
       // Apply saved layout to muuriGrid
       if (savedmuuriGrid) {
         const muuriGridItems = savedmuuriGrid.map((id: string) =>
-          muuriGrid.getItems().find(item => item.getElement().dataset.id === id)
+          muuriGrid
+            .getItems()
+            .find(item => item.getElement()!.dataset.id === id)
         );
         muuriGrid.sort(muuriGridItems.filter(Boolean));
       }
@@ -64,8 +71,15 @@ const Dashboard: React.FC = () => {
     };
   }, [isInEditMode]);
 
+  const handleModalToggle = (): void => {
+    setShowWidgetModal(prevValue => !prevValue);
+  };
+
   return (
     <>
+      {showWidgetModal && (
+        <WidgetSelectorModal handleCloseClick={handleModalToggle} />
+      )}
       <div className="flex flex-row-reverse gap-4">
         {!isInEditMode ? (
           <button
@@ -86,47 +100,120 @@ const Dashboard: React.FC = () => {
         )}
       </div>
 
-      <div className="flex justify-evenly mt-5 gap-8">
+      <div className="mt-5">
         <div
           className="muuri-grid grid-2 p-5 border-4 border-transparent"
           ref={muuriGridRef}
         >
           <div className="item" data-id={`muuriGrid-item-1`}>
             <Widget
-              width={2}
-              height={2}
+              width={1}
+              height={1}
               isInEditMode={isInEditMode}
-              widgetComponent={<CalendarWidget />}
+              handleClick={handleModalToggle}
+              widgetComponent={<NewNoteWidget />}
+              widgetComponentName={'New Note Widget'}
             />
           </div>
           <div className="item" data-id={`muuriGrid-item-2`}>
             <Widget
               width={1}
-              height={2}
+              height={1}
               isInEditMode={isInEditMode}
-              widgetComponent={<CalendarWidget />}
+              handleClick={handleModalToggle}
             />
           </div>
           <div className="item" data-id={`muuriGrid-item-3`}>
             <Widget
-              width={2}
+              width={1}
               height={1}
               isInEditMode={isInEditMode}
-              widgetComponent={<CalendarWidget />}
+              handleClick={handleModalToggle}
             />
           </div>
           <div className="item" data-id={`muuriGrid-item-4`}>
-            <Widget width={2} height={1} isInEditMode={isInEditMode} />
-          </div>
-          <div className="item" data-id={`muuriGrid-item-5`}>
-            <Widget width={1} height={1} isInEditMode={isInEditMode} />
-          </div>
-          <div className="item" data-id={`muuriGrid-item-6`}>
             <Widget
               width={1}
               height={1}
               isInEditMode={isInEditMode}
-              widgetComponent={<CalendarWidget />}
+              handleClick={handleModalToggle}
+            />
+          </div>
+
+          <div className="item" data-id={`muuriGrid-item-5`}>
+            <Widget
+              width={2}
+              height={1}
+              isInEditMode={isInEditMode}
+              handleClick={handleModalToggle}
+              widgetComponent={<CalendarWidgetWide />}
+              widgetComponentName={'Wide Calendar Widget'}
+            />
+          </div>
+          <div className="item" data-id={`muuriGrid-item-6`}>
+            <Widget
+              width={2}
+              height={1}
+              isInEditMode={isInEditMode}
+              handleClick={handleModalToggle}
+              widgetComponent={<PinnedNotesCarouselWidget />}
+              widgetComponentName={'Pinned Notes Carousel Widget'}
+            />
+          </div>
+          <div className="item" data-id={`muuriGrid-item-7`}>
+            <Widget
+              width={1}
+              height={1}
+              isInEditMode={isInEditMode}
+              handleClick={handleModalToggle}
+            />
+          </div>
+          <div className="item" data-id={`muuriGrid-item-8`}>
+            <Widget
+              width={1}
+              height={1}
+              isInEditMode={isInEditMode}
+              handleClick={handleModalToggle}
+            />
+          </div>
+          <div className="item" data-id={`muuriGrid-item-9`}>
+            <Widget
+              width={1}
+              height={1}
+              isInEditMode={isInEditMode}
+              handleClick={handleModalToggle}
+            />
+          </div>
+          <div className="item" data-id={`muuriGrid-item-10`}>
+            <Widget
+              width={1}
+              height={1}
+              isInEditMode={isInEditMode}
+              handleClick={handleModalToggle}
+            />
+          </div>
+          <div className="item" data-id={`muuriGrid-item-11`}>
+            <Widget
+              width={1}
+              height={1}
+              isInEditMode={isInEditMode}
+              handleClick={handleModalToggle}
+            />
+          </div>
+          <div className="item" data-id={`muuriGrid-item-12`}>
+            <Widget
+              width={1}
+              height={1}
+              isInEditMode={isInEditMode}
+              handleClick={handleModalToggle}
+            />
+          </div>
+          <div className="item" data-id={`muuriGrid-item-13`}>
+            <Widget
+              width={1}
+              height={1}
+              isInEditMode={isInEditMode}
+              handleClick={handleModalToggle}
             />
           </div>
         </div>

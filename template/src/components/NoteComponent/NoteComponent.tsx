@@ -61,7 +61,7 @@ const NoteComponent: React.FC<{
 
   return (
     <div
-      className={`relative w-80 h-80 ${note.label} rounded-3xl p-6 text-white hover:bg-opacity-90 active:bg-opacity-75 cursor-pointer`}
+      className={`relative w-72 h-72 ${note.label} rounded-3xl p-6 text-white hover:bg-opacity-90 active:bg-opacity-75 cursor-pointer`}
       onClick={() => openModal(note)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
