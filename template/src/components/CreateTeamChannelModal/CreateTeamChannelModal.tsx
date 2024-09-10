@@ -8,18 +8,21 @@ import ParticipantsInput from '../ParticipantInput/ParticipantsInput.tsx';
 interface CreateTeamChannelModalProps {
   teamId: string;
   teamMembers: string[];
+  channelOwner: string;
   onClose: () => void;
 }
 
 const initialChannelData = {
   title: '',
   isPrivate: true,
+  channelOwner: '',
   category: ChannelCategory.TEXT_CHANNELS,
 };
 
 const CreateTeamChannelModal: React.FC<CreateTeamChannelModalProps> = ({
   teamId,
   teamMembers,
+  channelOwner,
   onClose,
 }) => {
   const { currentUser } = useAuth();
@@ -41,9 +44,8 @@ const CreateTeamChannelModal: React.FC<CreateTeamChannelModalProps> = ({
       setIsTitleValid(false);
       return;
     }
-
     const finalParticipants = channelData.isPrivate
-      ? [...participants, currentUser.userData!.username]
+      ? [...participants, channelOwner, currentUser.userData!.username]
       : teamMembers;
 
     await createChannel(

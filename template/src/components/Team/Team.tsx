@@ -135,10 +135,9 @@ const Team: React.FC = () => {
       </div>
     );
   }
-  console.log(team?.members);
   return (
-    <div className="flex gap-10 rounded-3xl p-6 bg-base-300  h-full">
-      <div className="w-1/4 rounded-lg">
+    <div className="flex gap-10 rounded-3xl p-6 bg-base-300   h-full">
+      <div className="w-1/4 rounded-lg pr-4 overflow-y-scroll">
         <header className="flex justify-between items-center mb-4">
           <button
             className="text-base-content hover:text-primary rounded-full p-2"
@@ -146,46 +145,53 @@ const Team: React.FC = () => {
           >
             <BsArrowLeftCircle size={30} />
           </button>
-          {team?.owner === currentUser.userData?.username ||
-            (team?.members[currentUser.userData?.username].role ===
-              UserRole.MODERATOR && (
-              <button
-                className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
-                onClick={() => setIsModalOpen(true)}
-              >
-                Add Channel
-              </button>
-            ))}
-        </header>
-        {Object.entries(categorizedChannels).map(([category, channels]) => (
-          <div key={category} className="mb-4">
-            <div
-              className="category-header flex justify-between items-center cursor-pointer p-2"
-              onClick={() => handleCategoryToggle(category as ChannelCategory)}
+          {(team?.owner === currentUser.userData?.username ||
+            team?.members[currentUser.userData!.username].role ===
+              UserRole.MODERATOR) && (
+            <button
+              className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
+              onClick={() => setIsModalOpen(true)}
             >
-              <h4 className="font-bold text-md text-base-content">
-                {category}
-              </h4>
-              <span className="text-base-content">
-                {collapsedCategories[category as ChannelCategory] ? '+' : '-'}
-              </span>
+              Add Channel
+            </button>
+          )}
+        </header>
+        <div className="overflow-y-auto">
+          {Object.entries(categorizedChannels).map(([category, channels]) => (
+            <div key={category} className="mb-4">
+              <div
+                className="category-header flex justify-between items-center cursor-pointer p-2"
+                onClick={() =>
+                  handleCategoryToggle(category as ChannelCategory)
+                }
+              >
+                <h4 className="font-bold text-md text-base-content">
+                  {category}
+                </h4>
+                <span className="text-base-content">
+                  {collapsedCategories[category as ChannelCategory] ? '+' : '-'}
+                </span>
+              </div>
+              {!collapsedCategories[category as ChannelCategory] && (
+                <ul className="pl-4">
+                  {channels.map(channel => {
+                    return (
+                      <ChannelCard
+                        key={channel.id}
+                        channel={channel}
+                        handleClick={handleChannelClick}
+                        isTeamChannel={true}
+                        isTeamOwner={
+                          team?.owner === currentUser.userData?.username
+                        }
+                      />
+                    );
+                  })}
+                </ul>
+              )}
             </div>
-            {!collapsedCategories[category as ChannelCategory] && (
-              <ul className="pl-4">
-                {channels.map(channel => {
-                  return (
-                    <ChannelCard
-                      key={channel.id}
-                      channel={channel}
-                      handleClick={handleChannelClick}
-                      isTeamChannel={true}
-                    />
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
       <main className="basis-3/4 mb-12">
         {activeChannel ? (
@@ -204,7 +210,8 @@ const Team: React.FC = () => {
       {isModalOpen && team && (
         <CreateTeamChannelModal
           teamId={teamId!}
-          teamMembers={Object.keys(team.members)}
+          teamMembers={[...Object.keys(team.members)]}
+          channelOwner={team.owner}
           onClose={() => setIsModalOpen(false)}
         />
       )}

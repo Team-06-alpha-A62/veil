@@ -8,6 +8,7 @@ interface ChannelCardMenuProps {
   onLeaveChannel: () => void;
   onChangeIcon: () => void;
   onManageChannel: () => void;
+  isTeamOwner?: boolean;
 }
 
 const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
@@ -17,6 +18,7 @@ const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
   onLeaveChannel,
   onChangeIcon,
   onManageChannel,
+  isTeamOwner = false,
 }) => {
   const popupItems = useMemo(() => {
     const actions: Record<string, () => void> = {
@@ -28,6 +30,10 @@ const ChannelCardMenu: React.FC<ChannelCardMenuProps> = ({
     }
     if (!isTeamChannel) {
       actions['Change Icon'] = onChangeIcon;
+    } else {
+      if (isTeamOwner) {
+        actions['Manage Channel'] = onManageChannel;
+      }
     }
 
     if (userRole === UserRole.MODERATOR || userRole === UserRole.OWNER) {

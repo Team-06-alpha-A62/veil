@@ -28,12 +28,14 @@ interface ChannelCardProps {
   channel: Channel;
   handleClick: (channel: Channel) => void;
   isTeamChannel?: boolean;
+  isTeamOwner?: boolean;
 }
 
 const ChannelCard: React.FC<ChannelCardProps> = ({
   channel,
   handleClick,
   isTeamChannel = false,
+  isTeamOwner = false,
 }) => {
   const { currentUser } = useAuth();
   const { id: channelIdFromUrl } = useParams<{ id: string }>();
@@ -114,12 +116,15 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
     <div
       className={`flex relative items-center p-6 border-b-2 border-base-content justify-between 
       ${
-        isPrivateChannel && !isParticipant
+        isPrivateChannel && !isParticipant && !isTeamOwner
           ? 'cursor-not-allowed'
           : 'cursor-pointer'
       } 
       hover:bg-base-100  transition-colors`}
-      onClick={() => !isEditingImage && isParticipant && handleClick(channel)}
+      onClick={() =>
+        ((!isEditingImage && isParticipant) || isTeamOwner) &&
+        handleClick(channel)
+      }
     >
       <div
         className={`flex items-center ${
@@ -206,7 +211,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
           </div>
         ) : (
           <>
-            {isPrivateChannel && !isParticipant ? (
+            {isPrivateChannel && !isParticipant && !isTeamOwner ? (
               <BsLock size={20} className="text-gray-400" />
             ) : (
               channel.type !== ChannelType.DIRECT && (
@@ -240,6 +245,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
                     setIsManageChannelModalOpen(true);
                     setIsMenuVisible(false);
                   }}
+                  isTeamOwner={isTeamOwner}
                 />
               )}
             </div>
