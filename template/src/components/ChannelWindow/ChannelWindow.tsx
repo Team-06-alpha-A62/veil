@@ -140,11 +140,14 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
         );
 
         Object.keys(channel.participants).forEach(async participant => {
-          await addUnreadNotification(
-            participant,
-            channel.id,
-            NotificationType.MESSAGE
-          );
+          if (participant !== currentUser.userData?.username) {
+            await addUnreadNotification(
+              participant,
+              channel.id,
+              NotificationType.MESSAGE,
+              channel.type
+            );
+          }
         });
 
         setNewMessage('');
@@ -248,7 +251,8 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
       await addUnreadNotification(
         participant,
         newNotificationId,
-        NotificationType.CHANNEL
+        NotificationType.CHANNEL,
+        channel.type
       );
     });
 

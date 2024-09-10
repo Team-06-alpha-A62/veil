@@ -258,6 +258,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
             </div>
 
             {filteredParticipants
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               .sort(([usernameA, participantA], [usernameB, participantB]) =>
                 participantA.role === UserRole.OWNER
                   ? -1

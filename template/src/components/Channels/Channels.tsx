@@ -134,10 +134,16 @@ const Channels: React.FC = () => {
                 >
                   {category}
                 </button>
-                {category === 'group' && (
+                {category === 'Direct' && (
                   <NotificationBadge
-                    type={NotificationType.CHANNEL}
-                    isViewActive={selectedCategory === 'Group'}
+                    type={NotificationType.DIRECT}
+                    isViewActive={false}
+                  />
+                )}
+                {category === 'Group' && (
+                  <NotificationBadge
+                    type={NotificationType.GROUP}
+                    isViewActive={false}
                   />
                 )}
               </div>

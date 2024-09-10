@@ -57,6 +57,14 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                 />
               </span>
             )}
+            {label === 'Chats' && (
+              <span className="absolute right-4 top-0">
+                <NotificationBadge
+                  type={NotificationType.GLOBAL_MESSAGES}
+                  isViewActive={false}
+                />
+              </span>
+            )}
           </div>
           {isExpanded && (
             <span

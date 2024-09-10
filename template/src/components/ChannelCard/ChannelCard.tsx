@@ -147,6 +147,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
               type={NotificationType.MESSAGE}
               isViewActive={isViewActive}
               channelId={channel.id}
+              channelType={channel.type}
             />
           </div>
         ) : (
