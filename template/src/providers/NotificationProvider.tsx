@@ -32,7 +32,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser.userData) return;
 
     const unsubscribe = listenForNotifications(
       currentUser.userData!.username,
@@ -40,7 +40,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 
     return () => unsubscribe();
-  }, [currentUser]);
+  }, [currentUser.userData]);
 
   const removeNotification = async (id: string) => {
     if (!currentUser) return;

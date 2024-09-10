@@ -6,5 +6,6 @@ export enum NotificationType {
   GROUP = 'Group',
   GLOBAL_MESSAGES = 'GlobalMessages',
   NEW_THEME = 'New Theme',
+  TIMER = 'Timer',
   CHANNEL = 'Channel',
 }

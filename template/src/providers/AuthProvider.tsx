@@ -88,10 +88,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
     const fetchUserData = async (): Promise<void> => {
       setIsLoading(true);
+      console.log('hi');
       try {
         const data = await getUserData(user.uid);
         const userData = data || null;
-        setCurrentUser({ user, userData });
+        console.log(userData);
+        console.log(user);
+        setCurrentUser({ ...currentUser, user, userData });
       } catch (error) {
         if (error instanceof Error) {
           alert(`Error fetching the user data ${error.message}`);

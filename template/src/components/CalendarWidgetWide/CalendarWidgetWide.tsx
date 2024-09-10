@@ -15,8 +15,8 @@ const CalendarWidgetWide: React.FC = () => {
     dayjs().month()
   );
   const [selectedDay, setSelectedDay] = useState<dayjs.Dayjs>(dayjs());
-  const [meetings, setMeetings] = useState<Meeting[]>([]); // Store all meetings
-  const [dayMeetings, setDayMeetings] = useState<Meeting[]>([]); // Meetings for the selected day
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [dayMeetings, setDayMeetings] = useState<Meeting[]>([]);
 
   const formattedMonth = dayjs(
     new Date(dayjs().year(), currentMonthIndex)

@@ -6,6 +6,8 @@ import Widget from '../Widget/Widget.tsx';
 import CalendarWidgetWide from '../CalendarWidgetWide/CalendarWidgetWide.tsx';
 import NewNoteWidget from '../NewNoteWidget/NewNoteWidget.tsx';
 import PinnedNotesCarouselWidget from '../PinnedNotesCarouselWidget/PinnedNotesCarouselWidget.tsx';
+import PomodoroWidget from '../PomodoroWidget/PomodoroWidget.tsx';
+import WeatherCarouselWidget from '../WeatherCarouselWidget/WeatherCarouselWidget.tsx';
 
 const Dashboard: React.FC = () => {
   const [isInEditMode, setIsInEditMode] = useState(false);
@@ -116,7 +118,12 @@ const Dashboard: React.FC = () => {
             <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
           <div className="item" data-id={`muuriGrid-item-4`}>
-            <Widget width={1} height={1} isInEditMode={isInEditMode} />
+            <Widget
+              width={1}
+              height={1}
+              widgetComponent={<PomodoroWidget />}
+              isInEditMode={isInEditMode}
+            />
           </div>
 
           <div className="item" data-id={`muuriGrid-item-5`}>
@@ -153,10 +160,12 @@ const Dashboard: React.FC = () => {
             <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
           <div className="item" data-id={`muuriGrid-item-12`}>
-            <Widget width={1} height={1} isInEditMode={isInEditMode} />
-          </div>
-          <div className="item" data-id={`muuriGrid-item-13`}>
-            <Widget width={1} height={1} isInEditMode={isInEditMode} />
+            <Widget
+              width={2}
+              height={1}
+              isInEditMode={isInEditMode}
+              widgetComponent={<WeatherCarouselWidget />}
+            />
           </div>
         </div>
       </div>

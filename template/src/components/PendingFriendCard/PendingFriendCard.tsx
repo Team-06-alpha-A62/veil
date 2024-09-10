@@ -1,5 +1,6 @@
 import React from 'react';
 import { Friend } from '../../models/Friend';
+import { BsCheckCircle, BsXCircle } from 'react-icons/bs';
 
 interface PendingFriendCardProps {
   pendingFriend: Friend;
@@ -13,7 +14,7 @@ const PendingFriendCard: React.FC<PendingFriendCardProps> = ({
   onDecline,
 }) => {
   return (
-    <div className="flex items-center p-6 border-b border-opacity-25 border-base-content justify-between hover:bg-secondary-focus transition-colors">
+    <div className="flex items-center p-6 text-base-content border-b border-opacity-25 border-base-content justify-between hover:bg-secondary-focus transition-colors">
       <div className="relative flex items-center space-x-4">
         <div className="avatar placeholder">
           <div className="bg-neutral w-14 rounded-full">
@@ -30,18 +31,15 @@ const PendingFriendCard: React.FC<PendingFriendCardProps> = ({
           <div className="font-semibold">{pendingFriend.username}</div>
         </div>
       </div>
-      <div className="flex space-x-2">
-        <button
-          className="text-green-400 hover:text-green-600"
-          onClick={() => onAccept(pendingFriend.username)}
-        >
-          ✅
+      <div className="flex text-success space-x-2">
+        <button onClick={() => onAccept(pendingFriend.username)}>
+          <BsCheckCircle size={20} />
         </button>
         <button
-          className="text-red-400 hover:text-red-600"
+          className="text-error"
           onClick={() => onDecline(pendingFriend.username)}
         >
-          ❌
+          <BsXCircle size={20} />
         </button>
       </div>
     </div>
