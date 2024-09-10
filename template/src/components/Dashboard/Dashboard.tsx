@@ -1,16 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Muuri from 'muuri';
-import './Dashboard.scss'; // Custom SCSS
+import './Dashboard.scss';
 import { FaPen } from 'react-icons/fa';
 import Widget from '../Widget/Widget.tsx';
-import WidgetSelectorModal from '../WidgetSelectorModal/WidgetSelectorModal.tsx';
 import CalendarWidgetWide from '../CalendarWidgetWide/CalendarWidgetWide.tsx';
 import NewNoteWidget from '../NewNoteWidget/NewNoteWidget.tsx';
 import PinnedNotesCarouselWidget from '../PinnedNotesCarouselWidget/PinnedNotesCarouselWidget.tsx';
 
 const Dashboard: React.FC = () => {
   const [isInEditMode, setIsInEditMode] = useState(false);
-  const [showWidgetModal, setShowWidgetModal] = useState<boolean>(false);
+  // const [showWidgetModal, setShowWidgetModal] = useState<boolean>(false);
 
   const muuriGridRef = useRef<HTMLDivElement | null>(null);
 
@@ -39,7 +38,6 @@ const Dashboard: React.FC = () => {
     if (savedLayout) {
       const { muuriGrid: savedmuuriGrid } = JSON.parse(savedLayout);
 
-      // Apply saved layout to muuriGrid
       if (savedmuuriGrid) {
         const muuriGridItems = savedmuuriGrid.map((id: string) =>
           muuriGrid
@@ -71,15 +69,12 @@ const Dashboard: React.FC = () => {
     };
   }, [isInEditMode]);
 
-  const handleModalToggle = (): void => {
-    setShowWidgetModal(prevValue => !prevValue);
-  };
+  // const handleModalToggle = (): void => {
+  //   setShowWidgetModal(prevValue => !prevValue);
+  // };
 
   return (
     <>
-      {showWidgetModal && (
-        <WidgetSelectorModal handleCloseClick={handleModalToggle} />
-      )}
       <div className="flex flex-row-reverse gap-4">
         {!isInEditMode ? (
           <button
@@ -110,34 +105,18 @@ const Dashboard: React.FC = () => {
               width={1}
               height={1}
               isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
               widgetComponent={<NewNoteWidget />}
               widgetComponentName={'New Note Widget'}
             />
           </div>
           <div className="item" data-id={`muuriGrid-item-2`}>
-            <Widget
-              width={1}
-              height={1}
-              isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
-            />
+            <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
           <div className="item" data-id={`muuriGrid-item-3`}>
-            <Widget
-              width={1}
-              height={1}
-              isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
-            />
+            <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
           <div className="item" data-id={`muuriGrid-item-4`}>
-            <Widget
-              width={1}
-              height={1}
-              isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
-            />
+            <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
 
           <div className="item" data-id={`muuriGrid-item-5`}>
@@ -145,7 +124,6 @@ const Dashboard: React.FC = () => {
               width={2}
               height={1}
               isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
               widgetComponent={<CalendarWidgetWide />}
               widgetComponentName={'Wide Calendar Widget'}
             />
@@ -155,66 +133,30 @@ const Dashboard: React.FC = () => {
               width={2}
               height={1}
               isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
               widgetComponent={<PinnedNotesCarouselWidget />}
               widgetComponentName={'Pinned Notes Carousel Widget'}
             />
           </div>
           <div className="item" data-id={`muuriGrid-item-7`}>
-            <Widget
-              width={1}
-              height={1}
-              isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
-            />
+            <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
           <div className="item" data-id={`muuriGrid-item-8`}>
-            <Widget
-              width={1}
-              height={1}
-              isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
-            />
+            <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
           <div className="item" data-id={`muuriGrid-item-9`}>
-            <Widget
-              width={1}
-              height={1}
-              isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
-            />
+            <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
           <div className="item" data-id={`muuriGrid-item-10`}>
-            <Widget
-              width={1}
-              height={1}
-              isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
-            />
+            <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
           <div className="item" data-id={`muuriGrid-item-11`}>
-            <Widget
-              width={1}
-              height={1}
-              isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
-            />
+            <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
           <div className="item" data-id={`muuriGrid-item-12`}>
-            <Widget
-              width={1}
-              height={1}
-              isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
-            />
+            <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
           <div className="item" data-id={`muuriGrid-item-13`}>
-            <Widget
-              width={1}
-              height={1}
-              isInEditMode={isInEditMode}
-              handleClick={handleModalToggle}
-            />
+            <Widget width={1} height={1} isInEditMode={isInEditMode} />
           </div>
         </div>
       </div>

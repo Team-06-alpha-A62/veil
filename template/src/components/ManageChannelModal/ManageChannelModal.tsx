@@ -50,7 +50,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
 
   const isOwner = channel.owner === currentUsername;
 
-  const location = useLocation(); // Use the useLocation hook
+  const location = useLocation();
 
   const handleFileChange = (file: File) => {
     setImageFile(file);
@@ -149,7 +149,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
   const isTeamChannel = location.pathname.includes('teams');
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-base-200 bg-opacity-75 flex justify-center items-center z-10">
+    <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center bg-base-300 bg-opacity-75 z-10">
       <div className="relative w-[400px] bg-base-100 flex flex-col gap-5 rounded-3xl p-6 shadow-lg">
         <button onClick={onClose} className="absolute top-4 right-4 text-xl">
           &times;
@@ -167,7 +167,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
                 />
                 <div className="flex flex-col mt-2 space-x-2">
                   <button
-                    className="text-orange-500 text-sm"
+                    className="text-primary text-sm"
                     onClick={handleRemoveImage}
                   >
                     Remove Image
@@ -187,7 +187,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
             ) : (
               <div className="flex relative justify-between items-center w-1/2 space-x-3">
                 <div className="flex-1 avatar placeholder">
-                  <div className="bg-base-300 text-neutral-content w-24 h-24 rounded-full flex items-center justify-center">
+                  <div className="bg-neutral text-neutral-content w-24 h-24 rounded-full flex items-center justify-center">
                     {channelState.imageUrl ? (
                       <img
                         src={channelState.imageUrl}
@@ -201,7 +201,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
                 </div>
                 <button
                   onClick={() => setIsEditingImage(true)}
-                  className="flex-1"
+                  className="flex-1 text-base-content"
                 >
                   edit
                 </button>
@@ -210,12 +210,15 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
           <div className="flex gap-3 mt-6 w-1/2">
             <input
               type="text"
-              className={`w-24 text-xl font-semibold bg-transparent border-none focus:ring-0 ${
-                isEditingTitle ? 'bg-gray-700' : ''
-              }`}
+              className={`text-l font-semibold rounded-full  focus:outline-none px-2 py-1 border-none ${
+                isEditingTitle
+                  ? 'bg-base-200 focus:outline-none focus:ring-2 focus:ring-primary'
+                  : 'bg-base-100'
+              } `}
               value={channelState.title || ''}
               onChange={handleTitleChange}
               readOnly={!isEditingTitle}
+              style={{ width: `${channelState.title!.length + 1}ch` }}
             />
             {!isEditingTitle && (
               <button
@@ -250,11 +253,12 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
                 placeholder="Search participants..."
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="input input-sm rounded-full w-full bg-base-200"
+                className="input input-sm rounded-full w-full bg-base-100"
               />
             </div>
 
             {filteredParticipants
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               .sort(([usernameA, participantA], [usernameB, participantB]) =>
                 participantA.role === UserRole.OWNER
                   ? -1
@@ -265,30 +269,30 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
               .map(([username, participant]) => (
                 <div
                   key={username}
-                  className="flex items-center justify-between bg-base-300 rounded-xl px-4 py-2 hover:bg-base-300 transition"
+                  className="flex items-center justify-between bg-base-300 rounded-full px-4 py-2 hover:bg-base-100 transition"
                 >
                   <div className="flex items-center gap-2">
                     <div className="avatar">
-                      <div className="w-9 rounded-full">
+                      <div className="w-9 rounded-full bg-neutral">
                         {participant.avatarUrl ? (
                           <img
                             src={participant.avatarUrl}
                             alt="User Avatar"
-                            className="rounded-full"
+                            className="rounded-full bg-neutral text-neutral-content"
                           />
                         ) : (
-                          <div className="bg-gray-500 w-9 h-9 flex items-center justify-center rounded-full text-white">
+                          <div className="bg-neutral w-9 h-9 flex items-center justify-center rounded-full text-neutral-content">
                             {username[0].toUpperCase()}
                           </div>
                         )}
                       </div>
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-base text-white font-semibold">
+                      <span className="text-base text-base-content font-semibold">
                         {username}
                       </span>
                       {participant.role === UserRole.OWNER && (
-                        <span className="text-xs text-gray-400">Owner</span>
+                        <span className="text-xs text-base-content">Owner</span>
                       )}
                     </div>
                   </div>

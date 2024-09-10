@@ -39,32 +39,6 @@ const HomePage = () => {
         >
           Start Chatting Now
         </button>
-
-        <div className="flex items-center mt-8 space-x-4">
-          <div className="flex -space-x-2">
-            <img
-              className="w-10 h-10 rounded-full border-2 border-base-300"
-              src="https://randomuser.me/api/portraits/men/32.jpg"
-              alt="User 1"
-            />
-            <img
-              className="w-10 h-10 rounded-full border-2 border-base-300"
-              src="https://randomuser.me/api/portraits/women/44.jpg"
-              alt="User 2"
-            />
-            <img
-              className="w-10 h-10 rounded-full border-2 border-base-300"
-              src="https://randomuser.me/api/portraits/men/43.jpg"
-              alt="User 3"
-            />
-          </div>
-          <div>
-            <span className="font-semibold">22,861</span> Happy Customers
-          </div>
-          <div className="ml-4">
-            <span className="font-semibold">4.8/5</span> Rating
-          </div>
-        </div>
       </header>
 
       <section className="mt-20 px-8 text-center flex-1">
@@ -84,8 +58,7 @@ const HomePage = () => {
             <span className="text-info text-3xl">🔒</span>
             <h3 className="text-xl font-semibold mt-4">Keep safe & private</h3>
             <p className="text-base-content mt-2">
-              Keep conversations secure with end-to-end encryption, ensuring
-              total privacy.
+              Keep conversations secure with encryption, ensuring total privacy.
             </p>
           </div>
           <div className="bg-base-200 p-6 rounded-full">

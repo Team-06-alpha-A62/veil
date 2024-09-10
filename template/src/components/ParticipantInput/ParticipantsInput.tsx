@@ -74,7 +74,7 @@ const ParticipantsInput: React.FC<ParticipantsInputProps> = ({
         </label>
       )}
 
-      <div className="p-2 flex items-center gap-2 flex-wrap rounded-3xl bg-base-200 bg-opacity-50">
+      <div className="p-2 flex items-center gap-2 flex-wrap rounded-3xl bg-base-200 ">
         {participants.map((participant, index) => (
           <div key={participant} className="flex items-center gap-1">
             <span className="badge badge-primary text-primary-content gap-1">
@@ -92,14 +92,14 @@ const ParticipantsInput: React.FC<ParticipantsInputProps> = ({
           type="text"
           value={participantsInput}
           onChange={handleInputChange}
-          className="input bg-transparent input-sm flex-grow rounded-3xl border-none focus:outline-none"
+          className="input bg-transparent text-base-content input-sm flex-grow rounded-3xl border-none focus:outline-none"
           disabled={disabled}
         />
       </div>
       {isOpen && !disabled && (
         <ul
           tabIndex={0}
-          className="menu dropdown-content bg-base-200 rounded-box z-[1] w-52 p-2 shadow"
+          className="menu dropdown-content bg-base-200 text-base-content rounded-box z-[1] w-52 p-2 shadow"
         >
           {renderFilteredParticipants()}
         </ul>

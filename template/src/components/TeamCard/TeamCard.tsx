@@ -38,39 +38,36 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onlineMembersCount }) => {
   );
 
   return (
-    <div className="relative bg-gray-800 text-white rounded-lg p-3 w-full shadow-lg flex flex-col items-center group">
-      <h3 className="text-xl font-bold pb-2">{team.name}</h3>
-      <div
-        className="w-full h-36 bg-cover bg-center mb-4"
-        style={{
-          backgroundImage: `url(${team.imageUrl || '/default-avatar.png'})`,
-        }}
-      ></div>
-      <div className="flex justify-between w-full p-4">
+    <div className="relative bg-base-100 text-white rounded-3xl p-3 w-full shadow-lg flex flex-col items-center group">
+      <h3 className="text-xl text-base-content font-bold pb-2">{team.name}</h3>
+      <img
+        className="w-full h-36 object-cover object-center mb-4 skeleton"
+        src={team.imageUrl || '/default-avatar.png'}
+        alt="Team Avatar"
+      />
+      <div className="flex justify-around w-full p-4">
         <div className="text-center">
-          <p className="font-semibold">{totalChannels}</p>
-          <p className="text-gray-400">Channels</p>
+          <p className="font-semibold text-base-content">{totalChannels}</p>
+          <p className="font-semibold text-base-content">Channels</p>
         </div>
         <div className="text-center">
-          <p className="font-semibold">{Object.keys(team.members).length}</p>
-          <p className="text-gray-400">Members</p>
-        </div>
-        <div className="text-center">
-          <p className="font-semibold">{onlineMembersCount}</p>
-          <p className="text-gray-400">Online</p>
+          <p className="font-semibold text-base-content">
+            {Object.keys(team.members).length}
+          </p>
+          <p className="font-semibold text-base-content ">Members</p>
         </div>
       </div>
-      <div className="absolute top-0 left-0 w-full h-full bg-gray-900 bg-opacity-80 flex items-center justify-center space-y-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex-col">
+      <div className="absolute top-0 left-0 w-full h-full bg-base-200 bg-opacity-80 flex items-center justify-center space-y-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl flex-col">
         {hasJoined || isPrivateTeam ? (
           <button
-            className="px-4 py-2  w-1/2 bg-blue-500 hover:bg-blue-400 text-white rounded-lg"
+            className="px-4 py-2  w-1/2 bg-primary hover:bg-opacity-75 text-white rounded-full"
             onClick={handleGoToTeamClick}
           >
             Go to Team
           </button>
         ) : (
           <button
-            className="px-4 py-2 w-1/2 bg-green-500 hover:bg-green-400 text-white rounded-lg"
+            className="px-4 py-2 w-1/2 bg-success hover:bg-opacity-75 text-white rounded-full"
             onClick={handleRequestJoinClick}
           >
             Request to Join
@@ -78,7 +75,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onlineMembersCount }) => {
         )}
         {(isOwner || isModerator) && hasJoined && (
           <button
-            className="px-4 py-2 w-1/2 bg-orange-500 hover:bg-orange-400 text-white rounded-lg"
+            className="px-4 py-2 w-1/2 bg-success hover:bg-opacity-75 text-white rounded-full"
             onClick={handleManageTeamClick}
           >
             Manage Team

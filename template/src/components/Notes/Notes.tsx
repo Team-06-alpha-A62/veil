@@ -13,7 +13,6 @@ const Notes: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [pinnedNotes, setPinnedNotes] = useState<Note[]>([]);
 
-  // fetching user notes
   useEffect(() => {
     if (currentUser.userData?.username) {
       const fetchNotes = async () => {
@@ -26,10 +25,8 @@ const Notes: React.FC = () => {
       const unsubscribe = subscribeToUserNotes(
         currentUser.userData.username,
         (updatedNotes: Note[]) => {
-          // Update the notes
           setNotes(updatedNotes);
 
-          // Check if any of the pinned notes are in the updated notes
           setPinnedNotes(prevPinnedNotes => {
             return prevPinnedNotes.map(pinnedNote => {
               const updatedNote = updatedNotes.find(
@@ -43,9 +40,7 @@ const Notes: React.FC = () => {
 
       return () => unsubscribe();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser.userData!.username]);
-  // fetching pinned notes from localStorage
   useEffect(() => {
     const storedPinnedNotes = localStorage.getItem('pinnedNotes');
     if (storedPinnedNotes) {
@@ -54,7 +49,7 @@ const Notes: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex gap-10 h-full overflow-y-scroll bg-base-200 rounded-3xl p-6 bg-opacity-50">
+    <div className="flex gap-10 h-full overflow-y-scroll bg-base-300 rounded-3xl p-6 ">
       <div className="flex flex-1 flex-col">
         <header className="h-auto flex flex-shrink-0 flex-row-reverse justify-between pb-6">
           <NewNoteModal />

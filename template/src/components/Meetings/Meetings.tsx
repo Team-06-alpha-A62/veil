@@ -67,24 +67,32 @@ const Meetings = () => {
   }, [currentUser]);
 
   return (
-    <div className="h-full flex flex-col gap-4">
+    <div className="h-full flex flex-col gap-4 overflow-x-hidden p-4 bg-base-300 rounded-3xl ">
       <CalendarHeader
         monthIndex={monthIndex}
         setMonthIndex={setMonthIndex}
         selectedDay={selectedDay}
       />
-      <div className="flex flex-1 gap-4 ">
-        <div className="w-1/6">
-          {pendingMeetings.length > 0 && (
+      <div className="flex f flex-1 gap-4 ">
+        <div className=" flex flex-col w-1/6">
+          <h1 className="flex text-2xl font-semibold justify-center mb-4 w-full text-netural-content">
+            Meeting Invitations
+          </h1>
+          {pendingMeetings.length > 0 ? (
             <div>
               {pendingMeetings.map(pendingMeeting => (
                 <PendingMeetingCard
+                  key={pendingMeeting.id}
                   pendingMeeting={pendingMeeting}
                   handleMeetingInvitationResponse={
                     handleMeetingInvitationResponse
                   }
                 />
               ))}
+            </div>
+          ) : (
+            <div className="flex justify-center text-xs text-base-content  h-full ">
+              <p>No meeting invitations at the moment.</p>
             </div>
           )}
         </div>

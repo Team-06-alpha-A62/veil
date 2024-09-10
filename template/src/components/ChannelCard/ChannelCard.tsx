@@ -22,6 +22,7 @@ import ManageChannelModal from '../ManageChannelModal/ManageChannelModal.tsx';
 import NotificationBadge from '../NotificationBadge/NotificationBadge.tsx';
 import { NotificationType } from '../../enums/NotificationType.ts';
 import { useParams } from 'react-router-dom';
+import { ChannelCategory } from '../../enums/ChannelCategory.ts';
 
 interface ChannelCardProps {
   channel: Channel;
@@ -111,13 +112,13 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
 
   return (
     <div
-      className={`flex relative items-center p-6 border-b-2 border-base-100 justify-between 
+      className={`flex relative items-center p-6 border-b-2 border-base-content justify-between 
       ${
         isPrivateChannel && !isParticipant
           ? 'cursor-not-allowed'
           : 'cursor-pointer'
       } 
-      hover:bg-base-300 hover:bg-opacity-50 active:bg-opacity-0 transition-colors`}
+      hover:bg-base-100  transition-colors`}
       onClick={() => !isEditingImage && isParticipant && handleClick(channel)}
     >
       <div
@@ -127,16 +128,18 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
       >
         {!isTeamChannel && !isEditingImage ? (
           <div className="avatar placeholder relative">
-            <div className="bg-base-300 text-neutral-content w-14 rounded-full">
+            <div className="bg-neutral  w-14 rounded-full">
               {channelImage && !isImageRemoved ? (
                 channelImage.startsWith('http') ? (
                   <img src={channelImage} alt="Channel" />
                 ) : (
-                  <span className="text-3xl">{channelImage}</span>
+                  <span className="text-3xl text-neutral-content">
+                    {channelImage}
+                  </span>
                 )
               ) : (
                 <span className="text-3xl">
-                  <FaUserGroup />
+                  <FaUserGroup className="text-neutral-content" />
                 </span>
               )}
             </div>
@@ -144,6 +147,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
               type={NotificationType.MESSAGE}
               isViewActive={isViewActive}
               channelId={channel.id}
+              channelType={channel.type}
             />
           </div>
         ) : (
@@ -158,14 +162,14 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
           )
         )}
         <div>
-          <h2 className="font-semibold text-m">
+          <h2 className="font-semibold text-base-content text-m">
             {isEditingImage
               ? 'Choose Image'
               : getChannelName(currentUsername, channel)}
           </h2>
           {isEditingImage && (
             <button
-              className="text-orange-500 mt-1 text-sm"
+              className="text-error mt-1 text-sm"
               onClick={event => {
                 event.stopPropagation();
                 onRemoveImage();
@@ -205,16 +209,21 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
             {isPrivateChannel && !isParticipant ? (
               <BsLock size={20} className="text-gray-400" />
             ) : (
-              <button
-                className="text-gray-400 hover:text-primary-content"
-                onClick={event => {
-                  event.stopPropagation();
-                  setIsMenuVisible(prev => !prev);
-                }}
-                ref={threeDotsButtonRef}
-              >
-                <BsThreeDotsVertical size={20} />
-              </button>
+              channel.type !== ChannelType.DIRECT && (
+                <button
+                  className="text-base-content hover:text-primary-content"
+                  onClick={event => {
+                    event.stopPropagation();
+                    setIsMenuVisible(prev => !prev);
+                  }}
+                  ref={threeDotsButtonRef}
+                >
+                  <BsThreeDotsVertical
+                    className="text-base-content"
+                    size={20}
+                  />
+                </button>
+              )
             )}
             <div ref={channelCardMenuRef}>
               {isMenuVisible && (

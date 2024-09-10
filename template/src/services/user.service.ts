@@ -19,6 +19,8 @@ import {
 import { Friend } from '../models/Friend';
 import { FriendType } from '../enums/FriendType';
 import { NotificationType } from '../enums/NotificationType';
+import { ChannelCategory } from '../enums/ChannelCategory';
+import { ChannelType } from '../enums/ChannelType';
 
 export const createUser = async (
   uid: string,
@@ -259,8 +261,9 @@ export const leaveChannel = async (
 
 export const addUnreadNotification = async (
   username: string,
-  notificationId: string,
-  type: NotificationType
+  notificationId: string | null,
+  type: NotificationType,
+  channelType: ChannelType
 ) => {
   let updatedNotifications;
   if (type === NotificationType.MESSAGE) {
@@ -274,6 +277,12 @@ export const addUnreadNotification = async (
       [`users/${username}/unreadNotifications/${type}/${notificationId}`]:
         unreadMessagesData ? unreadMessagesData + 1 : 1,
     };
+    if (channelType === ChannelType.DIRECT) {
+      await incrementUnreadDirectNotifications(username);
+    } else if (channelType === ChannelType.GROUP) {
+      await incrementUnreadGroupNotifications(username);
+    }
+    await incrementUnreadGlobalMessagesNotifications(username);
   } else {
     updatedNotifications = {
       [`users/${username}/unreadNotifications/${type}/${notificationId}`]: true,
@@ -366,15 +375,194 @@ export const listenToUnreadChannelMessages = (
   return unsubscribe;
 };
 
-// Clear unread channel messages
 export const clearUnreadChannelMessages = async (
   username: string,
-  channelId: string
+  channelId: string,
+  channelType: ChannelType | null
 ) => {
+  const channelMessagesRed = ref(
+    db,
+    `users/${username}/unreadNotifications/${NotificationType.MESSAGE}/${channelId}`
+  );
+
+  const unreadMessagesSnapshot = await get(channelMessagesRed);
+  const unreadMessagesData = unreadMessagesSnapshot.val();
+  if (channelType === ChannelType.DIRECT) {
+    await decrementUnreadDirectNotifications(username, unreadMessagesData);
+  } else if (channelType === ChannelType.GROUP) {
+    await decrementUnreadGroupNotifications(username, unreadMessagesData);
+  }
+  await decrementUnreadGlobalMessagesNotifications(
+    username,
+    unreadMessagesData
+  );
   const updateObject = {
     [`users/${username}/unreadNotifications/${NotificationType.MESSAGE}/${channelId}`]:
       null,
   };
 
   await update(ref(db), updateObject);
+};
+
+export const listenToUnreadDirectNotifications = (
+  username: string,
+  callback: (count: number) => void
+): Unsubscribe => {
+  const unreadNotificationsRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${NotificationType.DIRECT}`
+  );
+
+  const unsubscribe = onValue(unreadNotificationsRef, snapshot => {
+    if (snapshot.exists()) {
+      const notifications = snapshot.val();
+      callback(notifications);
+    } else {
+      callback(0);
+    }
+  });
+
+  return unsubscribe;
+};
+
+export const incrementUnreadDirectNotifications = async (username: string) => {
+  const unreadDirectRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${NotificationType.DIRECT}`
+  );
+  const unreadMessagesSnapshot = await get(unreadDirectRef);
+  const unreadMessagesData = unreadMessagesSnapshot.val();
+  const updatedNotifications = {
+    [`users/${username}/unreadNotifications/${NotificationType.DIRECT}`]:
+      unreadMessagesData ? unreadMessagesData + 1 : 1,
+  };
+
+  await update(ref(db), updatedNotifications);
+};
+export const decrementUnreadDirectNotifications = async (
+  username: string,
+  notificationCount: number
+) => {
+  const unreadDirectRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${NotificationType.DIRECT}`
+  );
+  const unreadMessagesSnapshot = await get(unreadDirectRef);
+  const unreadMessagesData = unreadMessagesSnapshot.val();
+  const updatedNotifications = {
+    [`users/${username}/unreadNotifications/${NotificationType.DIRECT}`]:
+      unreadMessagesData ? unreadMessagesData - notificationCount : 0,
+  };
+
+  await update(ref(db), updatedNotifications);
+};
+
+export const listenToUnreadGroupNotifications = (
+  username: string,
+  callback: (count: number) => void
+): Unsubscribe => {
+  const unreadNotificationsRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${NotificationType.GROUP}`
+  );
+
+  const unsubscribe = onValue(unreadNotificationsRef, snapshot => {
+    if (snapshot.exists()) {
+      const notifications = snapshot.val();
+      callback(notifications);
+    } else {
+      callback(0);
+    }
+  });
+
+  return unsubscribe;
+};
+
+export const incrementUnreadGroupNotifications = async (username: string) => {
+  const unreadDirectRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${NotificationType.GROUP}`
+  );
+  const unreadMessagesSnapshot = await get(unreadDirectRef);
+  const unreadMessagesData = unreadMessagesSnapshot.val();
+  const updatedNotifications = {
+    [`users/${username}/unreadNotifications/${NotificationType.GROUP}`]:
+      unreadMessagesData ? unreadMessagesData + 1 : 1,
+  };
+
+  await update(ref(db), updatedNotifications);
+};
+
+export const decrementUnreadGroupNotifications = async (
+  username: string,
+  notificationCount: number
+) => {
+  const unreadDirectRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${NotificationType.GROUP}`
+  );
+  const unreadMessagesSnapshot = await get(unreadDirectRef);
+  const unreadMessagesData = unreadMessagesSnapshot.val();
+  const updatedNotifications = {
+    [`users/${username}/unreadNotifications/${NotificationType.GROUP}`]:
+      unreadMessagesData ? unreadMessagesData - notificationCount : 0,
+  };
+
+  await update(ref(db), updatedNotifications);
+};
+
+export const listenToUnreadGlobalMessagesNotifications = (
+  username: string,
+  callback: (count: number) => void
+): Unsubscribe => {
+  const unreadNotificationsRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${NotificationType.GLOBAL_MESSAGES}`
+  );
+
+  const unsubscribe = onValue(unreadNotificationsRef, snapshot => {
+    if (snapshot.exists()) {
+      const notifications = snapshot.val();
+      callback(notifications);
+    } else {
+      callback(0);
+    }
+  });
+
+  return unsubscribe;
+};
+
+export const incrementUnreadGlobalMessagesNotifications = async (
+  username: string
+) => {
+  const unreadDirectRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${NotificationType.GLOBAL_MESSAGES}`
+  );
+  const unreadMessagesSnapshot = await get(unreadDirectRef);
+  const unreadMessagesData = unreadMessagesSnapshot.val();
+  const updatedNotifications = {
+    [`users/${username}/unreadNotifications/${NotificationType.GLOBAL_MESSAGES}`]:
+      unreadMessagesData ? unreadMessagesData + 1 : 1,
+  };
+
+  await update(ref(db), updatedNotifications);
+};
+
+export const decrementUnreadGlobalMessagesNotifications = async (
+  username: string,
+  notificationCount: number
+) => {
+  const unreadDirectRef = ref(
+    db,
+    `users/${username}/unreadNotifications/${NotificationType.GLOBAL_MESSAGES}`
+  );
+  const unreadMessagesSnapshot = await get(unreadDirectRef);
+  const unreadMessagesData = unreadMessagesSnapshot.val();
+  const updatedNotifications = {
+    [`users/${username}/unreadNotifications/${NotificationType.GLOBAL_MESSAGES}`]:
+      unreadMessagesData ? unreadMessagesData - notificationCount : 0,
+  };
+
+  await update(ref(db), updatedNotifications);
 };

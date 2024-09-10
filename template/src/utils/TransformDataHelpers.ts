@@ -67,7 +67,10 @@ export const transformTeamData = async (data: Partial<Team>): Promise<Team> => {
 
   for (const member of Object.keys(data.members || {})) {
     const userData = await getUserByHandle(member);
-    membersObject[member] = transformTeamMemberData(userData, data.owner || '');
+    membersObject[member] = transformTeamMemberData(
+      userData,
+      data?.members![member].role
+    );
   }
 
   const teamImageUrl = getTeamImage(data as Team);
@@ -150,13 +153,29 @@ export const transformChannelData = async (
 
 export const transformTeamMemberData = (
   userData: Partial<UserData>,
-  owner: string
+  role: string
 ): Participant => {
+  let userRole: UserRole;
+
+  switch (role) {
+    case 'member':
+      userRole = UserRole.MEMBER;
+      break;
+    case 'moderator':
+      userRole = UserRole.MODERATOR;
+      break;
+    case 'owner':
+      userRole = UserRole.OWNER;
+      break;
+    default:
+      throw new Error(`Invalid role: ${role}`);
+  }
+
   return {
     avatarUrl: userData.avatarUrl || '',
     username: userData.username || 'Unknown Username',
-    role: userData.username === owner ? UserRole.OWNER : UserRole.MEMBER,
-    active: userData.username === owner ? true : false,
+    role: userRole,
+    active: role === UserRole.OWNER,
   };
 };
 

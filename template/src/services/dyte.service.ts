@@ -31,11 +31,13 @@ export const addDyteMeetingParticipant = async (
       Authorization:
         'Basic YThhNTAxM2UtODFhYy00ZWRhLTlhYzctN2ZjMTNiNzIzYjc4OmFjNDY3MmIzMTVmNGU4ZjkwNzVi',
     },
-    body: `{"name":"${username}","picture":"${avatarUrl}","preset_name":"${preset}","custom_participant_id":"string"}`,
+    body: `{"name":"${username}","picture":"${
+      avatarUrl ||
+      'https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png'
+    }","preset_name":"${preset}","custom_participant_id":"string"}`,
   };
 
   const response = await fetch(url, options);
   const data = await response.json();
-  console.log(data);
   return data.data.token;
 };

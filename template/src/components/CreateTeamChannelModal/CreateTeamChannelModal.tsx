@@ -79,18 +79,23 @@ const CreateTeamChannelModal: React.FC<CreateTeamChannelModalProps> = ({
   };
 
   return (
-    <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center bg-base-200 bg-opacity-75 z-10">
-      <div className="w-96 h-auto relative bg-base-300 rounded-3xl flex flex-col gap-5 p-4">
-        <button onClick={onClose} className="absolute top-5 right-5">
+    <div className="h-screen w-full fixed top-0 left-0 flex justify-center items-center bg-base-300 bg-opacity-75 z-10">
+      <div className="w-96 h-auto relative bg-base-100 rounded-3xl flex flex-col gap-5 p-4">
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-5 text-base-content"
+        >
           &times;
         </button>
         <div>
-          <h2 className="text-xl font-semibold">Create Team Channel</h2>
+          <h2 className="text-xl font-semibold text-base-content">
+            Create Team Channel
+          </h2>
         </div>
         <div className="flex flex-col gap-4">
           <label className="form-control w-full gap-1">
             <div className="label">
-              <span className="label-text">Title</span>
+              <span className="label-text text-base-content">Title</span>
             </div>
             <input
               autoFocus
@@ -98,7 +103,7 @@ const CreateTeamChannelModal: React.FC<CreateTeamChannelModalProps> = ({
               value={channelData.title}
               onChange={handleInputChange('title')}
               type="text"
-              className={`input input-sm w-full rounded-3xl bg-base-200 bg-opacity-50 focus:border-transparent focus:outline-accent ${
+              className={`input input-sm w-full rounded-3xl bg-base-200 placeholder-base-content focus:border-transparent focus:outline-primary ${
                 isTitleValid ? '' : 'input-error'
               }`}
             />
@@ -137,7 +142,7 @@ const CreateTeamChannelModal: React.FC<CreateTeamChannelModalProps> = ({
               <span className="label-text">Category</span>
             </label>
             <select
-              className="select select-bordered w-full"
+              className="select select-bordered w-full text-base-content bg-base-200"
               value={channelData.category}
               onChange={handleCategoryChange}
             >

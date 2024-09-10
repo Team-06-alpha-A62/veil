@@ -28,7 +28,10 @@ export const createTeam = async (
 
   for (const member of members) {
     const userData = await getUserByHandle(member);
-    membersObject[member] = transformTeamMemberData(userData, owner);
+    membersObject[member] = transformTeamMemberData(
+      userData,
+      userData.username === owner ? 'owner' : 'member'
+    );
   }
 
   const newTeam: Team = {
@@ -158,6 +161,14 @@ export const listenToTeamChannels = (
   };
 };
 
+export const updateMemberRoleIn = async (
+  teamId: string,
+  username: string,
+  newRole: UserRole
+) => {
+  await updateTeamMemberRole(teamId, username, newRole);
+};
+
 export const addChannelsToTeam = async (
   teamId: string,
   channels: { id: string; category: ChannelCategory }[]
@@ -213,9 +224,7 @@ export const deleteTeam = async (teamId: string): Promise<void> => {
   const teamData = teamSnapshot.val();
   const channels = teamData.channels || {};
 
-  const updateObject: Record<string, null> = {
-    [`teams/${teamId}`]: null,
-  };
+  const updateObject: Record<string, null> = {};
 
   for (const category of Object.keys(channels)) {
     for (const channelId of Object.keys(channels[category])) {
@@ -230,13 +239,13 @@ export const deleteTeam = async (teamId: string): Promise<void> => {
         }
 
         updateObject[`channels/${channelId}`] = null;
-
-        updateObject[`teams/${teamData.id}/channels/${category}/${channelId}`] =
-          null;
       }
     }
   }
 
+  updateObject[`teams/${teamId}`] = null;
+
+  // Perform the updates in Firebase
   await update(ref(db), updateObject);
 };
 
@@ -249,8 +258,10 @@ export const addMemberToTeam = async (
   if (!userData) {
     throw new Error(`User with handle ${newMemberHandle} not found.`);
   }
-
-  const newParticipant: Participant = transformTeamMemberData(userData, owner);
+  const newParticipant: Participant = transformTeamMemberData(
+    userData,
+    'member'
+  );
 
   const updateObject: Record<string, unknown> = {
     [`teams/${teamId}/members/${newMemberHandle}`]: newParticipant,

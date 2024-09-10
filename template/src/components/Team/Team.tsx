@@ -13,6 +13,7 @@ import { BsArrowLeftCircle } from 'react-icons/bs';
 import CreateTeamChannelModal from '../CreateTeamChannelModal/CreateTeamChannelModal';
 import { Team as TeamData } from '../../models/Team';
 import { useAuth } from '../../providers/AuthProvider';
+import { UserRole } from '../../enums/UserRole';
 
 const Team: React.FC = () => {
   const { currentUser } = useAuth();
@@ -134,25 +135,27 @@ const Team: React.FC = () => {
       </div>
     );
   }
-
+  console.log(team?.members);
   return (
-    <div className="flex gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full">
+    <div className="flex gap-10 rounded-3xl p-6 bg-base-300  h-full">
       <div className="w-1/4 rounded-lg">
         <header className="flex justify-between items-center mb-4">
           <button
-            className="text-gray-400 hover:text-primary rounded-full p-2"
+            className="text-base-content hover:text-primary rounded-full p-2"
             onClick={() => navigate('/app/teams')}
           >
             <BsArrowLeftCircle size={30} />
           </button>
-          {team?.owner === currentUser.userData?.username && (
-            <button
-              className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Add Channel
-            </button>
-          )}
+          {team?.owner === currentUser.userData?.username ||
+            (team?.members[currentUser.userData?.username].role ===
+              UserRole.MODERATOR && (
+              <button
+                className="text-sm font-semibold px-3 py-1 rounded-3xl bg-success hover:bg-opacity-75 text-white"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Add Channel
+              </button>
+            ))}
         </header>
         {Object.entries(categorizedChannels).map(([category, channels]) => (
           <div key={category} className="mb-4">
@@ -160,8 +163,10 @@ const Team: React.FC = () => {
               className="category-header flex justify-between items-center cursor-pointer p-2"
               onClick={() => handleCategoryToggle(category as ChannelCategory)}
             >
-              <h4 className="font-bold text-md">{category}</h4>
-              <span>
+              <h4 className="font-bold text-md text-base-content">
+                {category}
+              </h4>
+              <span className="text-base-content">
                 {collapsedCategories[category as ChannelCategory] ? '+' : '-'}
               </span>
             </div>

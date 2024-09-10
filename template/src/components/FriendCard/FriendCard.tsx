@@ -73,21 +73,25 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, commonChannel }) => {
   };
 
   return (
-    <div className="flex items-center p-6 border-b-2 border-base-100 justify-between hover:bg-secondary-focus transition-colors">
+    <div className="flex items-center p-6 border-b-2 border-base-content justify-between hover:bg-secondary-focus transition-colors">
       <div className="relative flex items-center space-x-4">
         <div className="avatar placeholder">
-          <div className="bg-base-300 text-neutral-content w-14 rounded-full">
+          <div className="bg-neutral w-14 rounded-full">
             {friend.avatarUrl ? (
               <img src={friend.avatarUrl} alt="User Avatar" />
             ) : (
-              <span>{friend.username![0].toLocaleUpperCase()}</span>
+              <span className="text-neutral-content">
+                {friend.username![0].toLocaleUpperCase()}
+              </span>
             )}
           </div>
           <UserStatusIndicator status={friend.status} absolute={true} />
         </div>
         <div>
-          <div className="font-semibold">{friend.username}</div>
-          <div className="text-sm text-gray-400">
+          <div className="font-semibold text-base-content">
+            {friend.username}
+          </div>
+          <div className="text-sm text-success">
             {friend.status.toLowerCase()}
           </div>
         </div>
@@ -97,23 +101,23 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, commonChannel }) => {
           className="text-gray-400 hover:text-white"
           onClick={() => handleOpenChannelClick(friend.username)}
         >
-          <ImBubble />
+          <ImBubble className="text-base-content" />
         </button>
         <button
           ref={threeDotsButtonRef}
           className="text-gray-400 hover:text-white"
           onClick={handleMenuToggle}
         >
-          <BsThreeDotsVertical size={20} />
+          <BsThreeDotsVertical className="text-base-content" size={20} />
         </button>
         {isMenuVisible && (
           <div
             ref={menuRef}
-            className="absolute bottom-1 right-5 bg-base-300 text-white shadow-lg rounded-lg w-48 z-10"
+            className="absolute bottom-1 right-5 bg-primary text-primary-content shadow-lg rounded-lg w-48 z-10"
           >
             <li
               onClick={() => handleRemoveFriendClick(friend.username)}
-              className="p-2 hover:bg-base-200 cursor-pointer list-none no-underline"
+              className="p-2 hover:opacity-60 cursor-pointer list-none no-underline"
             >
               Remove friend
             </li>

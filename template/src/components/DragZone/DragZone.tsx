@@ -46,8 +46,8 @@ const DragZone: React.FC<DragZoneProps> = ({
   return (
     <div
       style={{ width: `${width}px`, height: `${height}px` }}
-      className={`relative flex items-center justify-center border-2 border-dashed ${
-        isDragging ? 'border-purple-500' : 'border-gray-300'
+      className={`relative bg-neutral flex items-center justify-center border-2 border-dashed ${
+        isDragging ? 'border-purple-500' : 'border-neutral-content'
       } ${round ? 'rounded-full' : 'rounded-lg'} cursor-pointer`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -78,7 +78,7 @@ const DragZone: React.FC<DragZoneProps> = ({
             className="w-full h-full"
           ></div>
         ) : (
-          <span className="text-gray-600">
+          <span className="text-neutral-content">
             {round ? '+' : 'Drag & drop | Click to choose file'}
           </span>
         )}

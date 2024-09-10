@@ -54,7 +54,7 @@ const Channels: React.FC = () => {
       cleanupChannelsListener();
       listeners.forEach(cleanup => cleanup());
     };
-  }, [currentUser]); // Ensure meeting is in the dependency array
+  }, [currentUser]);
 
   useEffect(() => {
     setOpenedChannel(id || null);
@@ -117,8 +117,8 @@ const Channels: React.FC = () => {
   );
 
   return (
-    <div className="flex gap-10 rounded-3xl p-6 bg-base-300 bg-opacity-50 h-full z-0">
-      <div className="flex flex-col basis-1/4 h-full">
+    <div className="flex gap-10 rounded-3xl p-6 bg-base-300 h-full z-0">
+      <div className="flex flex-col basis-1/4 h-full  border-base-content">
         <header className="flex justify-between mb-6">
           <div className="flex space-x-2 text-white">
             {['Group', 'Direct'].map(category => (
@@ -129,15 +129,21 @@ const Channels: React.FC = () => {
                   className={`text-sm font-semibold px-3 py-1 rounded-full ${
                     selectedCategory === category.toLowerCase()
                       ? 'bg-primary'
-                      : 'bg-gray-700 bg-opacity-50'
-                  } hover:bg-gray-600 transition-colors`}
+                      : 'bg-neutral'
+                  } hover:bg-opacity-75 transition-opacity`}
                 >
                   {category}
                 </button>
-                {category === 'group' && (
+                {category === 'Direct' && (
                   <NotificationBadge
-                    type={NotificationType.CHANNEL}
-                    isViewActive={selectedCategory === 'Group'}
+                    type={NotificationType.DIRECT}
+                    isViewActive={false}
+                  />
+                )}
+                {category === 'Group' && (
+                  <NotificationBadge
+                    type={NotificationType.GROUP}
+                    isViewActive={false}
                   />
                 )}
               </div>
@@ -156,7 +162,9 @@ const Channels: React.FC = () => {
               />
             ))
           ) : (
-            <div className="text-center text-gray-400">No Channels Found.</div>
+            <div className="text-center text-xl text-bg-content">
+              No Channels Found.
+            </div>
           )}
         </div>
       </div>
@@ -164,8 +172,8 @@ const Channels: React.FC = () => {
         {activeChannel ? (
           <ChannelWindow channel={activeChannel} />
         ) : (
-          <div className="text-center text-primary mt-4">
-            Please select a channel to view.
+          <div className="h-full w-full flex items-center justify-center text-xl text-base-content mt-4">
+            <span>Please select a channel to view.</span>
           </div>
         )}
       </main>

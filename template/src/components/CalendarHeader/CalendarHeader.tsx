@@ -30,22 +30,22 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   };
 
   return (
-    <header className="px-4 py-2 flex flex-row-reverse items-center gap-4">
+    <header className="px-4 py-4 text-base-content flex flex-row-reverse items-center gap-4">
       <CalendarModal selectedDay={selectedDay} />
       <button
-        className="px-3 py-1 rounded-3xl border mr-5 text-sm font-semibold hover:bg-primary hover:border-primary hover:text-neutral"
+        className="px-3 py-1 rounded-3xl  bg-neutral  text-white 00 mr-5   text-sm font-semibold hover:bg-opacity-75"
         onClick={handleReset}
       >
         Today
       </button>
       <button
-        className="flex justify-center p-2 border rounded-full btn-outline hover:bg-primary hover:border-primary"
+        className="flex justify-center bg-neutral text-white p-2  rounded-full  hover:bg-opacity-75 "
         onClick={handleNextMonth}
       >
         <FaChevronRight />
       </button>
       <button
-        className="flex justify-center p-2 border rounded-full btn-outline hover:bg-primary hover:border-primary"
+        className="flex justify-center bg-neutral text-white p-2 rounded-full  hover:bg-opacity-75 "
         onClick={handlePrevMonth}
       >
         <FaChevronLeft />

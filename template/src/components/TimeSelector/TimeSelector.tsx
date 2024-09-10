@@ -15,14 +15,13 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
   onTimeChange,
   startTime = 0,
 }) => {
-  // Generate time options as milliseconds from the start of the day
   const times = generateTimeOptions(selectedDay).filter(
     time => time >= startTime
   );
 
   return (
     <select
-      className="select w-full bg-base-200 bg-opacity-50 rounded-3xl select-sm focus:border-transparent focus:outline-accent"
+      className="select w-full bg-base-200 rounded-3xl select-sm focus:border-transparent focus:outline-accent"
       value={selectedTime}
       onChange={e => onTimeChange(Number(e.target.value))}
     >
@@ -31,7 +30,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
       </option>
       {times.map((timestamp: number) => (
         <option key={timestamp} value={timestamp}>
-          {dayjs(timestamp).format('HH:mm')} {/* Displaying formatted time */}
+          {dayjs(timestamp).format('HH:mm')}
         </option>
       ))}
     </select>

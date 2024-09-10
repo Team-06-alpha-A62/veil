@@ -175,18 +175,16 @@ const Sidebar: React.FC = () => {
   }, [selectedCategory, pendingFriendsData, friendsData, searchQuery]);
 
   return (
-    <div className="basis-1/5 rounded-3xl p-6 bg-base-300 bg-opacity-50 flex-shrink-0 text-white">
+    <div className="basis-1/5 rounded-3xl p-6 bg-base-300  flex-shrink-0 text-white">
       <div className="flex justify-between items-center mb-6">
         <div className="flex space-x-2">
           {['Online', 'All', 'Pending'].map(category => (
             <div key={category} className="relative">
               <button
                 onClick={() => handleCategoryClick(category)}
-                className={`text-sm relative font-semibold px-3 py-1 rounded-full ${
-                  selectedCategory === category
-                    ? 'bg-primary'
-                    : 'bg-gray-700 bg-opacity-50'
-                } hover:bg-gray-600 transition-colors`}
+                className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                  selectedCategory === category ? 'bg-primary' : 'bg-neutral'
+                } hover:bg-opacity-75 transition-opacity`}
               >
                 {category}
               </button>
@@ -213,7 +211,7 @@ const Sidebar: React.FC = () => {
           placeholder="Search"
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          className="w-full px-4 py-2 rounded-full bg-gray-700 bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-primary text-white"
+          className="w-full px-4 py-2 rounded-full bg-base-100  text-primary-content focus:outline-none focus:ring-2 focus:ring-primary"
         />
       </div>
 
@@ -236,7 +234,7 @@ const Sidebar: React.FC = () => {
             )
           )
         ) : (
-          <div className="text-center text-gray-400">No friends found.</div>
+          <div className="text-center text-base-content">No friends found.</div>
         )}
       </div>
 

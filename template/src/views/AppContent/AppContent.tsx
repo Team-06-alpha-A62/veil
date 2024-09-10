@@ -2,7 +2,6 @@ import Chats from '../../components/Channels/Channels';
 import Dashboard from '../../components/Dashboard/Dashboard';
 import Meetings from '../../components/Meetings/Meetings';
 import Notes from '../../components/Notes/Notes';
-import Notifications from '../../components/Notifications/Notifications';
 import SidebarNavigation from '../../components/SidebarNavigation/Sidebar';
 import Teams from '../../components/Teams/Teams';
 import { Route, Routes } from 'react-router-dom';
@@ -19,7 +18,6 @@ const AppContent = () => {
         <main className="basis-4/5 flex flex-col">
           <Routes>
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="notifications" element={<Notifications />} />
             <Route path="teams" element={<Teams />} />
             <Route path="teams/:teamId" element={<Team />} />
             <Route

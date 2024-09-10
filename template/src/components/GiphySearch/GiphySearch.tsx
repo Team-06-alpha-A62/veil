@@ -34,7 +34,7 @@ const GiphySearch: React.FC<GiphySearchProps> = ({
     >
       <input
         onChange={e => setTerm(e.target.value)}
-        className="mb-6 px-4 py-2 rounded-3xl bg-gray-700 bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-primary text-white"
+        className="mb-6 px-4 py-2 rounded-3xl bg-base-200  focus:outline-none focus:ring-2 focus:ring-primary text-base-content"
         style={{ marginBottom: 20 }}
         value={term}
       />

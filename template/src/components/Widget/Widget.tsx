@@ -6,7 +6,6 @@ interface WidgetProps {
   height: number;
   isInEditMode: boolean;
   widgetComponent?: ReactNode;
-  handleClick: () => void;
   widgetComponentName?: string;
 }
 

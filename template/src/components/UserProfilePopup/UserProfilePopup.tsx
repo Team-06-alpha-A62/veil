@@ -58,14 +58,16 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
   };
 
   return (
-    <div className="relative bg-base-300 p-4 rounded-lg shadow-lg w-[250px] z-20 text-white">
+    <div className="relative bg-base-200 p-4 rounded-lg shadow-lg w-[250px] z-20 text-white">
       <button
-        className="absolute top-2 right-2 text-gray-400 hover:text-white"
+        className="absolute top-2 right-2 text-base-content"
         onClick={onClose}
       >
         ✕
       </button>
-      <div className="text-lg font-semibold text-white mb-4">{username}</div>
+      <div className="text-lg font-semibold text-base-content mb-4">
+        {username}
+      </div>
 
       <div
         className="w-full flex items-center justify-between mb-4 p-3 bg-base-200 rounded-lg hover:bg-base-100 transition-colors cursor-pointer relative"
@@ -77,7 +79,7 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
           onMouseEnter={() => setIsStatusPopupVisible(true)}
         >
           <UserStatusIndicator status={currentStatus} absolute={false} />
-          <span>
+          <span className="text-base-content">
             {
               statusOptions.find(option => option.value === currentStatus)
                 ?.label
@@ -91,7 +93,7 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
             {statusOptions.map(option => (
               <div
                 key={option.value}
-                className="flex items-start p-2 hover:bg-base-200 rounded cursor-pointer transition-colors"
+                className="flex items-start p-2 hover:bg-base-200 rounded cursor-pointer text-base-content transition-colors"
                 onClick={() => {
                   onStatusChange(option.value);
                   setIsStatusPopupVisible(false);
@@ -99,8 +101,12 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
               >
                 <UserStatusIndicator status={option.value} absolute={false} />
                 <div className="ml-3">
-                  <p className="font-semibold">{option.label}</p>
-                  <p className="text-xs text-gray-400">{option.description}</p>
+                  <p className="font-semibold text-base-content">
+                    {option.label}
+                  </p>
+                  <p className="text-xs text-base-content">
+                    {option.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -112,8 +118,8 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
         className="w-full mb-3 flex items-center justify-between p-3 bg-base-200 rounded-lg hover:bg-base-100 transition-colors"
         onClick={onEditProfile}
       >
-        <div className="flex items-center space-x-3">
-          <FaPencilAlt className="text-gray-400" />
+        <div className="flex items-center space-x-3 text-base-content">
+          <FaPencilAlt className="text-base-content" />
           <span>Edit Profile</span>
         </div>
       </button>
@@ -122,7 +128,7 @@ const UserProfilePopup: React.FC<UserProfilePopupProps> = ({
         className="w-full flex items-center justify-between p-3 bg-base-200 rounded-lg hover:bg-base-100 transition-colors"
         onClick={handleLogOut}
       >
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 text-base-content">
           <IoLogOutOutline style={{ fontSize: '20px' }} />
           <span>Logout</span>
         </div>
