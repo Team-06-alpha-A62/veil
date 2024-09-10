@@ -70,6 +70,19 @@ export const createChannel = async (
 
   return newChannelId;
 };
+
+export const updateChannelMemberRole = async (
+  username: string,
+  channelId: string,
+  newRole: UserRole
+): Promise<void> => {
+  const updateObject = {
+    [`users/${username}/channels/${channelId}`]: newRole,
+  };
+
+  await update(ref(db), updateObject);
+};
+
 export const getChannelByHandle = async (handle: string): Promise<Channel> => {
   const snapshot = await get(ref(db, `channels/${handle}`));
   if (!snapshot.exists()) throw new Error('Could not find channel.');

@@ -5,6 +5,7 @@ import {
   updateChannelName,
   changeChannelImage,
   deleteChannel,
+  updateChannelMemberRole,
 } from '../../services/channel.service';
 import DragZone from '../DragZone/DragZone';
 import { getChannelImage } from '../../utils/TransformDataHelpers';
@@ -70,7 +71,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
     }));
   };
 
-  const handleRoleChange = (username: string, newRole: UserRole) => {
+  const handleRoleChange = async (username: string, newRole: UserRole) => {
     setChannelState(prevState => ({
       ...prevState,
       participants: {
@@ -81,6 +82,8 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
         },
       },
     }));
+
+    await updateChannelMemberRole(username, channel.id, newRole);
   };
 
   const handleSaveChanges = async () => {
@@ -246,17 +249,17 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
         </div>
         <div className="mb-4">
           <h3 className="text-lg font-semibold mb-2">Participants</h3>
-          <div className="flex flex-col relative gap-3 bg-base-200 p-3 rounded-xl h-[300px] overflow-y-auto">
-            <div className="sticky top-0 z-10">
-              <input
-                type="text"
-                placeholder="Search participants..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="input input-sm rounded-full w-full bg-base-100"
-              />
-            </div>
+          <div className="flex items-center pl-4 h-12 bg-base-200 rounded-t-3xl">
+            <input
+              type="text"
+              placeholder="Search participants..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="input input-sm  rounded-full w-full hover:outline-none focus:border-none  focus:outline-none hover:border-none bg-transparent"
+            />
+          </div>
 
+          <div className="flex flex-col relative gap-3 bg-base-200 p-3 rounded-b-3xl h-[300px] overflow-y-auto">
             {filteredParticipants
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               .sort(([usernameA, participantA], [usernameB, participantB]) =>
