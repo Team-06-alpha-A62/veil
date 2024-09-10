@@ -129,6 +129,7 @@ const Dashboard: React.FC = () => {
               height={1}
               widgetComponent={<PomodoroWidget />}
               isInEditMode={isInEditMode}
+              widgetComponentName={'Pinned Pomodoro Widget'}
             />
           </div>
 
@@ -171,6 +172,7 @@ const Dashboard: React.FC = () => {
               height={1}
               isInEditMode={isInEditMode}
               widgetComponent={<WeatherCarouselWidget />}
+              widgetComponentName={'Pinned Weather Carousel Widget'}
             />
           </div>
         </div>
