@@ -165,32 +165,32 @@ const Register: React.FC = () => {
 
   return (
     <div className="w-full h-screen bg-theme-gradient flex justify-center items-center">
-      <div className="max-w-xl p-8 bg-gray-900 rounded-lg shadow-lg space-y-6">
-        <div className="steps steps-vertical custom-step-primary sm:steps-horizontal">
+      <div className="max-w-xl p-8 bg-gray-900 rounded-3xl shadow-lg space-y-6">
+        <div className="steps steps-vertical sm:steps-horizontal">
           <li
             className={`step ${
-              step >= 1 ? 'step-primary text-[#ff7647]' : 'text-gray-500'
+              step >= 1 ? 'step-primary text-primary' : 'text-gray-500'
             }`}
           >
             Register
           </li>
           <li
             className={`step ${
-              step >= 2 ? 'step-primary text-[#ff7647]' : 'text-gray-500'
+              step >= 2 ? 'step-primary text-primary' : 'text-gray-500'
             }`}
           >
             Choose Plan
           </li>
           <li
             className={`step ${
-              step >= 3 ? 'step-primary text-[#ff7647]' : 'text-gray-500'
+              step >= 3 ? 'step-primary text-primary' : 'text-gray-500'
             }`}
           >
             Purchase
           </li>
           <li
             className={`step ${
-              step >= 4 ? 'step-primary text-[#ff7647]' : 'text-gray-500'
+              step >= 4 ? 'step-primary text-primary' : 'text-gray-500'
             }`}
           >
             Upload Avatar
@@ -212,10 +212,10 @@ const Register: React.FC = () => {
                 id="email"
                 value={email}
                 onChange={handleInputChange('email')}
-                className="w-full p-3 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff7647]"
+                className="w-full px-4 py-2 bg-gray-800 text-white rounded-3xl focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {validationErrors.email && (
-                <p className="text-red-500 mt-2">{validationErrors.email}</p>
+                <p className="text-error mt-2">{validationErrors.email}</p>
               )}
             </div>
           )}
@@ -231,10 +231,10 @@ const Register: React.FC = () => {
                   id="firstName"
                   value={firstName}
                   onChange={handleInputChange('firstName')}
-                  className="w-full p-3 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff7647]"
+                  className="w-full p-3 bg-gray-800 text-white rounded-3xl focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 {validationErrors.firstName && (
-                  <p className="text-red-500 mt-2">
+                  <p className="text-error mt-2">
                     {validationErrors.firstName}
                   </p>
                 )}
@@ -249,12 +249,10 @@ const Register: React.FC = () => {
                   id="lastName"
                   value={lastName}
                   onChange={handleInputChange('lastName')}
-                  className="w-full p-3 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff7647]"
+                  className="w-full p-3 bg-gray-800 text-white rounded-3xl focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 {validationErrors.lastName && (
-                  <p className="text-red-500 mt-2">
-                    {validationErrors.lastName}
-                  </p>
+                  <p className="text-error mt-2">{validationErrors.lastName}</p>
                 )}
               </div>
 
@@ -267,12 +265,10 @@ const Register: React.FC = () => {
                   id="username"
                   value={username}
                   onChange={handleInputChange('username')}
-                  className="w-full p-3 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff7647]"
+                  className="w-full p-3 bg-gray-800 text-white rounded-3xl focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 {validationErrors.username && (
-                  <p className="text-red-500 mt-2">
-                    {validationErrors.username}
-                  </p>
+                  <p className="text-error mt-2">{validationErrors.username}</p>
                 )}
               </div>
               <div>
@@ -284,10 +280,10 @@ const Register: React.FC = () => {
                   id="phoneNumber"
                   value={phoneNumber}
                   onChange={handleInputChange('phoneNumber')}
-                  className="w-full p-3 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff7647]"
+                  className="w-full p-3 bg-gray-800 text-white rounded-3xl focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 {validationErrors.phoneNumber && (
-                  <p className="text-red-500 mt-2">
+                  <p className="text-error mt-2">
                     {validationErrors.phoneNumber}
                   </p>
                 )}
@@ -306,12 +302,10 @@ const Register: React.FC = () => {
                   id="password"
                   value={password}
                   onChange={handleInputChange('password')}
-                  className="w-full p-3 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff7647]"
+                  className="w-full p-3 bg-gray-800 text-white rounded-3xl focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 {validationErrors.password && (
-                  <p className="text-red-500 mt-2">
-                    {validationErrors.password}
-                  </p>
+                  <p className="text-error mt-2">{validationErrors.password}</p>
                 )}
               </div>
 
@@ -327,10 +321,10 @@ const Register: React.FC = () => {
                   id="confirmPassword"
                   value={confirmPassword}
                   onChange={handleInputChange('confirmPassword')}
-                  className="w-full p-3 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff7647]"
+                  className="w-full p-3 bg-gray-800 text-white rounded-3xl focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 {validationErrors.confirmPassword && (
-                  <p className="text-red-500 mt-2">
+                  <p className="text-error mt-2">
                     {validationErrors.confirmPassword}
                   </p>
                 )}
@@ -356,7 +350,7 @@ const Register: React.FC = () => {
                 </p>
               )}
               {validationErrors.avatarFile && (
-                <p className="text-red-500 mt-2 text-center">
+                <p className="text-error mt-2 text-center">
                   {validationErrors.avatarFile}
                 </p>
               )}
@@ -368,7 +362,7 @@ const Register: React.FC = () => {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="py-2 px-4 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+                className="text-sm border border-white hover:bg-error hover:border-error text-white px-4 py-2 rounded-full"
               >
                 Cancel
               </button>
@@ -376,7 +370,7 @@ const Register: React.FC = () => {
               <button
                 type="button"
                 onClick={handlePrevClick}
-                className={`py-2 px-4 rounded-lg ${
+                className={`py-2 px-4 rounded-3xl ${
                   step === 1
                     ? 'opacity-50 cursor-not-allowed'
                     : 'bg-gray-700 hover:bg-gray-600 text-white'
@@ -390,7 +384,7 @@ const Register: React.FC = () => {
               <button
                 type="button"
                 onClick={handleNextClick}
-                className="py-2 px-4 bg-[#ff7647] hover:bg-[#ff967a] text-white rounded-lg"
+                className="text-sm bg-primary hover:bg-accent text-white px-4 py-2 rounded-full"
               >
                 Next
               </button>
@@ -398,9 +392,9 @@ const Register: React.FC = () => {
               <button
                 type="button"
                 onClick={handleRegister}
-                className="py-2 px-4 bg-[#ff7647] hover:bg-[#ff967a] text-white rounded-lg"
+                className="py-2 px-4 bg-success hover:bg-accent text-white rounded-3xl"
               >
-                Complete Registration
+                Register
               </button>
             )}
           </div>

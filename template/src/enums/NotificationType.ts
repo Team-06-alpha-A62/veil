@@ -8,4 +8,5 @@ export enum NotificationType {
   NEW_THEME = 'New Theme',
   TIMER = 'Timer',
   CHANNEL = 'Channel',
+  TEAM = 'Team',
 }

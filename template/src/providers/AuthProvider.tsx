@@ -17,6 +17,8 @@ import {
 } from '../services/user.service';
 import { uploadAvatar } from '../services/storage.service';
 import { Friend } from '../models/Friend.ts';
+import Lottie from 'lottie-react';
+import animationData from '../assets/loading-animation-2.json';
 
 interface AuthState {
   user: User | null;
@@ -69,11 +71,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     return listenToFriendsChange(
       currentUser.userData!.username,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       (friends: Friend[], _) => {
         currentUser.userData!.friends = friends.map(friend => friend.username);
         setCurrentUser({ ...currentUser });
       }
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser.userData]);
 
   useEffect(() => {
@@ -104,7 +108,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
           setErrorState('unknown instance of error');
         }
       } finally {
-        setIsLoading(false);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1500);
       }
     };
     fetchUserData();
@@ -209,5 +215,9 @@ export function useAuth() {
 }
 
 function LoadingSpinner() {
-  return <div>Loading...</div>;
+  return (
+    <div className="flex justify-center w-screen h-screen">
+      <Lottie animationData={animationData} />
+    </div>
+  );
 }

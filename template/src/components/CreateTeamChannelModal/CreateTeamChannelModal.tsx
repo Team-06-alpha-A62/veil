@@ -130,9 +130,7 @@ const CreateTeamChannelModal: React.FC<CreateTeamChannelModalProps> = ({
               }`}
             />
             {!isTitleValid && (
-              <span className="text-red-500 text-xs mt-1">
-                Title is required
-              </span>
+              <span className="text-error text-xs mt-1">Title is required</span>
             )}
           </label>
           <ParticipantsInput
@@ -164,7 +162,7 @@ const CreateTeamChannelModal: React.FC<CreateTeamChannelModalProps> = ({
               <span className="label-text">Category</span>
             </label>
             <select
-              className="select select-bordered w-full text-base-content bg-base-200"
+              className="select select-bordered w-full text-base-content bg-base-200 rounded-3xl"
               value={channelData.category}
               onChange={handleCategoryChange}
             >

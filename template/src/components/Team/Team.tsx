@@ -137,7 +137,7 @@ const Team: React.FC = () => {
   }
   return (
     <div className="flex gap-10 rounded-3xl p-6 bg-base-300   h-full">
-      <div className="w-1/4 rounded-lg pr-4 overflow-y-scroll">
+      <div className="w-1/4 rounded-lg pr-4">
         <header className="flex justify-between items-center mb-4">
           <button
             className="text-base-content hover:text-primary rounded-full p-2"
@@ -156,7 +156,7 @@ const Team: React.FC = () => {
             </button>
           )}
         </header>
-        <div className="overflow-y-auto">
+        <div>
           {Object.entries(categorizedChannels).map(([category, channels]) => (
             <div key={category} className="mb-4">
               <div

@@ -7,6 +7,9 @@ import { uploadImage } from '../../services/storage.service';
 import { createChannel } from '../../services/channel.service';
 import { ChannelType } from '../../enums/ChannelType';
 import { ChannelCategory } from '../../enums/ChannelCategory';
+import { createNotification } from '../../services/notification.service.ts';
+import { NotificationType } from '../../enums/NotificationType.ts';
+import { NotificationMessageType } from '../../enums/NotificationMessageType.ts';
 
 interface TeamData {
   name: string;
@@ -81,6 +84,15 @@ const CreateTeamModal: React.FC = () => {
     ];
 
     await Promise.all(channelPromises);
+    participants.forEach(async participant =>
+      createNotification(
+        currentUser.userData!.username,
+        participant,
+        NotificationType.TEAM,
+        `${currentUser.userData!.username} has added you to their new team`,
+        NotificationMessageType.ALERT_INFO
+      )
+    );
 
     setTeamData(initialTeamData);
     setParticipants([]);

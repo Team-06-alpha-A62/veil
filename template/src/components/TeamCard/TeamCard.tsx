@@ -4,6 +4,9 @@ import { Team } from '../../models/Team';
 import { useAuth } from '../../providers/AuthProvider';
 import ManageTeamModal from '../ManageTeamModal/ManageTeamModal';
 import { createJoinRequest } from '../../services/teams.service';
+import { createNotification } from '../../services/notification.service.ts';
+import { NotificationType } from '../../enums/NotificationType.ts';
+import { NotificationMessageType } from '../../enums/NotificationMessageType.ts';
 
 interface TeamCardProps {
   team: Team;
@@ -27,6 +30,15 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onlineMembersCount }) => {
 
   const handleRequestJoinClick = async () => {
     await createJoinRequest(team.id, currentUser.userData!.username);
+    await createNotification(
+      currentUser.userData!.username,
+      team.owner,
+      NotificationType.TEAM,
+      `${currentUser.userData!.username} has requested to join team ${
+        team.name
+      }`,
+      NotificationMessageType.ALERT_INFO
+    );
   };
   const handleManageTeamClick = () => {
     setIsManageTeamModalOpen(true);

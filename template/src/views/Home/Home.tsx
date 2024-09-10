@@ -5,19 +5,19 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen text-base-content flex flex-col">
-      <nav className="flex justify-between items-center p-6 bg-base-300 shadow-md">
+      <nav className="flex justify-between items-center p-6 bg-base-300 shadow-md text-xl">
         <div className="text-2xl font-bold">
-          <span className="text-primary">Veil</span>
+          <h2 className="text-primary">Veil</h2>
         </div>
         <div>
           <button
-            className="bg-transparent text-base-content mr-6 hover:text-primary transition-colors"
+            className="bg-transparent text-base-content mr-6 hover:text-primary transition-colors text-lg"
             onClick={() => navigate('/login')}
           >
             Login
           </button>
           <button
-            className="bg-transparent text-base-content mr-6 hover:text-primary transition-colors"
+            className="bg-transparent text-base-content mr-6 hover:text-primary transition-colors text-lg"
             onClick={() => navigate('/register')}
           >
             Sign Up
@@ -27,14 +27,14 @@ const HomePage = () => {
 
       <header className="flex flex-col items-center justify-center text-center mt-20 px-4 flex-1">
         <h1 className="text-5xl md:text-7xl font-extrabold leading-tight">
-          Connect in real-time <br /> with your community
+          Unveil in real-time <br /> with your community
         </h1>
         <p className="mt-6 max-w-2xl text-base-content">
           Experience seamless, user-friendly messaging that brings people
           together effortlessly.
         </p>
         <button
-          className="mt-8 bg-primary hover:bg-base-content text-primary-content px-6 py-3 rounded-full text-lg transition-colors"
+          className="mt-8 bg-primary hover:bg-accent  text-primary-content px-6 py-3 rounded-full text-lg transition-colors"
           onClick={() => navigate('/login')}
         >
           Start Chatting Now

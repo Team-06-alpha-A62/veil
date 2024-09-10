@@ -32,6 +32,7 @@ const Login: React.FC = () => {
         navigate('/app/dashboard');
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
   const handleInputChange =
@@ -73,7 +74,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center  bg-theme-gradient">
-      <div className="w-full max-w-md p-8 space-y-8 rounded-xl  bg-gray-900 shadow-lg">
+      <div className="w-full max-w-md p-8 space-y-8 rounded-3xl  bg-gray-900 bg-opacity-50 shadow-lg">
         <h2 className="text-center text-3xl font-extrabold text-white">
           Sign in to your account
         </h2>
@@ -85,7 +86,7 @@ const Login: React.FC = () => {
           }}
         >
           <div className="space-y-4">
-            <div>
+            <div className="space-y-1">
               <label
                 htmlFor="email-address"
                 className="block text-sm font-medium text-gray-300"
@@ -97,13 +98,13 @@ const Login: React.FC = () => {
                 name="email"
                 type="email"
                 autoComplete="email"
-                className="appearance-none relative block w-full px-3 py-2 border border-transparent rounded-md bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ff7647] focus:border-transparent sm:text-sm"
+                className="appearance-none relative block w-full px-3 py-2 border border-transparent rounded-3xl bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ff7647] focus:border-transparent sm:text-sm"
                 placeholder="Email address"
                 value={loginData.email}
                 onChange={handleInputChange('email')}
               />
               {validationErrors.email && (
-                <p className="text-red-500 text-sm">{validationErrors.email}</p>
+                <p className="text-error text-sm">{validationErrors.email}</p>
               )}
             </div>
             <div>
@@ -118,13 +119,13 @@ const Login: React.FC = () => {
                 name="password"
                 type="password"
                 autoComplete="current-password"
-                className="appearance-none relative block w-full px-3 py-2 border border-transparent rounded-md bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ff7647] focus:border-transparent sm:text-sm"
+                className="appearance-none relative block w-full px-3 py-2 border border-transparent rounded-3xl bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ff7647] focus:border-transparent sm:text-sm"
                 placeholder="Password"
                 value={loginData.password}
                 onChange={handleInputChange('password')}
               />
               {validationErrors.password && (
-                <p className="text-red-500 text-sm">
+                <p className="text-error text-sm">
                   {validationErrors.password}
                 </p>
               )}
@@ -135,7 +136,7 @@ const Login: React.FC = () => {
             Don’t have an account?{' '}
             <Link
               to="/register"
-              className="font-medium text-[#ff7647] hover:text-[#ff967a]"
+              className="font-medium text-primary hover:text-accent"
             >
               Register
             </Link>
@@ -144,7 +145,7 @@ const Login: React.FC = () => {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#ff7647] hover:bg-[#ff967a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ff7647]"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-3xl text-white bg-primary hover:bg-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ff7647]"
             >
               Sign in
             </button>
