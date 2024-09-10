@@ -4,6 +4,9 @@ import { createChannel } from '../../services/channel.service.ts';
 import { ChannelType } from '../../enums/ChannelType.ts';
 import { ChannelCategory } from '../../enums/ChannelCategory.ts';
 import ParticipantsInput from '../ParticipantInput/ParticipantsInput.tsx';
+import { createNotification } from '../../services/notification.service.ts';
+import { NotificationType } from '../../enums/NotificationType.ts';
+import { NotificationMessageType } from '../../enums/NotificationMessageType.ts';
 
 interface CreateTeamChannelModalProps {
   teamId: string;
@@ -45,9 +48,26 @@ const CreateTeamChannelModal: React.FC<CreateTeamChannelModalProps> = ({
       return;
     }
     const finalParticipants = channelData.isPrivate
-      ? [...participants, channelOwner, currentUser.userData!.username]
-      : teamMembers;
+      ? Array.from(
+          new Set([
+            ...participants,
+            channelOwner,
+            currentUser.userData!.username,
+          ])
+        )
+      : Array.from(new Set(teamMembers));
 
+    finalParticipants.forEach(async participant => {
+      if (participant !== currentUser.userData!.username) {
+        await createNotification(
+          currentUser.userData!.username,
+          participant,
+          NotificationType.CHANNEL,
+          `${currentUser.userData?.username} added you to a new team channel`,
+          NotificationMessageType.ALERT_INFO
+        );
+      }
+    });
     await createChannel(
       channelData.title ? channelData.title : null,
       currentUser.userData!.username,
