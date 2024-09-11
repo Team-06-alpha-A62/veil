@@ -140,22 +140,6 @@ const CreateChannelModal: React.FC = () => {
                 participants={participants}
                 setParticipants={setParticipants}
               />
-              <div className="form-control items-start">
-                <label className="label cursor-pointer flex gap-4">
-                  <span className="label-text text-base-content">Private</span>
-                  <input
-                    type="checkbox"
-                    className="toggle toggle-primary"
-                    checked={channelData.isPrivate}
-                    onChange={() =>
-                      setChannelData(prev => ({
-                        ...prev,
-                        isPrivate: !prev.isPrivate,
-                      }))
-                    }
-                  />
-                </label>
-              </div>
 
               <div className="flex items-center justify-between px-1">
                 <span className="label-text text-base-content">

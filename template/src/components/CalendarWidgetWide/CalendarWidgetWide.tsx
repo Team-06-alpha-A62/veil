@@ -128,7 +128,7 @@ const CalendarWidgetWide: React.FC = () => {
                     role="button"
                     className={`relative flex justify-center items-center w-full ${getCurrentDayClass(
                       day
-                    )} hover:bg-base-300 text-center rounded-full ${
+                    )} hover:bg-secondary text-center rounded-full ${
                       !isDayInCurrentMonth(day) ? 'text-gray-500' : ''
                     }`}
                   >

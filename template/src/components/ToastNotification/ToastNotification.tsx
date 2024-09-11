@@ -23,9 +23,12 @@ const ToastNotification: React.FC<ToastNotificationProps> = ({
   }, [notifications, removeNotification]);
 
   return (
-    <div className="toast toast-end">
+    <div className="toast toast-end right-7 bottom-7">
       {notifications.map((notification, index) => (
-        <div key={index} className={`alert ${notification.messageType}`}>
+        <div
+          key={index}
+          className={`shadow-lg alert ${notification.messageType}`}
+        >
           <span>{notification.message}</span>
         </div>
       ))}

@@ -98,7 +98,7 @@ const DyteMeetingUI: React.FC<DyteMeetingProps> = ({ setCall, channelId }) => {
       )}
       {roomState === 'joined' && (
         <>
-          <div className="border-r border-b border-opacity-25 border-base-content overflow-y-auto">
+          <div className="border-r border-b border-opacity-25 border-base-content overflow-y-auto bg-opacity-50 overflow-x-hidden">
             <DyteParticipants
               meeting={meeting}
               style={{

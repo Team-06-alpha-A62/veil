@@ -55,7 +55,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
   }, [meetings, day]);
 
   const handleJoinMeetingClick = async (meeting: Meeting): Promise<void> => {
-    if (dayjs(meeting.startTime).diff(dayjs(), 'minute') <= 15) {
+    if (dayjs(meeting.startTime).diff(dayjs(), 'minute') <= 30) {
       if (!meeting.meetingChannel) {
         const channelId = await createChannel(
           meeting.title,
