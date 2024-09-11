@@ -218,10 +218,11 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
                   ? 'bg-base-200 focus:outline-none focus:ring-2 focus:ring-primary'
                   : 'bg-base-100'
               } `}
+              placeholder={channelState.title || 'title'}
               value={channelState.title || ''}
               onChange={handleTitleChange}
               readOnly={!isEditingTitle}
-              style={{ width: `${channelState.title!.length + 1}ch` }}
+              style={{ width: `${channelState.title?.length || 10 + 1}ch` }}
             />
             {!isEditingTitle && (
               <button
