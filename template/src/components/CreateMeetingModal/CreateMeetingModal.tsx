@@ -117,8 +117,6 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
     };
 
   const handleStartTimeChange = (time: number) => {
-    console.log(dayjs(time).format('YYYY-MM-DD HH:mm:ss'));
-
     setMeetingData(prevData => ({
       ...prevData,
       startTime: time,
@@ -127,7 +125,6 @@ const CreateMeetingModal: React.FC<MeetingProps> = ({ selectedDay }) => {
   };
 
   const handleEndTimeChange = (time: number) => {
-    console.log(dayjs(time).format('YYYY-MM-DD HH:mm:ss'));
     setMeetingData(prevData => ({
       ...prevData,
       endTime: time,

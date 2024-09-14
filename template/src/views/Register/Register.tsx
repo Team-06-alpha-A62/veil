@@ -172,28 +172,28 @@ const Register: React.FC = () => {
               step >= 1 ? 'step-primary text-primary' : 'text-gray-500'
             }`}
           >
-            Register
+            Email
           </li>
           <li
             className={`step ${
               step >= 2 ? 'step-primary text-primary' : 'text-gray-500'
             }`}
           >
-            Choose Plan
+            Profile Information
           </li>
           <li
             className={`step ${
               step >= 3 ? 'step-primary text-primary' : 'text-gray-500'
             }`}
           >
-            Purchase
+            Password
           </li>
           <li
             className={`step ${
               step >= 4 ? 'step-primary text-primary' : 'text-gray-500'
             }`}
           >
-            Upload Avatar
+            Avatar
           </li>
         </div>
         <form

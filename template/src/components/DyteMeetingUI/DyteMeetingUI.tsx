@@ -41,7 +41,6 @@ const DyteMeetingUI: React.FC<DyteMeetingProps> = ({ setCall, channelId }) => {
     if (roomState === 'joined') {
       increment();
     }
-    console.log(roomState);
     if (roomState === 'left' || roomState === 'ended') {
       setCall(prev => !prev);
       decrement();

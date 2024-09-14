@@ -24,7 +24,6 @@ const Login: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log('hi');
     if (currentUser.userData) {
       if (location.state && location.state.from) {
         navigate(location.state.from);

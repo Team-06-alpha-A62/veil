@@ -92,12 +92,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
     const fetchUserData = async (): Promise<void> => {
       setIsLoading(true);
-      console.log('hi');
       try {
         const data = await getUserData(user.uid);
         const userData = data || null;
-        console.log(userData);
-        console.log(user);
         setCurrentUser({ ...currentUser, user, userData });
       } catch (error) {
         if (error instanceof Error) {
@@ -163,7 +160,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         avatarUrl
       );
 
-      setCurrentUser({ user: credentials.user, userData: null });
+      const userData = await getUserData(userId);
+
+      setCurrentUser({ user: credentials.user, userData });
     } catch (error) {
       if (error instanceof Error) {
         alert(`Error trying to register user: ${error.message}`);

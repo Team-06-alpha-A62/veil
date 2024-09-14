@@ -315,7 +315,6 @@ const ChannelWindow: React.FC<ChannelWindowProps> = ({
         currentUser.userData!.username,
         emojiData.unified
       );
-      console.log(`Reaction ${emojiData.emoji} added to message ${messageId}`);
     } catch (error) {
       console.error('Failed to update reaction:', error);
     }

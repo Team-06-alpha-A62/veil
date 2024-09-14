@@ -52,7 +52,7 @@ const Team: React.FC = () => {
             return;
           }
         } else {
-          console.log('Team not found');
+          console.error('Team not found');
         }
       }
     };

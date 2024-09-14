@@ -35,7 +35,6 @@ const CreateTeamModal: React.FC = () => {
     if (imageFile) {
       imageUrl = await uploadImage(imageFile);
     }
-    console.log(currentUser.userData!.username);
     const teamId = await createTeam(
       teamData.name,
       currentUser.userData!.username,
