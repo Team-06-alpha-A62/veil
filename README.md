@@ -38,9 +38,34 @@ A collaborative Messenger Single-Page Application
 
 ## Setup Instructions
 
-### Step 1: Create an account in [Firebase](https://firebase.google.com/), follow the required steps to create a new web project and get the config information. Also create an API key in [Giphy](https://developers.giphy.com/docs/api/).
+### Step 1: Create an account in [Firebase](https://firebase.google.com/), follow the required steps to create a new web project and get the config information.
 
-### Step 2: Configure the Environment Variables
+### Step 2: Create an API key in [Giphy](https://developers.giphy.com/docs/api/).
+
+### Step 3: Update the Real-time Database Rules as follows:
+
+```plaintext
+
+{
+  "rules": {
+    ".read": "now < 1767139200000",  // 2025-12-31
+    ".write": "now < 1767139200000",  // 2025-12-31
+    "users": {
+      ".indexOn": "id"
+    },
+    "meetings": {
+      ".indexOn": ["id","participants"]
+  
+    },
+    "notes": {
+      ".indexOn": ["id", "username"]
+    },
+  },
+}
+
+```
+
+### Step 4: Configure the Environment Variables
 
 1. Navigate to the `/template` folder of the project.
 2. Create a `.env.local` file in the `/template` folder if it doesn't already exist.
@@ -69,7 +94,7 @@ A collaborative Messenger Single-Page Application
 
    **Important:** Keep this file secure and avoid sharing it publicly as it contains sensitive information.
 
-### Step 3: Install Dependencies
+### Step 5: Install Dependencies
 
 1. Open a terminal and navigate to the `/template` folder of the project.
 2. Run the following command to install the necessary dependencies:
@@ -80,7 +105,7 @@ A collaborative Messenger Single-Page Application
 
    This will install all the required packages for the project as specified in the `package.json` file.
 
-### Step 4: Run the Application
+### Step 6: Run the Application
 
 1. After installing the dependencies, remain in the `/template` folder.
 2. Run the following command to start the development server:
