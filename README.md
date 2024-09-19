@@ -2,7 +2,7 @@
 
 A collaborative Messenger Single-Page Application.
 
-### [Live demo](veil-35640.web.app)
+### [Live demo](https://veil-35640.web.app)
 
 ## Table of Contents
 - [Key Features](#key-features)
