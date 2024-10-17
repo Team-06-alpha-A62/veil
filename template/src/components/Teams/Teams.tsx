@@ -13,9 +13,7 @@ const Teams: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [joinedTeamsOnly, setJoinedTeamsOnly] = useState(false);
   const [teams, setTeams] = useState<Team[]>([]);
-  const [activeMembersCountMap, setActiveMembersCountMap] = useState<
-    Record<string, number>
-  >({});
+  const [, setActiveMembersCountMap] = useState<Record<string, number>>({});
   const unsubscribeFunctions: Array<() => void> = [];
 
   useEffect(() => {
@@ -75,11 +73,7 @@ const Teams: React.FC = () => {
 
       <div className="grid grid-cols-1  md:grid-cols-4 gap-4">
         {filteredTeams.map(team => (
-          <TeamCard
-            key={team.id}
-            team={team}
-            onlineMembersCount={activeMembersCountMap[team.id] || 0}
-          />
+          <TeamCard key={team.id} team={team} />
         ))}
       </div>
     </div>

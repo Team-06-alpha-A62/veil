@@ -262,8 +262,7 @@ const ManageChannelModal: React.FC<ManageChannelModalProps> = ({
 
           <div className="flex flex-col relative gap-3 bg-base-200 p-3 rounded-b-3xl h-[300px] overflow-y-auto">
             {filteredParticipants
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              .sort(([usernameA, participantA], [usernameB, participantB]) =>
+              .sort(([, participantA], [, participantB]) =>
                 participantA.role === UserRole.OWNER
                   ? -1
                   : participantB.role === UserRole.OWNER

@@ -251,8 +251,7 @@ export const deleteTeam = async (teamId: string): Promise<void> => {
 
 export const addMemberToTeam = async (
   teamId: string,
-  newMemberHandle: string,
-  owner: string
+  newMemberHandle: string
 ): Promise<void> => {
   const userData = await getUserByHandle(newMemberHandle);
   if (!userData) {
@@ -308,7 +307,7 @@ export const acceptJoinRequest = async (
   if (snapshot.exists()) {
     const participantData = snapshot.val();
 
-    await addMemberToTeam(teamId, username, participantData.username);
+    await addMemberToTeam(teamId, participantData.username);
 
     await remove(joinRequestRef);
   }

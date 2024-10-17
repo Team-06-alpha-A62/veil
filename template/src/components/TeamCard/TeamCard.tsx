@@ -10,10 +10,9 @@ import { NotificationMessageType } from '../../enums/NotificationMessageType.ts'
 
 interface TeamCardProps {
   team: Team;
-  onlineMembersCount: number;
 }
 
-const TeamCard: React.FC<TeamCardProps> = ({ team, onlineMembersCount }) => {
+const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
   const { currentUser } = useAuth();
   const [isManageTeamModalOpen, setIsManageTeamModalOpen] = useState(false);
   const isOwner = team.owner === currentUser.userData!.username;

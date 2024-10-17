@@ -80,7 +80,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       }
 
       const updatedProfile: Partial<UserData> = {
-        avatarUrl: updatedAvatarUrl,
+        avatarUrl: updatedAvatarUrl!,
         firstName: userData.firstName,
         lastName: userData.lastName,
         phoneNumber: userData.phoneNumber,

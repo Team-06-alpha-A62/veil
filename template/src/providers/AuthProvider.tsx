@@ -98,10 +98,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setCurrentUser({ ...currentUser, user, userData });
       } catch (error) {
         if (error instanceof Error) {
-          alert(`Error fetching the user data ${error.message}`);
           setErrorState(`Error fetching the user data ${error.message}`);
         } else {
-          alert(`unknown instance of error`);
           setErrorState('unknown instance of error');
         }
       } finally {

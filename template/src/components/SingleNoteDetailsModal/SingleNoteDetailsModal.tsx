@@ -48,7 +48,7 @@ const SingleNoteDetailsModal: React.FC = () => {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDragStop = (event: any, data: { x: number; y: number }) => {
+  const handleDragStop = (_event: any, data: { x: number; y: number }) => {
     setModalPosition({ x: data.x, y: data.y });
     localStorage.setItem(
       'modalPosition',

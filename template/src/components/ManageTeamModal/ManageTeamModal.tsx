@@ -136,7 +136,7 @@ const ManageTeamModal: React.FC<ManageTeamModalProps> = ({
   const handleAddClick = async (): Promise<void> => {
     try {
       for (const member of newMembers) {
-        await addMemberToTeam(team.id, member, team.owner);
+        await addMemberToTeam(team.id, member);
       }
       setNewMembers([]);
     } catch (error) {
