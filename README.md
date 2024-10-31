@@ -1,16 +1,17 @@
-# veil
+## Table of Contents
+
+- [Overview](#veil)
+- [Key Features](#key-features)
+- [Setup Instructions](#setup-instructions)
+  <br>
+
+<!-- End of Section -->
+
+## veil
 
 A collaborative Messenger Single-Page Application.
 
 ### [Live demo](https://veil-35640.web.app)
-
-<!-- End of Section -->
-
-## Table of Contents
-
-- [Key Features](#key-features)
-- [Setup Instructions](#setup-instructions)
-  <br>
 
 <!-- End of Section -->
 
