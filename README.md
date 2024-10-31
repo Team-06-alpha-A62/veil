@@ -5,38 +5,42 @@ A collaborative Messenger Single-Page Application.
 ### [Live demo](https://veil-35640.web.app)
 
 ## Table of Contents
+
 - [Key Features](#key-features)
-- [Setup Instructions](#setup-instructions)<br><br>
+- [Setup Instructions](#setup-instructions)
+  <!-- End of Table of Contents -->
+  <br>
 
 ## Key Features
 
-- **User Authentication**  
+- **User Authentication**
   Secure user authentication powered by Firebase, ensuring a seamless sign-in experience.
-  
-- **Meeting Scheduling & Dyte Integration**  
+
+- **Meeting Scheduling & Dyte Integration**
   Schedule and manage meetings with built-in integration for Dyte video calls.
   ![Meeting Scheduling](https://nikola-nenovski.info/veil/meetings.png)<br>
   ![Dyte Video Calls](https://nikola-nenovski.info/veil/dyte.png)<br>
 
-- **Friend Invitations & Channel Communication**  
-  Invite users to connect as friends and engage in direct or group chats. Create teams with public and private channels for more focused conversations.  
-  
-- **Media Sharing**  
+- **Friend Invitations & Channel Communication**
+  Invite users to connect as friends and engage in direct or group chats. Create teams with public and private channels for more focused conversations.
+
+- **Media Sharing**
   Share media easily, including GIFs with Giphy integration and image file uploads.
   ![Giphy Integration](https://nikola-nenovski.info/veil/giphy.png)<br>
 
-- **Customizable Themes**  
+- **Customizable Themes**
   Personalize the interface with multiple theme options to suit your style.
   ![Theme Customization](https://nikola-nenovski.info/veil/edit_profile.png)<br>
 
-- **Movable Dashboard Widgets**  
+- **Movable Dashboard Widgets**
   Reorganize your dashboard with widgets that can be moved using the Muuri grid library. Widget configuration is saved locally in localStorage for persistence.
   ![Dashboard Widgets](https://nikola-nenovski.info/veil/dashboard.png)<br>
 
-- **Interactive Notes**  
+- **Interactive Notes**
   Take notes that stay with you across different views, thanks to real-time updates via context management. Notes can be moved freely on the dashboard.
-  ![Notes Feature](https://nikola-nenovski.info/veil/notes.png)<br><br>
-
+  ![Notes Feature](https://nikola-nenovski.info/veil/notes.png)
+  <!-- End of Key Features -->
+  <br>
 
 ## Setup Instructions
 
@@ -57,7 +61,7 @@ A collaborative Messenger Single-Page Application.
     },
     "meetings": {
       ".indexOn": ["id","participants"]
-  
+
     },
     "notes": {
       ".indexOn": ["id", "username"]
@@ -119,3 +123,4 @@ A collaborative Messenger Single-Page Application.
    This will start the application in development mode. The server will usually be accessible at `http://localhost:5173` (or the port specified in your configuration).
 
 3. Open your web browser and navigate to the address displayed in your terminal to see the running application.
+<!-- End of Setup Instructions -->
