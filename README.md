@@ -4,12 +4,15 @@ A collaborative Messenger Single-Page Application.
 
 ### [Live demo](https://veil-35640.web.app)
 
+<!-- End of Section -->
+
 ## Table of Contents
 
 - [Key Features](#key-features)
 - [Setup Instructions](#setup-instructions)
-  <!-- End of Table of Contents -->
   <br>
+
+<!-- End of Section -->
 
 ## Key Features
 
@@ -39,8 +42,9 @@ A collaborative Messenger Single-Page Application.
 - **Interactive Notes**
   Take notes that stay with you across different views, thanks to real-time updates via context management. Notes can be moved freely on the dashboard.
   ![Notes Feature](https://nikola-nenovski.info/veil/notes.png)
-  <!-- End of Key Features -->
   <br>
+
+<!-- End of Section -->
 
 ## Setup Instructions
 
@@ -123,4 +127,5 @@ A collaborative Messenger Single-Page Application.
    This will start the application in development mode. The server will usually be accessible at `http://localhost:5173` (or the port specified in your configuration).
 
 3. Open your web browser and navigate to the address displayed in your terminal to see the running application.
-<!-- End of Setup Instructions -->
+
+<!-- End of Section -->
