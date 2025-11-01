@@ -21,27 +21,27 @@ A collaborative Messenger Single-Page Application.
 
 - **Meeting Scheduling & Dyte Integration**  
   Schedule and manage meetings with built-in integration for Dyte video calls.
-  ![Meeting Scheduling](https://nikola-nenovski.info/veil/meetings.png)  
-  ![Dyte Video Calls](https://nikola-nenovski.info/veil/dyte.png)  
+  ![Meeting Scheduling](https://nikola-nenovski.com/veil/meetings.png)  
+  ![Dyte Video Calls](https://nikola-nenovski.com/veil/dyte.png)  
 
 - **Friend Invitations & Channel Communication**  
   Invite users to connect as friends and engage in direct or group chats. Create teams with public and private channels for more focused conversations.
 
 - **Media Sharing**  
   Share media easily, including GIFs with Giphy integration and image file uploads.
-  ![Giphy Integration](https://nikola-nenovski.info/veil/giphy.png)  
+  ![Giphy Integration](https://nikola-nenovski.com/veil/giphy.png)  
 
 - **Customizable Themes**  
   Personalize the interface with multiple theme options to suit your style.
-  ![Theme Customization](https://nikola-nenovski.info/veil/edit_profile.png)  
+  ![Theme Customization](https://nikola-nenovski.com/veil/edit_profile.png)  
 
 - **Movable Dashboard Widgets**  
   Reorganize your dashboard with widgets that can be moved using the Muuri grid library. Widget configuration is saved locally in localStorage for persistence.
-  ![Dashboard Widgets](https://nikola-nenovski.info/veil/dashboard.png)  
+  ![Dashboard Widgets](https://nikola-nenovski.com/veil/dashboard.png)  
 
 - **Interactive Notes**  
   Take notes that stay with you across different views, thanks to real-time updates via context management. Notes can be moved freely on the dashboard.
-  ![Notes Feature](https://nikola-nenovski.info/veil/notes.png)  
+  ![Notes Feature](https://nikola-nenovski.com/veil/notes.png)  
   
 
 <!-- End of Section -->
